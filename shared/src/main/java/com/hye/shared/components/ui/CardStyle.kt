@@ -28,13 +28,15 @@ fun StyledCard(
 
     Card(
         modifier = style?.modifier ?: Modifier.fillMaxWidth(),
-        shape = style?.shape ?: RoundedCornerShape(AppTheme.dimens.large),
+        shape = style?.shape ?: RoundedCornerShape(AppTheme.dimens.md),
         colors = CardDefaults.cardColors(containerColor = style?.containerColor ?: AppTheme.colors.background),
-        elevation = CardDefaults.cardElevation(defaultElevation = style?.elevation ?: 0.dp),
-        border = style?.border ?: BorderStroke(1.dp, AppTheme.colors.cardBorderColor)
+        elevation = CardDefaults.cardElevation(defaultElevation = style?.elevation ?: AppTheme.dimens.zero),
+        border = style?.border ?: BorderStroke(AppTheme.dimens.one, AppTheme.colors.cardBorderColor)
     ) {
         content()
     }
 }
+
+
 
 

@@ -8,35 +8,96 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.TextUnit
-import androidx.compose.ui.unit.sp
 import com.hye.shared.theme.AppTheme
-
-/*ScreenTitle()
-SectionTitle()     // 소제목
-SectionSubtitle()
-BodyText()
-CaptionText()
-HelperText()*/
+import com.hye.shared.theme.toSp
 
 @Composable
-fun SectionTitle(text:String) = Text(
+fun SectionTitle(text: String) = Text(
     text = text,
     style = MaterialTheme.typography.titleMedium,
     fontWeight = FontWeight.Bold,
     color = AppTheme.colors.textPrimary,
-    modifier = Modifier.padding(bottom = AppTheme.dimens.extraSmall)
+    modifier = Modifier.padding(bottom = AppTheme.dimens.xxs)
 )
 
 @Composable
-fun TitleMedium(text:String) = Text(
+fun MenuLabel(
+    text: String,
+    color: Color = AppTheme.colors.textPrimary,
+    weight: FontWeight = FontWeight.Bold,
+    size: TextUnit = AppTheme.dimens.sm.toSp
+) = Text(
+    text = text,
+    color = color,
+    fontWeight = weight,
+    fontSize = size
+)
+@Composable
+fun TextDescription(
+    text: String,
+    color: Color = AppTheme.colors.textSecondary,
+    modifier: Modifier = Modifier,
+    lineHeight: TextUnit = TextUnit.Unspecified,
+    weight: FontWeight? = null
+) = Text(
+    text = text,
+    color = color,
+    style = MaterialTheme.typography.bodySmall,
+    modifier = modifier,
+    lineHeight = lineHeight,
+    fontWeight = weight
+)
+
+@Composable
+fun TextSubheading(
+    text: String,
+    size: TextUnit = TextUnit.Unspecified,
+    color: Color = AppTheme.colors.textSecondary,
+    modifier: Modifier = Modifier,
+    weight: FontWeight = FontWeight.Normal
+) = Text(
+    text = text,
+    style = MaterialTheme.typography.bodyLarge,
+    fontWeight = weight,
+    color = color,
+    modifier = modifier,
+    fontSize = size
+)
+
+@Composable
+fun TextBody(
+    text: String,
+    color: Color = AppTheme.colors.textPrimary,
+    fontWeight: FontWeight = FontWeight.Normal,
+    lineHeight: TextUnit = TextUnit.Unspecified
+) = Text(
+    text = text,
+    style = MaterialTheme.typography.bodyMedium,
+    color = color,
+    fontWeight = fontWeight,
+    lineHeight = lineHeight
+)
+
+@Composable
+fun TitleSmall(text:String, color: Color = AppTheme.colors.textSecondary,modifier: Modifier = Modifier) = Text(
+    text = text,
+    style = MaterialTheme.typography.titleSmall,
+    fontWeight = FontWeight.Normal,
+    color = color,
+    modifier = modifier
+)
+
+@Composable
+fun TitleMedium(text:String, color: Color = AppTheme.colors.textPrimary,modifier: Modifier = Modifier) = Text(
     text = text,
     style = MaterialTheme.typography.titleMedium,
     fontWeight = FontWeight.Bold,
-    color = AppTheme.colors.textPrimary
+    color = color,
+    modifier = modifier
 )
 
 @Composable
-fun LabelSmall(text:String, fontWeight: FontWeight = FontWeight.Bold, color: Color = AppTheme.colors.textSecondary) = Text(
+fun LabelSmall(text:String, fontWeight: FontWeight = FontWeight.Normal, color: Color = AppTheme.colors.textSecondary) = Text(
     text = text,
     style = MaterialTheme.typography.labelSmall,
     fontWeight = fontWeight,
@@ -44,26 +105,19 @@ fun LabelSmall(text:String, fontWeight: FontWeight = FontWeight.Bold, color: Col
 )
 
 @Composable
-fun LabelMedium(text:String, fontWeight: FontWeight = FontWeight.Bold, color: Color = AppTheme.colors.textSecondary) = Text(
+fun LabelMedium(text:String, fontWeight: FontWeight = FontWeight.Normal, color: Color = AppTheme.colors.textSecondary) = Text(
     text = text,
     style = MaterialTheme.typography.labelMedium,
     fontWeight = fontWeight,
     color = color
 )
 
-@Composable
-fun BodyTextSmall(text:String, color: Color = AppTheme.colors.mainColor, lineHeight: TextUnit = TextUnit.Unspecified) = Text(
-    text = text,
-    style = MaterialTheme.typography.bodySmall,
-    color = color,
-    lineHeight = lineHeight
-)
+
 
 @Composable
-fun BodyTextMedium(text: String, color: Color = AppTheme.colors.textPrimary, fontWeight: FontWeight = FontWeight.Bold,lineHeight: TextUnit = TextUnit.Unspecified) = Text(
+fun DisplayTextSmall(text: String, color : Color = AppTheme.colors.background) = Text(
     text = text,
-    style = MaterialTheme.typography.bodySmall,
-    color = color,
-    fontWeight = fontWeight,
-    lineHeight = lineHeight
+    style = MaterialTheme.typography.displaySmall,
+    fontWeight = FontWeight.Bold,
+    color = color
 )

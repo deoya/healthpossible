@@ -54,6 +54,7 @@ mockwebserver = "4.12.0"
 playServicesAnalyticsImpl = "18.2.0"
 javaxInject = "1"
 foundationLayout = "1.10.0"
+foundation = "1.10.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -108,6 +109,7 @@ firebase-firestore-ktx = { group = "com.google.firebase", name = "firebase-fires
 
 play-services-analytics-impl = { group = "com.google.android.gms", name = "play-services-analytics-impl", version.ref = "playServicesAnalyticsImpl" }
 androidx-compose-foundation-layout = { group = "androidx.compose.foundation", name = "foundation-layout", version.ref = "foundationLayout" }
+androidx-compose-foundation = { group = "androidx.compose.foundation", name = "foundation", version.ref = "foundation" }
 
 
 [plugins]
