@@ -21,6 +21,8 @@ import androidx.navigation.NavController
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.hye.shared.navigation.ContentNavRouteDef
+import com.hye.shared.theme.AppTheme
+import com.hye.shared.util.text
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -37,7 +39,6 @@ fun TopBar(navController: NavController, topBarActions: (@Composable () -> Unit)
             if (titleBarCustom.title != null) {
                 Box(
                     modifier = Modifier.fillMaxWidth(),
-                    contentAlignment = Alignment.Center
                 ) {
                     titleBarCustom.title?.invoke()
                 }
@@ -45,8 +46,9 @@ fun TopBar(navController: NavController, topBarActions: (@Composable () -> Unit)
                 val tab = bottomAppBarItems.find {
                     currentDestination?.hasRoute(it.destination::class) == true
                 }
+                val tabName = tab?.tabName?.text ?: ""
                 Text(
-                    text = tab?.tabName ?: "",
+                    text = tabName,
                     textAlign = TextAlign.Center,
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -57,7 +59,7 @@ fun TopBar(navController: NavController, topBarActions: (@Composable () -> Unit)
                 IconButton(onClick = { navController.navigateUp() }) {
                     Icon(
                         Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = "Back"
+                        contentDescription = null
                     )
                 }
             } else if (titleBarCustom.titleIcon != null) {
@@ -68,7 +70,7 @@ fun TopBar(navController: NavController, topBarActions: (@Composable () -> Unit)
             topBarActions?.invoke()
         },
         colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = Color.White
+            containerColor = AppTheme.colors.background
         )
     )
 }

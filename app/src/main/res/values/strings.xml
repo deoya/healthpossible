@@ -1,3 +1,13 @@
 <resources>
     <string name="app_name">healthpossible</string>
+
+    <string name="tab_name_community">커뮤니티</string>
+    <string name="tab_name_mission">미션</string>
+    <string name="tab_name_add_mission">미션 추가</string>
+    <string name="tab_name_my_page">마이페이지</string>
+
+    <string name="top_bar_title_today_mission">오늘의 미션</string>
+
+    <string name="menu_item_add_mission_template">템플릿으로 추가</string>
+    <string name="menu_item_add_mission_self">직접 추가</string>
 </resources>

@@ -70,6 +70,7 @@ dependencies {
     // Hilt Core
     implementation(libs.hilt.android)
     implementation(libs.androidx.compose.foundation.layout)
+    implementation(libs.androidx.compose.foundation)
     ksp(libs.hilt.compiler)
     // Hilt Navigation (ViewModel 주입에 필요)
     implementation(libs.hilt.navigation.compose)
