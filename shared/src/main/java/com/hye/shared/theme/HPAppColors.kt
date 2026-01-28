@@ -15,16 +15,34 @@ data class HPAppColors (
     // 텍스트 색상
     val textPrimary: Color,
     val textSecondary: Color,
+    //카테고리별 색상
+    val exerciseColor: Color,
+    val exerciseSecondColor: Color,
+    val dietColor: Color,
+    val dietSecondColor: Color,
+    val routineColor: Color,
+    val routineSecondColor: Color,
+    val restrictionColor: Color,
+    val restrictionSecondColor: Color,
     // 기타 UI 요소 색상
     val inactive: Color,// 비활성화된 아이콘, 텍스트 등에 사용
     val divider: Color,// 구분선 색상
-    val iconColor: Color,
+    val dark: Color,
     val mainColor: Color,
     val mainColorLight: Color,
     val successColor: Color,
     val selectedLabelColor: Color,
     val uncheckedTrackColor: Color,
-    val cardBorderColor: Color
+    val cardBorderColor: Color,
+    val chipBorderColor: Color,
+    val chipSelectedColor: Color,
+    val completeColor : Color,
+    val incompleteColor:Color,
+    val supportAgentColor : Color,
+
+    val inputBoxBorder: Color,
+
+    val unSelectedColor : Color
 )
 
 val LightColors = HPAppColors(
@@ -36,15 +54,32 @@ val LightColors = HPAppColors(
     surface = Color.White,
     textPrimary = Color(0xFF1E293B),
     textSecondary = Color(0xFF64748B),
+
+    exerciseColor=Color(0xFF1168EC),
+    exerciseSecondColor=Color(0xFF8FBEF2),
+    dietColor=Color(0xFF905EEF),
+    dietSecondColor=Color(0xFFCDB6FC),
+    routineColor=Color(0xFFF3B128),
+    routineSecondColor=Color(0xFFF6DFB4),
+    restrictionColor=Color(0xFFEB5DCC),
+    restrictionSecondColor=Color(0xFFF4B0EB),
+
     inactive = Color(0xFFBDBDBD),
     divider = Color(0xFFEEEEEE),
-    iconColor = Color.White,
+    dark = Color.Black,
     mainColor = Color(0xFF3B82F6),
     mainColorLight = Color(0xFFEFF6FF),
     successColor = Color(0xFF10B981),
     selectedLabelColor = Color.White,
     uncheckedTrackColor = Color(0xFFE2E8F0),
-    cardBorderColor = Color(0xFFF1F5F9)
+    cardBorderColor = Color(0xFFF1F5F9),
+    chipBorderColor = Color.Transparent,
+    chipSelectedColor = Color.Transparent,
+    completeColor = Color.Gray,
+    incompleteColor =  Color.Transparent,
+    supportAgentColor = Color(0xFF8B5CF6),
+    unSelectedColor = Color.Transparent,
+    inputBoxBorder = Color.LightGray
 )
 
 val LocalColors = staticCompositionLocalOf { LightColors }

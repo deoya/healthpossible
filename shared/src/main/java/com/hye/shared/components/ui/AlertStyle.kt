@@ -24,21 +24,21 @@ fun StyledAlert(
 ) {
     Surface(
         color = color,
-        shape = RoundedCornerShape(AppTheme.dimens.mediumSmall),
+        shape = RoundedCornerShape(AppTheme.dimens.s),
         modifier = Modifier.fillMaxWidth()
     ) {
         Row(
-            modifier = Modifier.padding(AppTheme.dimens.large),
+            modifier = Modifier.padding(AppTheme.dimens.md),
             verticalAlignment = Alignment.Top,
-            horizontalArrangement = Arrangement.spacedBy(AppTheme.dimens.extraSmall)
+            horizontalArrangement = Arrangement.spacedBy(AppTheme.dimens.xxs)
         ) {
             if(needIcon) Icon(
                     Icons.Default.Info,
                     contentDescription = null,
                     tint = AppTheme.colors.textSecondary,
                     modifier = Modifier
-                        .size(AppTheme.dimens.large)
-                        .padding(top = AppTheme.dimens.micro)
+                        .size(AppTheme.dimens.md)
+                        .padding(top = AppTheme.dimens.xxxxxs)
                 )
 
             content()
