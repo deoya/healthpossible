@@ -13,7 +13,9 @@ fun NavGraphBuilder.bottomBarNavGraphBuilder(
     setTopBarActions: (@Composable (() -> Unit)?) -> Unit
 ){
     composable<ContentNavRouteDef.MissionTab> {
-        MissionListScreen()
+        MissionListScreen(
+            setTopBarActions = setTopBarActions
+        )
     }
 
     composable<ContentNavRouteDef.CommunityTab> {

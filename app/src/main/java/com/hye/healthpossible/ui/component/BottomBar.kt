@@ -14,6 +14,7 @@ import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import com.hye.shared.navigation.ContentNavRouteDef
 import com.hye.shared.theme.AppTheme
+import com.hye.shared.util.text
 
 @Composable
 fun BottomBar(
@@ -25,8 +26,8 @@ fun BottomBar(
     onPendingDestinationChange: (Any?) -> Unit
 ) {
     NavigationBar(
-        containerColor = Color.White,
-        tonalElevation = 8.dp
+        containerColor = AppTheme.colors.background,
+        tonalElevation = AppTheme.dimens.xxs
     ) {
         bottomNavItems.forEach { item ->
             val isSelected =
@@ -43,7 +44,7 @@ fun BottomBar(
                     unselectedIconColor = AppTheme.colors.inactive,
                     unselectedTextColor = AppTheme.colors.inactive
                 ),
-                label = { Text(item.tabName) },
+                label = { Text(item.tabName.text) },
                 icon = { Icon(item.icon, contentDescription = null) },
                 onClick = {
                     if (showAddMissionMenu) {

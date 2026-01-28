@@ -6,7 +6,6 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
@@ -15,9 +14,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -26,21 +23,22 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.hye.healthpossible.R
 import com.hye.healthpossible.navigation.bottomBarNavGraphBuilder
 import com.hye.healthpossible.ui.component.BottomAppBarItem
 import com.hye.healthpossible.ui.component.BottomBar
+import com.hye.shared.components.ui.MenuItem
 import com.hye.healthpossible.ui.component.TopBar
+import com.hye.shared.components.ui.StyledIconButton
 import com.hye.shared.theme.AppTheme
 import com.hye.shared.navigation.ContentNavRouteDef
+import com.hye.shared.util.text
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview(showBackground = true)
@@ -116,21 +114,20 @@ fun EntryPoint() {
             Box(
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
-                    .padding(bottom = 36.dp)
+                    .padding(bottom = AppTheme.dimens.xxxl)
             ) {
-                IconButton(
+                StyledIconButton(
                     onClick = { showAddMissionMenu = !showAddMissionMenu },
                     modifier = Modifier
                         .background(AppTheme.colors.primary, shape = CircleShape)
-                        .padding(16.dp)
-                ) {
-                    Icon(
+                        .padding(AppTheme.dimens.md),
+                    icon = {Icon(
                         Icons.Default.AddCircle,
                         contentDescription = null,
-                        tint = AppTheme.colors.iconColor,
-                        modifier = Modifier.size(32.dp)
-                    )
-                }
+                        tint = AppTheme.colors.background,
+                        modifier = Modifier.size(AppTheme.dimens.xxl)
+                    )}
+                )
             }
         }
         // Todo 애니메이션으로 바꾸기
@@ -138,7 +135,7 @@ fun EntryPoint() {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(bottom = 80.dp)
+                    .padding(bottom = AppTheme.dimens.bottomBarPadding)
                     .clickable(
                         indication = null,
                         interactionSource = remember { MutableInteractionSource() }
@@ -156,39 +153,23 @@ fun EntryPoint() {
                         }
                     }
             )
-
             Column(
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
-                    .padding(bottom = 110.dp)
-                    .background(Color.White, RoundedCornerShape(20.dp))
-                    .padding(16.dp)
+                    .padding(bottom = AppTheme.dimens.dropDownMenuAddMisionPadding)
+                    .background(AppTheme.colors.background, RoundedCornerShape(AppTheme.dimens.l))
+                    .padding(AppTheme.dimens.md)
             ) {
-                MenuItem("템플릿으로 추가") {
+                MenuItem(R.string.menu_item_add_mission_template.text) {
                     showAddMissionMenu = false
                     navController.navigate(ContentNavRouteDef.MissionRecommendationTab)
                 }
 
-                MenuItem("직접 추가") {
+                MenuItem(R.string.menu_item_add_mission_self.text) {
                     showAddMissionMenu = false
                     navController.navigate(ContentNavRouteDef.MissionCreationTab)
                 }
             }
         }
     }
-}
-
-@Composable
-fun MenuItem(
-    text: String,
-    onClick: () -> Unit
-) {
-    Text(
-        text = text,
-        fontSize = 16.sp,
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable(onClick = onClick)
-            .padding(vertical = 12.dp)
-    )
 }
