@@ -1,0 +1,17 @@
+<resources>
+    <string name="mission_exercise">운동</string>
+    <string name="mission_diet">식단</string>
+    <string name="mission_routine">상시</string>
+    <string name="mission_restriction">제한</string>
+
+    <string name="mission_pose">자세</string>
+    <string name="mission_step_count">걸음 수</string>
+
+    <string name="mission_posture_correction">자세 교정</string>
+    <string name="mission_unit_minutes">분</string>
+    <string name="mission_unit_steps">걸음</string>
+    <string name="mission_unit_times">시간</string>
+    <string name="mission_unit_count">번</string>
+
+    <string name="mission_forbid">금지</string>
+</resources>

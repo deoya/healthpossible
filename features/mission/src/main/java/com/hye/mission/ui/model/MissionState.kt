@@ -1,22 +1,21 @@
 package com.hye.mission.ui.model
 
-import com.hye.domain.model.mission.Mission
+import com.hye.domain.model.mission.types.Mission
+import com.hye.domain.model.mission.MissionWithRecord
 import com.hye.domain.result.MissionResult
 
 data class MissionState (
-    val missionList : MissionResult<List<Mission>> = MissionResult.Loading,
-
-    val selectMission : MissionResult<Mission> = MissionResult.NoConstructor,
-
-    val deleteMission : MissionResult<Unit> = MissionResult.NoConstructor,
-
+    val missions: List<MissionWithRecord> = emptyList(),
     val isLoading: Boolean = false,
+    val errorMessage: String? = null,
 
-    //현재 작성 중인 미션 (임시 저장소)
-    val inputMission: Mission? = null,
+    val totalMissionsCount: Int = 0,
+    val completedMissionsCount: Int = 0,
 
     val userMessage: String? = null,
 
+    val selectMission: MissionResult<Mission> = MissionResult.NoConstructor,
+    val deleteMission: MissionResult<Unit> = MissionResult.NoConstructor,
+    val inputMission: Mission? = null,
     val isInserted: Boolean = false
-
 )

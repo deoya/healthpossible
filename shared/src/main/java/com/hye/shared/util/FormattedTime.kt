@@ -1,15 +1,14 @@
 package com.hye.shared.util
 
 import android.annotation.SuppressLint
-import android.os.Build
-import androidx.annotation.RequiresApi
 import java.time.Instant
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
+
 @SuppressLint("NewApi")
-fun getCurrentFormattedTime(): String {
+fun getCurrentFormattedTime(type: DateFormatType = DateFormatType.DEFAULT): String {
     // 1. 한국 시간대 정의
     val seoulZone = ZoneId.of("Asia/Seoul")
 
@@ -17,8 +16,8 @@ fun getCurrentFormattedTime(): String {
     // Date 대신 Instant.now()를 사용함
     val nowInSeoul = ZonedDateTime.ofInstant(Instant.now(), seoulZone)
 
-    // 3. 서버 표준 포맷 정의 (밀리초와 시간대 오프셋 포함)
-    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+    // 3. 서버 표준 포맷 정의
+    val formatter = DateTimeFormatter.ofPattern(type.pattern)
 
     // 4. 포맷 적용 및 반환
     return nowInSeoul.format(formatter)

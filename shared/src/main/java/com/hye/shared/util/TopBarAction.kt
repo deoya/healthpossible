@@ -1,4 +1,4 @@
-package com.hye.mission.ui.components.mission
+package com.hye.shared.util
 
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton

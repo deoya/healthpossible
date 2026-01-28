@@ -2,23 +2,23 @@ package com.hye.mission.ui.model
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.hye.domain.model.mission.DayOfWeek
-import com.hye.domain.model.mission.DietMission
-import com.hye.domain.model.mission.DietRecordMethod
-import com.hye.domain.model.mission.ExerciseMission
-import com.hye.domain.model.mission.ExerciseUnit
-import com.hye.domain.model.mission.Mission
-import com.hye.domain.model.mission.MissionCategory
-import com.hye.domain.model.mission.RestrictionMission
-import com.hye.domain.model.mission.RestrictionType
-import com.hye.domain.model.mission.RoutineMission
-import com.hye.domain.model.mission.copyCommon
+import com.hye.domain.factory.MissionFactory
+import com.hye.domain.model.mission.types.DayOfWeek
+import com.hye.domain.model.mission.types.DietMission
+import com.hye.domain.model.mission.types.DietRecordMethod
+import com.hye.domain.model.mission.types.ExerciseMission
+import com.hye.domain.model.mission.types.ExerciseUnit
+import com.hye.domain.model.mission.types.Mission
+import com.hye.domain.model.mission.types.MissionType
+import com.hye.domain.model.mission.types.RestrictionMission
+import com.hye.domain.model.mission.types.RestrictionType
+import com.hye.domain.model.mission.types.RoutineMission
+import com.hye.domain.model.mission.types.copyCommon
 import com.hye.domain.result.MissionResult
 import com.hye.domain.usecase.mission.MissionUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.util.UUID
@@ -71,7 +71,7 @@ class MissionCreationViewModel @Inject constructor(
 
     //-------------------
     // 초기화 (카테고리 선택)
-    fun startCreation(category: MissionCategory = MissionCategory.EXERCISE) {
+    fun startCreation(category: MissionType = MissionType.EXERCISE) {
         val current = _uiStatus.value.inputMission
         val id = current?.id ?: UUID.randomUUID().toString()
         val title = current?.title ?: ""
@@ -79,24 +79,7 @@ class MissionCreationViewModel @Inject constructor(
         val tags = current?.tags ?: emptyList()
         val notificationTime = current?.notificationTime
 
-        val newMission = when (category) {
-            MissionCategory.EXERCISE -> ExerciseMission(
-                id = id, title = title, days = days, tags = tags, notificationTime = notificationTime,
-                targetValue = 0, unit = ExerciseUnit.TIME, useTimer = false
-            )
-            MissionCategory.DIET -> DietMission(
-                id = id, title = title, days = days, tags = tags, notificationTime = notificationTime,
-                recordMethod = DietRecordMethod.TEXT
-            )
-            MissionCategory.ROUTINE -> RoutineMission(
-                id = id, title = title, days = days, tags = tags, notificationTime = notificationTime,
-                dailyTargetAmount = 0, amountPerStep = 0, unitLabel = ""
-            )
-            MissionCategory.RESTRICTION -> RestrictionMission(
-                id = id, title = title, days = days, tags = tags, notificationTime = notificationTime,
-                type = RestrictionType.CHECK, maxAllowedMinutes = null
-            )
-        }
+        val newMission = MissionFactory.create(id, category, title, days, tags, notificationTime)
         updateMissionState(newMission)
     }
     //-------------------
@@ -140,13 +123,11 @@ class MissionCreationViewModel @Inject constructor(
         it.copy(unit = unit)
     }
     fun updateExerciseTarget(targetStr: String) = updateIfIs<ExerciseMission> {
-        val value = targetStr.filter { c -> c.isDigit() }.toIntOrNull() ?: 0
-        it.copy(targetValue = value)
+        it.copy(targetValue = targetStr.toIntOrDefault())
     }
-    fun toggleExerciseTimer(useTimer: Boolean) = updateIfIs<ExerciseMission> {
-        it.copy(useTimer = useTimer)
+    fun toggleExerciseSupportAgent(useSupportAgent: Boolean) = updateIfIs<ExerciseMission> {
+        it.copy(useSupportAgent = useSupportAgent)
     }
-
     // [식단]
     fun updateDietRecordMethod(method: DietRecordMethod) = updateIfIs<DietMission> {
         it.copy(recordMethod = method)
@@ -157,22 +138,17 @@ class MissionCreationViewModel @Inject constructor(
         it.copy(unitLabel = label)
     }
     fun updateRoutineTotalTarget(targetStr: String) = updateIfIs<RoutineMission> {
-        val value = targetStr.filter { c -> c.isDigit() }.toIntOrNull() ?: 0
-        it.copy(dailyTargetAmount = value)
+        it.copy(dailyTargetAmount = targetStr.toIntOrDefault())
     }
     fun updateRoutineStepAmount(amountStr: String) = updateIfIs<RoutineMission> {
-        val value = amountStr.filter { c -> c.isDigit() }.toIntOrNull() ?: 0
-        it.copy(amountPerStep = value)
+        it.copy(amountPerStep = amountStr.toIntOrDefault())
     }
-
     // [제한]
     fun updateRestrictionType(type: RestrictionType) = updateIfIs<RestrictionMission> {
         it.copy(type = type)
     }
     fun updateRestrictionTime(timeStr: String) = updateIfIs<RestrictionMission> {
-        val hours = timeStr.filter { c -> c.isDigit() }.toIntOrNull() ?: 0
-        it.copy(maxAllowedMinutes = hours * 60)
+        it.copy(maxAllowedMinutes = (timeStr.toIntOrDefault()) * 60)
     }
-
-
+    private fun String.toIntOrDefault(default: Int = 0) = this.filter { it.isDigit() }.toIntOrNull() ?: default
 }
