@@ -1,6 +1,13 @@
 package com.hye.mission.ui.screen
 
 import ToastHelper
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -8,18 +15,35 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.hye.domain.model.mission.DayOfWeek
-import com.hye.domain.model.mission.ExerciseMission
-import com.hye.domain.model.mission.ExerciseUnit
+import com.hye.domain.model.mission.MissionActionsByType
+import com.hye.domain.model.mission.types.DayOfWeek
+import com.hye.domain.model.mission.types.ExerciseMission
+import com.hye.domain.model.mission.types.ExerciseUnit
+import com.hye.domain.model.mission.types.type
+import com.hye.mission.ui.components.form.CategorySelectionTab
+import com.hye.mission.ui.components.form.CommonInputSection
+import com.hye.mission.ui.components.form.MissionForm
+import com.hye.mission.ui.components.form.TagInputSection
 import com.hye.mission.ui.components.mission.MissionCreationContent
-import com.hye.mission.ui.components.mission.TopBarAction
-import com.hye.mission.ui.model.MissionState
 import com.hye.mission.ui.model.MissionCreationViewModel
+import com.hye.mission.ui.model.MissionState
+import com.hye.mission.ui.util.SettingRules.ANIMATION_SPEC
+import com.hye.mission.ui.util.getDesign
+import com.hye.shared.util.TopBarAction
+import com.hye.shared.R
+import com.hye.shared.components.ui.MenuLabel
+import com.hye.shared.components.ui.MenuStyle
+import com.hye.shared.components.ui.StyledMenu
+import com.hye.shared.components.ui.common.IconStyle
+import com.hye.shared.components.ui.common.Orientation
+import com.hye.shared.components.ui.common.enabledColor
+import com.hye.shared.components.ui.common.selectionBtnContentColor
 import com.hye.shared.theme.AppTheme
+import com.hye.shared.util.text
 
 @Composable
 fun MissionCreationScreen(
@@ -29,7 +53,23 @@ fun MissionCreationScreen(
     val uiState by viewModel.uiStatus.collectAsStateWithLifecycle()
     var inputMission =  uiState.inputMission
 
-
+    val actions = remember(viewModel) {
+        MissionActionsByType(
+            //운동
+            onExerciseUnitChange = viewModel::updateExerciseUnit,
+            onExerciseTargetChange = viewModel::updateExerciseTarget,
+            onExerciseSupportAgentToggle = viewModel::toggleExerciseSupportAgent,
+            // 식단
+            onDietMethodChange = viewModel::updateDietRecordMethod,
+            // 루틴
+            onRoutineUnitLabelChange = viewModel::updateRoutineUnitLabel,
+            onRoutineTotalChange = viewModel::updateRoutineTotalTarget,
+            onRoutineStepChange = viewModel::updateRoutineStepAmount,
+            // 제한
+            onRestrictionTypeChange = viewModel::updateRestrictionType,
+            onRestrictionTimeChange = viewModel::updateRestrictionTime,
+        )
+    }
     DisposableEffect(inputMission?.title) {
 
         val isTitleValid = inputMission != null && inputMission.title.isNotBlank()
@@ -38,8 +78,8 @@ fun MissionCreationScreen(
             TopBarAction(
                 onClick = { viewModel.insertMission() },
                 enabled = isTitleValid,
-                label = "저장",
-                color = if (isTitleValid) AppTheme.colors.mainColor else Color.LightGray
+                label = R.string.save.text,
+                color = isTitleValid.enabledColor()
             )
         })
         onDispose { setTopBarActions(null) }
@@ -53,96 +93,88 @@ fun MissionCreationScreen(
     }
 
     MissionCreationContent(
-        uiState = uiState,
-        // 공통
-        onTitleChange = viewModel::updateTitle,
-        onDayToggle = viewModel::toggleDay,
-        onCategorySelected = viewModel::startCreation,
-        // 운동
-        onExerciseUnitChange = viewModel::updateExerciseUnit,
-        onExerciseTargetChange = viewModel::updateExerciseTarget,
-        onExerciseTimerToggle = viewModel::toggleExerciseTimer,
-        // 식단
-        onDietMethodChange = viewModel::updateDietRecordMethod,
-        // 루틴
-        onRoutineUnitLabelChange = viewModel::updateRoutineUnitLabel,
-        onRoutineTotalChange = viewModel::updateRoutineTotalTarget,
-        onRoutineStepChange = viewModel::updateRoutineStepAmount,
-        // 제한
-        onRestrictionTypeChange = viewModel::updateRestrictionType,
-        onRestrictionTimeChange = viewModel::updateRestrictionTime,
-        // 태그
-        onTagAdd = viewModel::addTag,
-        onTagRemove = viewModel::removeTag
+        // 1. 상단 공통 입력
+        commonInputContent = {
+            if (inputMission != null) {
+                CommonInputSection(
+                    name = inputMission.title,
+                    onNameChange = viewModel::updateTitle,
+                    selectedDays = inputMission.days,
+                    onDayToggle = viewModel::toggleDay
+                )
+            }
+        },
+
+        // 2. 카테고리 탭
+        categoryTabContent = {
+            if (inputMission != null) {
+                CategorySelectionTab(
+                    selectedCategory = inputMission.type,
+                    onCategorySelected = viewModel::startCreation,
+                    itemContent = { category, isSelected ->
+                        StyledMenu(
+                            MenuStyle(
+                                modifier = Modifier.padding(
+                                    horizontal = AppTheme.dimens.l,
+                                    vertical = AppTheme.dimens.s
+                                ),
+                                icon = IconStyle(
+                                    image = category.getDesign().icon,
+                                    tint = isSelected.selectionBtnContentColor(),
+                                    size = AppTheme.dimens.l
+                                ),
+                                spacedBy = AppTheme.dimens.xxs
+                            ),
+                            content = { MenuLabel(category.label, color = isSelected.selectionBtnContentColor()) },
+                            orientation = Orientation.Row
+                        )
+                    }
+                )
+            }
+        },
+
+        // 3. 상세 폼
+        detailedFormContent = {
+            if (inputMission != null) {
+                AnimatedContent(
+                    targetState = inputMission,
+                    transitionSpec = {
+                        fadeIn(animationSpec = tween(ANIMATION_SPEC)) togetherWith fadeOut(animationSpec = tween(ANIMATION_SPEC))
+                    },
+                    contentKey = { it.type },
+                ) { mission ->
+                    MissionForm(mission = mission, actions = actions)
+                }
+            }
+        },
+
+        // 4. 태그 입력
+        tagInputContent = {
+            if (inputMission != null) {
+                var currentTagInput by remember { mutableStateOf("") }
+
+                TagInputSection(
+                    tags = inputMission.tags,
+                    inputValue = currentTagInput,
+                    onValueChange = { currentTagInput = it },
+                    onAddTag = {
+                        viewModel.addTag(currentTagInput)
+                        currentTagInput = ""
+                    },
+                    onRemoveTag = viewModel::removeTag
+                )
+            }
+        }
     )
 }
 
-@Preview(showBackground = true, name = "운동 미션 생성 미리보기")
+@Preview(showBackground = true)
 @Composable
-fun MissionCreationExercisePreview() {
-    var exerciseTargetString by remember { mutableStateOf("30") }
-    var missionState by remember {
-        mutableStateOf(
-            ExerciseMission(
-                id = "preview",
-                title = "미리보기 운동",
-                days = setOf(DayOfWeek.MON, DayOfWeek.WED, DayOfWeek.FRI),
-                notificationTime = null,
-                tags = listOf("건강", "아침"),
-                targetValue = 30,
-                unit = ExerciseUnit.TIME,
-                useTimer = true
-            )
-        )
-    }
+fun Preview_MissionCreationContent_LayoutOnly() {
     MissionCreationContent(
-        uiState = MissionState(
-            inputMission = missionState,
-        ),
-        // 공통 속성 업데이트 콜백
-        onTitleChange = { newTitle ->
-            missionState = missionState.copy(title = newTitle)
-        },
-        onDayToggle = { day ->
-            val newDays = if (missionState.days.contains(day)) {
-                missionState.days - day
-            } else {
-                missionState.days + day
-            }
-            missionState = missionState.copy(days = newDays)
-        },
-        onCategorySelected = { },
-
-        onExerciseUnitChange = { newUnit ->
-            missionState = missionState.copy(unit = newUnit)
-        },
-        onExerciseTargetChange = { newTargetString ->
-            exerciseTargetString = newTargetString
-
-            val newFloatValue = newTargetString.toIntOrNull() ?: 0
-            missionState = missionState.copy(targetValue = newFloatValue)
-        },
-        onExerciseTimerToggle = { useTimer ->
-            missionState = missionState.copy(useTimer = useTimer)
-        },
-
-        // 태그 업데이트 콜백
-        onTagAdd = { tag ->
-            if (tag.isNotBlank() && !missionState.tags.contains(tag)) {
-                val newTags = missionState.tags + tag
-                missionState = missionState.copy(tags = newTags)
-            }
-        },
-        onTagRemove = { tag ->
-            val newTags = missionState.tags - tag
-            missionState = missionState.copy(tags = newTags)
-        },
-
-        onDietMethodChange = {},
-        onRoutineUnitLabelChange = {},
-        onRoutineTotalChange = {},
-        onRoutineStepChange = {},
-        onRestrictionTypeChange = {},
-        onRestrictionTimeChange = {}
+        commonInputContent = { Text("공통 입력 영역") },
+        categoryTabContent = { Text("탭 영역") },
+        detailedFormContent = { Text("폼 영역") },
+        tagInputContent = { Text("태그 영역") }
     )
 }

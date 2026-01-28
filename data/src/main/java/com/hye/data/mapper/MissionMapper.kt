@@ -1,20 +1,23 @@
 
 package com.hye.data.mapper
 
-import com.hye.domain.model.mission.DayOfWeek
-import com.hye.domain.model.mission.DietMission
-import com.hye.domain.model.mission.DietRecordMethod
-import com.hye.domain.model.mission.ExerciseMission
-import com.hye.domain.model.mission.ExerciseUnit
-import com.hye.domain.model.mission.Mission
-import com.hye.domain.model.mission.RestrictionMission
-import com.hye.domain.model.mission.RestrictionType
-import com.hye.domain.model.mission.RoutineMission
+import android.os.Build
+import androidx.annotation.RequiresApi
+import com.hye.domain.model.mission.types.DayOfWeek
+import com.hye.domain.model.mission.types.DietMission
+import com.hye.domain.model.mission.types.DietRecordMethod
+import com.hye.domain.model.mission.types.ExerciseMission
+import com.hye.domain.model.mission.types.ExerciseUnit
+import com.hye.domain.model.mission.types.Mission
+import com.hye.domain.model.mission.types.RestrictionMission
+import com.hye.domain.model.mission.types.RestrictionType
+import com.hye.domain.model.mission.types.RoutineMission
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 
 
 // [저장용] Mission 객체 -> Map 변환
+@RequiresApi(Build.VERSION_CODES.O)
 fun missionToMap(mission: Mission): Map<String, Any?> {
     // 1. 공통 필드 처리
     val commonData = mutableMapOf<String, Any?>(
@@ -31,7 +34,7 @@ fun missionToMap(mission: Mission): Map<String, Any?> {
             commonData["type"] = "EXERCISE"
             commonData["targetValue"] = mission.targetValue
             commonData["unit"] = mission.unit.name
-            commonData["useTimer"] = mission.useTimer
+            commonData["useTimer"] = mission.useSupportAgent
         }
         is DietMission -> {
             commonData["type"] = "DIET"
@@ -67,7 +70,7 @@ fun mapToMission(id: String, data: Map<String, Any?>): Mission? {
     val notificationTime = try {
         if (timeString != null) LocalTime.parse(timeString) else null
     } catch (e: Exception) {
-        null
+        throw RuntimeException(e)
     }
 
     return when (type) {
@@ -79,7 +82,7 @@ fun mapToMission(id: String, data: Map<String, Any?>): Mission? {
             tags = tags,
             targetValue = (data["targetValue"] as? Number)?.toInt() ?: 0,
             unit = safeEnum<ExerciseUnit>(data["unit"] as? String) ?: ExerciseUnit.TIME,
-            useTimer = data["useTimer"] as? Boolean ?: false
+            useSupportAgent = data["useTimer"] as? Boolean ?: false
         )
         "DIET" -> DietMission(
             id = id,
@@ -108,7 +111,7 @@ fun mapToMission(id: String, data: Map<String, Any?>): Mission? {
             type = safeEnum<RestrictionType>(data["restrictionType"] as? String) ?: RestrictionType.CHECK,
             maxAllowedMinutes = (data["maxAllowedMinutes"] as? Number)?.toInt()
         )
-        else -> null
+        else -> throw IllegalArgumentException(type)
     }
 }
 
@@ -117,6 +120,7 @@ private inline fun <reified T : Enum<T>> safeEnum(value: String?): T? {
     return try {
         if (value != null) enumValueOf<T>(value) else null
     } catch (e: Exception) {
-        null
+        throw RuntimeException(e)
+
     }
 }

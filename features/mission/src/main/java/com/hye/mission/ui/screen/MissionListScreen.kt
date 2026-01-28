@@ -1,113 +1,111 @@
 package com.hye.mission.ui.screen
 
+import android.os.Build
+import androidx.annotation.RequiresApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.google.android.material.progressindicator.CircularProgressIndicator
-import com.hye.domain.result.MissionResult
 import com.hye.mission.ui.components.mission.DailyProgressCard
 import com.hye.mission.ui.components.mission.UserMissionCard
 import com.hye.mission.ui.model.MissionViewModel
-import com.hye.shared.components.ui.SectionTitle
-import com.hye.shared.mock.todayMissions
+import com.hye.shared.components.ui.StyledIconButton
+import com.hye.shared.components.ui.TitleMedium
+import com.hye.shared.components.ui.common.CalendarIcon
 import com.hye.shared.theme.AppTheme
 import com.hye.shared.theme.ScaffoldContentPaddingWithBottomBar
+import com.hye.features.mission.R
+import com.hye.shared.util.text
 
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun MissionListScreen(
     viewModel: MissionViewModel = hiltViewModel(),
+    setTopBarActions: ((@Composable () -> Unit)?) -> Unit,
 ) {
     val uiState by viewModel.uiStatus.collectAsStateWithLifecycle()
 
-    // 2. 상태(MissionResult)에 따라 화면 분기
-    when (val result = uiState.missionList) {
+    setTopBarActions({
+        StyledIconButton(
+            onClick = {}, // Todo: 이전 날짜 확인 가능 기능
+            modifier = Modifier
+                .padding(end = AppTheme.dimens.xxs)
+                .background(AppTheme.colors.background, CircleShape)
+                .size(AppTheme.dimens.xxxxxl),
+            icon = { CalendarIcon() })
+    })
 
-        // (A) 로딩 중일 때
-        is MissionResult.Loading -> {
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                CircularProgressIndicator(color = AppTheme.colors.mainColor)
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(AppTheme.colors.backgroundMuted)
+    ) {
+        when {
+            uiState.isLoading -> {
+                Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    CircularProgressIndicator(color = AppTheme.colors.mainColor)
+                }
             }
-        }
+            uiState.errorMessage != null -> {
+                Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    //Todo: 에러 대처 코드 추가 예정
+                }
+            }
 
-        // (B) 성공했을 때 -> 리스트 표시
-        is MissionResult.Success -> {
-            val missions = result.resultData // 실제 List<Mission>
-
-            LazyColumn(
-                modifier = Modifier.fillMaxSize(),
-                contentPadding = AppTheme.dimens.ScaffoldContentPaddingWithBottomBar,
-                verticalArrangement = Arrangement.spacedBy(AppTheme.dimens.doubleExtraLarge)
-            ) {
-                // 1. Daily Progress Card (나중에 실제 데이터 연결 필요)
-                item { DailyProgressCard() }
-
-                // 2. Mission List
-                item { SectionTitle("수행할 미션 (${missions.size})") }
-
-                if (missions.isEmpty()) {
+            else -> {
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize(),
+                    contentPadding = AppTheme.dimens.ScaffoldContentPaddingWithBottomBar,
+                    verticalArrangement = Arrangement.spacedBy(AppTheme.dimens.xxl)
+                ) {
                     item {
-                        Text("등록된 미션이 없습니다. + 버튼을 눌러 추가해보세요!")
-                    }
-                } else {
-                    items(missions) { mission ->
-                        UserMissionCard(
-                            mission = mission,
-                            onClick = { /* 상세 이동 or 완료 처리 */ }
+                        DailyProgressCard(
+                            totalCount = uiState.totalMissionsCount,
+                            completedCount = uiState.completedMissionsCount
                         )
+                    }
+
+                    item {
+                        TitleMedium(R.string.mission_today_missions.text(uiState.missions.size))
+                    }
+
+                    if (uiState.missions.isEmpty()) {
+                        item {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .padding(AppTheme.dimens.l),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                // Todo: 등록된 미션이 없는 경우의 이미지 추가 예정
+                            }
+                        }
+                    } else {
+                        items(uiState.missions) { item ->
+                            UserMissionCard(
+                                missionWrapper = item,
+                                onClick = {
+                                    viewModel.onStartButtonClicked(item)
+                                }
+                            )
+                        }
                     }
                 }
             }
         }
-
-        // (C) 에러 발생 시
-        is MissionResult.FirebaseError -> {
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Text("데이터를 불러오지 못했습니다: ${result.exception.message}")
-            }
-        }
-
-        // (D) 그 외 (초기 상태 등)
-        else -> { /* 아무것도 안 함 or 빈 화면 */ }
     }
-//    LazyColumn(
-//        modifier = Modifier
-//            .fillMaxSize(),
-//        contentPadding = AppTheme.dimens.ScaffoldContentPaddingWithBottomBar,
-//        verticalArrangement = Arrangement.spacedBy(AppTheme.dimens.doubleExtraLarge)
-//    ) {
-//        // 1. Daily Progress Card
-//        item { DailyProgressCard() }
-//        // 2. Mission List
-//        item { SectionTitle("수행할 미션") }
-//
-//        items(todayMissions) { mission ->
-//            UserMissionCard(mission = mission)
-//        }
-//
-//    }
 }
-
-//
-//@Preview(showBackground = true)
-//@Composable
-//fun PreviewMissionListScreen() {
-//    MaterialTheme {
-//        MissionListScreen( {})
-//    }
-//}
-//
-

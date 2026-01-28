@@ -8,51 +8,89 @@ import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.FitnessCenter
 import androidx.compose.material.icons.filled.Restaurant
 import androidx.compose.material.icons.filled.WbSunny
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import com.hye.domain.model.mission.DietMission
-import com.hye.domain.model.mission.DietRecordMethod
-import com.hye.domain.model.mission.ExerciseMission
-import com.hye.domain.model.mission.Mission
-import com.hye.domain.model.mission.MissionCategory
-import com.hye.domain.model.mission.RestrictionMission
-import com.hye.domain.model.mission.RoutineMission
+import androidx.compose.ui.res.stringArrayResource
+import com.hye.domain.model.mission.types.DietMission
+import com.hye.domain.model.mission.types.DietRecordMethod
+import com.hye.domain.model.mission.types.ExerciseMission
+import com.hye.domain.model.mission.types.Mission
+import com.hye.domain.model.mission.types.MissionType
+import com.hye.domain.model.mission.types.RestrictionMission
+import com.hye.domain.model.mission.types.RoutineMission
+import com.hye.features.mission.R
+import com.hye.shared.theme.AppTheme
+import com.hye.shared.util.text
 
-data class MissionAppearance(val color: Color, val containerColor: Color, val icon: ImageVector)
+data class MissionAppearance(val color: Color, val secondColor : Color, val icon: ImageVector)
 
-fun Mission.getIconDesign(): MissionAppearance {
-    return when (this) {
-        is ExerciseMission -> MissionAppearance(
-            Color(0xFF1168EC),
-            Color(0xFF8FBEF2),
-            Icons.Filled.FitnessCenter
-        )
 
-       is DietMission -> MissionAppearance(
-            Color(0xFF905EEF),
-            Color(0xFFCDB6FC),
-            Icons.Filled.Restaurant
-        )
+@Composable
+fun MissionType.getDesign(): MissionAppearance = when (this) {
+    MissionType.EXERCISE -> MissionAppearance(
+        AppTheme.colors.exerciseColor,
+        AppTheme.colors.exerciseSecondColor,
+        Icons.Filled.FitnessCenter
+    )
 
-        is RoutineMission -> MissionAppearance(
-            Color(0xFFF3B128),
-            Color(0xFFF6DFB4),
-            Icons.Filled.WbSunny
-        )
+    MissionType.DIET -> MissionAppearance(
+        AppTheme.colors.dietColor,
+        AppTheme.colors.dietSecondColor,
+        Icons.Filled.Restaurant
+    )
 
-        is RestrictionMission -> MissionAppearance(
-            Color(0xFFEB5DCC),
-            Color(0xFFF4B0EB),
-            Icons.Filled.Block
-        )
-    }
+    MissionType.ROUTINE -> MissionAppearance(
+        AppTheme.colors.routineColor,
+        AppTheme.colors.routineSecondColor,
+        Icons.Filled.WbSunny
+    )
+
+    MissionType.RESTRICTION -> MissionAppearance(
+        AppTheme.colors.restrictionColor,
+        AppTheme.colors.restrictionSecondColor,
+        Icons.Filled.Block
+    )
 }
+
 data class DietRecordMethodAppearance(val text: String, val icon: ImageVector, val alert: String)
 
-val DietRecordMethod.getAppearance :DietRecordMethodAppearance
+val DietRecordMethod.getAppearance: DietRecordMethodAppearance
+    @Composable
     get() = when (this) {
-    DietRecordMethod.PHOTO -> DietRecordMethodAppearance("사진 인증", Icons.Default.CameraAlt,"식사 전/후 사진을 찍어 갤러리 형태로 기록합니다.")
-    DietRecordMethod.TEXT -> DietRecordMethodAppearance("식단 메모",Icons.Default.Edit,"먹은 메뉴와 칼로리 등을 텍스트로 상세히 적습니다.")
-    DietRecordMethod.CHECK -> DietRecordMethodAppearance("수행 체크",Icons.Default.CheckCircle,"식단을 잘 지켰는지 O/X로 간단하게 체크합니다.")
+        DietRecordMethod.PHOTO -> DietRecordMethodAppearance(
+            R.string.mission_plan_diet_record_photo.text,
+            Icons.Default.CameraAlt,
+            R.string.mission_plan_diet_record_photo_description.text
+        )
+
+        DietRecordMethod.TEXT -> DietRecordMethodAppearance(
+            R.string.mission_plan_diet_record_text.text,
+            Icons.Default.Edit,
+            R.string.mission_plan_diet_record_text_description.text
+        )
+
+        DietRecordMethod.CHECK -> DietRecordMethodAppearance(
+            R.string.mission_plan_diet_record_check.text,
+            Icons.Default.CheckCircle,
+            R.string.mission_plan_diet_record_check_description.text
+        )
+    }
+
+@Composable
+fun Mission.getTargetString(): String = when (this) {
+    is ExerciseMission -> "$targetValue ${unit.label}"
+    is DietMission -> recordMethod.name
+    is RoutineMission -> "$dailyTargetAmount $unitLabel"
+    is RestrictionMission -> if (maxAllowedMinutes != null) R.string.mission_plan_daily_limit_minute.text(maxAllowedMinutes!!) else R.string.mission_forbid.text
 }
 
+val Float.cheerMessage: String
+    @Composable get() {
+        val messages = stringArrayResource(id = R.array.mission_cheer_messages)
+        val validProgress = this.coerceIn(0f, 1f)
+        val rawIndex = (validProgress * messages.size).toInt()
+        val index = rawIndex.coerceAtMost(messages.lastIndex)
+
+        return messages[index]
+    }

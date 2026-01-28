@@ -1,29 +1,31 @@
 package com.hye.mission.ui.components.form
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import com.hye.domain.model.mission.DietRecordMethod
+import com.hye.domain.model.mission.types.DietRecordMethod
+import com.hye.features.mission.R
 import com.hye.mission.ui.util.getAppearance
-import com.hye.mission.ui.util.selectionBorderColor
-import com.hye.mission.ui.util.selectionFontWeight
-import com.hye.mission.ui.util.selectionIconMenuColor
-import com.hye.shared.components.ui.BodyTextSmall
+import com.hye.shared.components.ui.common.selectionBorderColor
+import com.hye.shared.components.ui.common.selectionBorderStroke
+import com.hye.shared.components.ui.common.selectionBtnColorLight
+import com.hye.shared.components.ui.common.selectionFontWeight
+import com.hye.shared.components.ui.common.selectionIconMenuColor
+import com.hye.shared.components.ui.CardStyle
 import com.hye.shared.components.ui.LabelMedium
 import com.hye.shared.components.ui.MenuStyle
 import com.hye.shared.components.ui.StyledAlert
-import com.hye.shared.components.ui.StyledIconMenu
+import com.hye.shared.components.ui.StyledCard
+import com.hye.shared.components.ui.StyledMenu
+import com.hye.shared.components.ui.TextDescription
+import com.hye.shared.components.ui.common.IconStyle
 import com.hye.shared.theme.AppTheme
+import com.hye.shared.theme.toSp
+import com.hye.shared.util.text
 
 
 @Composable
@@ -31,28 +33,23 @@ fun DietSettingForm(
     recordMethod: DietRecordMethod,
     onMethodSelected: (DietRecordMethod) -> Unit
 ) {
-    Column(verticalArrangement = Arrangement.spacedBy(AppTheme.dimens.large)) {
-        LabelMedium("기록 방식 선택")
-        Row(horizontalArrangement = Arrangement.spacedBy(AppTheme.dimens.mediumSmall)) {
-
+    Column(verticalArrangement = Arrangement.spacedBy(AppTheme.dimens.md)) {
+        LabelMedium(R.string.mission_plan_the_way_diet_record.text)
+        Row(horizontalArrangement = Arrangement.spacedBy(AppTheme.dimens.s)) {
             DietRecordMethod.values().forEach { method ->
                 val isSelected = recordMethod == method
-
-                Card(
-                    modifier = Modifier
-                        .weight(1f)
-                        .clickable { onMethodSelected(method) },
-                    colors = CardDefaults.cardColors(
-                        containerColor = if (isSelected) AppTheme.colors.mainColorLight else AppTheme.colors.backgroundMuted
+                StyledCard(
+                    CardStyle(
+                        modifier = Modifier
+                            .weight(1f)
+                            .clickable { onMethodSelected(method) },
+                        containerColor = isSelected.selectionBtnColorLight,
+                        border = isSelected.selectionBorderStroke(color = isSelected.selectionBorderColor),
                     ),
-                    border = BorderStroke(1.dp, isSelected.selectionBorderColor),
-                    shape = RoundedCornerShape(AppTheme.dimens.large),
-                    elevation = CardDefaults.cardElevation(0.dp)
                 ) {
-                    StyledIconMenu(
+                    StyledMenu(
                         MenuStyle(
-                            icon = method.getAppearance.icon,
-                            iconTint = isSelected.selectionIconMenuColor
+                            icon = IconStyle(method.getAppearance.icon, tint = isSelected.selectionIconMenuColor),
                         ),
                         {
                             LabelMedium(
@@ -67,10 +64,9 @@ fun DietSettingForm(
         }
         StyledAlert(
             {
-                BodyTextSmall(
-                    recordMethod.getAppearance.alert,
-                    color = AppTheme.colors.textSecondary,
-                    lineHeight = 18.sp,
+                TextDescription(
+                    text = recordMethod.getAppearance.alert,
+                    lineHeight = AppTheme.dimens.m.toSp,
                 )
             }
         )

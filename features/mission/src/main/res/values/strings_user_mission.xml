@@ -1,0 +1,18 @@
+<resources>
+    <string-array name="mission_cheer_messages">
+        <item>요원, 작전 개시! 첫 발을 내딛어라</item>
+        <item>순조롭군. 페이스를 유지하도록</item>
+        <item>훌륭해! 목표 지점이 멀지 않았다</item>
+        <item>거의 다 왔다. 마지막까지 집중해!</item>
+        <item>미션 컴플리트! 수고했다, 요원</item>
+    </string-array>
+
+    <string name="mission_today_missions">수행할 미션 (%d)</string>
+    <string name="mission_current_progress">%d%% 달성</string>
+    <string name="mission_current_result">%d 중 %d개 완료</string>
+
+    <string name="mission_recording">기록</string>
+    <string name="mission_all_the_time">상시</string>
+    <string name="mission_completed">COMPLETE!</string>
+
+</resources>

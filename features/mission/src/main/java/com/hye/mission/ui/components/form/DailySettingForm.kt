@@ -12,14 +12,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
-import com.hye.shared.components.ui.BodyTextSmall
+import com.hye.features.mission.R
+import com.hye.mission.ui.util.SettingRules.MISSION_PLAN_GOAL_SUFFIX
 import com.hye.shared.components.ui.LabelMedium
+import com.hye.shared.components.ui.StyledInputSection
+import com.hye.shared.components.ui.TextDescription
 import com.hye.shared.components.ui.TextFieldStyle
 import com.hye.shared.theme.AppTheme
-
+import com.hye.shared.util.text
 
 @Composable
-fun DailySettingForm(
+fun RoutineSettingForm(
     totalTarget: String,
     onTotalTargetChange: (String) -> Unit,
     stepAmount: String,
@@ -27,50 +30,59 @@ fun DailySettingForm(
     unitLabel: String,
     onUnitLabelChange: (String) -> Unit
 ) {
-    Column(verticalArrangement = Arrangement.spacedBy(AppTheme.dimens.extraLarge)) {
-        InputSection(
-            label = { LabelMedium("단위 이름") },
+    Column(verticalArrangement = Arrangement.spacedBy(AppTheme.dimens.l)) {
+        StyledInputSection(
+            label = { LabelMedium(R.string.mission_plan_unit_of_measure.text) },
             style = TextFieldStyle(
                 value = unitLabel,
                 onValueChange = onUnitLabelChange,
-                placeholder = "예: ml, 잔, 페이지"
+                placeholder = R.string.mission_plan_measure_placeholder.text
             ),
         )
 
-        Row(horizontalArrangement = Arrangement.spacedBy(AppTheme.dimens.mediumSmall)) {
-            Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(AppTheme.dimens.extraSmall)) {
-                InputSection(
-                    label = { LabelMedium("하루 총 목표") },
+        Row(horizontalArrangement = Arrangement.spacedBy(AppTheme.dimens.s)) {
+            Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(AppTheme.dimens.xxs)) {
+                StyledInputSection(
+                    label = { LabelMedium(R.string.mission_plan_goal.text) },
                     style = TextFieldStyle(
                         value = totalTarget,
-                        onValueChange = { if (it.all { char -> char.isDigit() }) onTotalTargetChange(it) },
-                        placeholder = "2000",
-                        suffix = unitLabel.take(3),
+                        onValueChange = {
+                            if (it.all { char -> char.isDigit() }) onTotalTargetChange(
+                                it
+                            )
+                        },
+                        placeholder = R.string.mission_plan_goal_placeholder.text,
+                        suffix = unitLabel.take(MISSION_PLAN_GOAL_SUFFIX),
                         keyboardType = KeyboardType.Number
                     )
                 )
             }
-            Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(AppTheme.dimens.extraSmall)) {
-                InputSection(
-                    label = { LabelMedium("추가량") },
-                    style =TextFieldStyle(
-                        value = stepAmount,
-                        onValueChange = { if (it.all { char -> char.isDigit() }) onStepAmountChange(it) },
-                        placeholder = "200",
-                        suffix = unitLabel.take(3),
+            Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(AppTheme.dimens.xxs)) {
+                StyledInputSection(
+                    label = { LabelMedium(R.string.mission_plan_goal_rise.text) },
+                    style = TextFieldStyle(
+                        value = stepAmount ?: 1.toString(),
+                        onValueChange = {
+                            if (it.all { char -> char.isDigit() }) onStepAmountChange(
+                                it
+                            )
+                        },
+                        suffix = unitLabel.take(MISSION_PLAN_GOAL_SUFFIX),
                         keyboardType = KeyboardType.Number
-                ))
+                    )
+                )
             }
         }
         if (stepAmount.isNotEmpty() && unitLabel.isNotEmpty()) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(AppTheme.dimens.tiny)
+                horizontalArrangement = Arrangement.spacedBy(AppTheme.dimens.xxxxs)
             ) {
                 Icon(Icons.Default.Lightbulb, null, tint = AppTheme.colors.mainColor, modifier = Modifier.size(
-                    AppTheme.dimens.large))
-                BodyTextSmall(
-                    text = "버튼을 한 번 누를 때마다 ${stepAmount}${unitLabel}씩 채워집니다.",
+                    AppTheme.dimens.md))
+                TextDescription(
+                    text = R.string.mission_plan_goal_rise_description.text(stepAmount,unitLabel),
+                    color = AppTheme.colors.mainColor
                 )
             }
         }
@@ -80,11 +92,11 @@ fun DailySettingForm(
 @Preview
 @Composable
 fun Preview_DailySettingForm(){
-    DailySettingForm(
-        totalTarget = "2000",
+    RoutineSettingForm(
+        totalTarget = "",
         onTotalTargetChange = {},
-        stepAmount = "2",
+        stepAmount = "",
         onStepAmountChange = {},
-        unitLabel = "d",
+        unitLabel = "",
     ) { }
 }

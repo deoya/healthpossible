@@ -1,6 +1,6 @@
 package com.hye.domain.usecase.mission
 
-import com.hye.domain.model.mission.Mission
+import com.hye.domain.model.mission.types.Mission
 import com.hye.domain.repository.MissionRepository
 import com.hye.domain.result.MissionResult
 import kotlinx.coroutines.flow.Flow

@@ -1,216 +1,186 @@
 package com.hye.mission.ui.components.mission
 
-import androidx.compose.foundation.background
+import android.os.Build
+import androidx.annotation.RequiresApi
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Schedule
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.hye.domain.model.mission.Mission
+import com.hye.domain.model.mission.MissionRecord
+import com.hye.domain.model.mission.MissionWithRecord
+import com.hye.domain.model.mission.types.DayOfWeek
+import com.hye.domain.model.mission.types.ExerciseMission
+import com.hye.domain.model.mission.types.ExerciseUnit
+import com.hye.domain.model.mission.types.RoutineMission
+import com.hye.domain.model.mission.types.type
+import com.hye.mission.ui.components.form.PrograssBar
 import com.hye.mission.ui.util.UserMissionCardStyle
-import com.hye.mission.ui.util.getIconDesign
+import com.hye.mission.ui.util.currentProgress
+import com.hye.mission.ui.util.getDesign
+import com.hye.mission.ui.util.getTargetString
+import com.hye.mission.ui.util.notificationTimeString
 import com.hye.shared.components.ui.StyledCard
+import com.hye.shared.components.ui.StyledIconBox
+import com.hye.shared.components.ui.StyledTag
+import com.hye.shared.components.ui.Tag
+import com.hye.shared.components.ui.TextBody
+import com.hye.shared.components.ui.TextSubheading
+import com.hye.shared.components.ui.common.IconStyle
+import com.hye.shared.components.ui.common.completedColor
+import com.hye.shared.components.ui.common.completedIcon
+import com.hye.shared.components.ui.common.light
+import com.hye.shared.theme.AppTheme
+import com.hye.shared.theme.toSp
+import com.hye.shared.util.Calculator
+import java.time.LocalTime
 
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun UserMissionCard(mission: Mission, onClick: () -> Unit = {}) {
-    val (color, containerColor, icon) = mission.getIconDesign()
+fun UserMissionCard(
+    missionWrapper: MissionWithRecord,
+    onClick: () -> Unit = {}
+) {
+    val mission = missionWrapper.mission
+    val record = missionWrapper.record
 
-    val isCompleted = false
+    var (color, secondColor, icon) = mission.type.getDesign()
+    val isCompleted = record?.isCompleted ?: false
+    val currentProgress = record?.progress ?: 0
+    val targetText = mission.getTargetString()
+    val currentText = "$currentProgress"
+    val isInProgress = !isCompleted && currentProgress > 0
+
+    val progressFloat = when (mission) {
+        is RoutineMission -> Calculator.progress(mission.dailyTargetAmount, currentProgress)
+        is ExerciseMission -> Calculator.progress(mission.targetValue, currentProgress)
+        else -> if (isCompleted) 1f else 0f
+    }
 
     StyledCard(
         style = UserMissionCardStyle(isCompleted, 1f)
     ) {
-        Row(
-            modifier = Modifier
-                .padding(16.dp)
-                .fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            // 아이콘 박스
-            Box(
+        Column {
+            Row(
                 modifier = Modifier
-                    .size(48.dp)
-                    .clip(RoundedCornerShape(14.dp))
-                    .background(color.copy(alpha = 0.2f)),
-                contentAlignment = Alignment.Center
+                    .padding(AppTheme.dimens.l)
+                    .fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(AppTheme.dimens.md)
             ) {
-                Icon(
-                    imageVector = icon,
-                    contentDescription = null,
-                    tint = color,
-                    modifier = Modifier.size(24.dp)
+                // (1) 아이콘 박스
+                StyledIconBox(
+                    boxColor = isCompleted.completedColor(secondColor).light,
+                    iconStyle = IconStyle(
+                        image = isCompleted.completedIcon(icon),
+                        tint = isCompleted.completedColor(color)
+                    )
+                )
+
+                Column(
+                    modifier = Modifier.weight(1f),
+                    verticalArrangement = Arrangement.spacedBy(AppTheme.dimens.xxxxxs)
+                ) {
+                    Box(modifier = Modifier.padding(bottom = AppTheme.dimens.xxxxs)) {
+                        StyledTag(
+                            color = AppTheme.colors.backgroundMuted,
+                            shape = AppTheme.dimens.xxxs,
+                            horizontal = AppTheme.dimens.xxxs,
+                            vertical = AppTheme.dimens.xxxxxs,
+                            content = {
+                                Icon(
+                                    Icons.Outlined.Schedule,
+                                    null,
+                                    tint = AppTheme.colors.textSecondary,
+                                    modifier = Modifier.size(AppTheme.dimens.s)
+                                )
+                            },
+                            content2 = {
+                                Tag(mission.notificationTimeString, color = AppTheme.colors.textSecondary)
+                            }
+                        )
+                    }
+                    TextSubheading(
+                        text = mission.title,
+                        size = AppTheme.dimens.m.toSp
+                    )
+                    TextBody(
+                        text = isCompleted.currentProgress(currentText, targetText),
+                        color = isCompleted.completedColor(
+                            AppTheme.colors.textSecondary,
+                            AppTheme.colors.mainColor
+                        )
+                    )
+                }
+
+                StartButton(
+                    isInProgress = isInProgress && !isCompleted,
+                    onClick = onClick
                 )
             }
 
-            Spacer(modifier = Modifier.width(16.dp))
-
-            // 정보 텍스트
-            Column(modifier = Modifier.weight(1f)) {
-                // 태그 표시
-                if (mission.tags.isNotEmpty()) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        mission.tags.take(2).forEach { tag ->
-                            Surface(
-                                color = Color(0xFFF1F5F9),
-                                shape = RoundedCornerShape(4.dp),
-                                modifier = Modifier.padding(end = 4.dp)
-                            ) {
-                                Text(
-                                    text = "#$tag",
-                                    style = MaterialTheme.typography.labelSmall,
-                                    color = Color.Gray,
-                                    modifier = Modifier.padding(horizontal = 4.dp, vertical = 2.dp)
-                                )
-                            }
-                        }
-                    }
-                    Spacer(modifier = Modifier.height(4.dp))
-                }
-
-                // 제목
-                Text(
-                    text = mission.title,
-                    style = MaterialTheme.typography.bodyLarge,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.Black
-                )
-
-                Spacer(modifier = Modifier.height(2.dp))
-
+            if (isInProgress) {
+                PrograssBar(progressFloat)
             }
         }
     }
 }
-/*
-    val missionStatus = remember(mission.status) {
-        when (mission.status) {
-            "COMPLETED" -> MissionState.COMPLETED
-            "IN_PROGRESS" -> MissionStatus.IN_PROGRESS
-            else -> MissionStatus.PENDING
-        }
-    }
-    val isCompleted = missionStatus== MissionStatus.COMPLETED
-    val isInProgress = missionStatus == MissionStatus.IN_PROGRESS
-    // 카드 배경색 및 테두리 애니메이션
-    val cardAlpha = if (isCompleted) 0.6f else 1f
 
-    StyledCard (
-        style = UserMissionCardStyle(isCompleted,cardAlpha)
+@RequiresApi(Build.VERSION_CODES.O)
+@Preview(showBackground = true, backgroundColor = 0xFFF5F5F5)
+@Composable
+fun UserMissionCard_Preview() {
+    Column(
+        modifier = Modifier.padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        Row(
-            modifier = Modifier
-                .padding(16.dp)
-                .fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            // 1. Icon Box
-            Box(
-                modifier = Modifier
-                    .size(48.dp)
-                    .clip(RoundedCornerShape(14.dp))
-                    .background(if (isCompleted) Color(0xFFE2E8F0) else mission.containerColor),
-                contentAlignment = Alignment.Center
-            ) {
-                if (isCompleted) {
-                    Icon(
-                        imageVector = Icons.Default.Check,
-                        contentDescription = null,
-                        tint = TextSecondary,
-                        modifier = Modifier.size(24.dp)
-                    )
-                } else {
-                    Icon(
-                        imageVector = mission.category.getIconDesign().icon,
-                        contentDescription = null,
-                        tint = mission.color,
-                        modifier = Modifier.size(24.dp)
-                    )
-                }
-            }
-
-            Spacer(modifier = Modifier.width(16.dp))
-
-            // 2. Info
-            Column(modifier = Modifier.weight(1f)) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    // Time Badge
-                    Surface(
-                        color = BgColor,
-                        shape = RoundedCornerShape(6.dp)
-                    ) {
-                        Text(
-                            text = mission.timeSlot,
-                            style = MaterialTheme.typography.labelSmall,
-                            color = TextSecondary,
-                            modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
-                        )
-                    }
-                    if (isInProgress) {
-                        Spacer(modifier = Modifier.width(6.dp))
-                        Text(
-                            text = "진행 중",
-                            style = MaterialTheme.typography.labelSmall,
-                            color = HealthBlue,
-                            fontWeight = FontWeight.Bold
-                        )
-                    }
-                }
-
-                Spacer(modifier = Modifier.height(4.dp))
-
-                Text(
-                    text = mission.title,
-                    style = MaterialTheme.typography.bodyLarge,
-                    fontWeight = FontWeight.Bold,
-                    color = if (isCompleted) TextSecondary else TextPrimary,
-                    textDecoration = if (isCompleted) TextDecoration.LineThrough else null
-                )
-
-                Spacer(modifier = Modifier.height(2.dp))
-
-                Text(
-                    text = "${mission.progress} / ${mission.target}",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = TextSecondary
-                )
-            }
-
-            // 3. Action Button
-            if (!isCompleted) {
-
-                StartButton(
-                    isInProgress = isInProgress,
-                    onClick = { /* Start Logic */ }
-                )
-            }
-        }
-
-        // Progress Bar (Only for In Progress)
-        if (isInProgress) {
-            LinearProgressIndicator(
-                progress = { 0.5f }, // 예시: 50%
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(4.dp),
-                color = HealthBlue,
-                trackColor = HealthBlueLight
+        // 1. 진행 전 (물 마시기)
+        UserMissionCard(
+            missionWrapper = MissionWithRecord(
+                mission = RoutineMission(
+                    id = "1", title = "물 마시기", days = setOf(DayOfWeek.MON),
+                    notificationTime = LocalTime.of(9, 0), dailyTargetAmount = 2000, amountPerStep = 250, unitLabel = "ml"
+                ),
+                record = null // 기록 없음
             )
-        }
-    }*/
+        )
+
+        // 2. 진행 중 (스쿼트)
+        UserMissionCard(
+            missionWrapper = MissionWithRecord(
+                mission = ExerciseMission(
+                    id = "2", title = "스쿼트 50회", days = setOf(DayOfWeek.MON),
+                    notificationTime = LocalTime.of(18, 0), targetValue = 50, unit = ExerciseUnit.COUNT, useSupportAgent = false
+                ),
+                record = MissionRecord(
+                    missionId = "2",
+                    date = "2024-01-01",
+                    progress = 25,
+                    isCompleted = false
+                )
+            )
+        )
+
+        // 3. 완료됨
+        UserMissionCard(
+            missionWrapper = MissionWithRecord(
+                mission = RoutineMission(
+                    id = "3", title = "비타민 먹기", days = setOf(DayOfWeek.MON),
+                    notificationTime = LocalTime.of(8, 0), dailyTargetAmount = 1, amountPerStep = 1, unitLabel = "회"
+                ),
+                record = MissionRecord(missionId = "3", date = "2024-01-01", progress = 1, isCompleted = true)
+            )
+        )
+    }
+}
