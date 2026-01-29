@@ -56,6 +56,13 @@ javaxInject = "1"
 foundationLayout = "1.10.0"
 foundation = "1.10.1"
 
+#coil
+coilCompose = "3.3.0"
+coilNetworkOkhttp = "3.3.0"
+
+
+
+
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -111,6 +118,9 @@ play-services-analytics-impl = { group = "com.google.android.gms", name = "play-
 androidx-compose-foundation-layout = { group = "androidx.compose.foundation", name = "foundation-layout", version.ref = "foundationLayout" }
 androidx-compose-foundation = { group = "androidx.compose.foundation", name = "foundation", version.ref = "foundation" }
 
+#coil
+coil-compose = { group = "io.coil-kt.coil3", name = "coil-compose", version.ref = "coilCompose" }
+coil-network-okhttp = { group = "io.coil-kt.coil3", name = "coil-network-okhttp", version.ref = "coilNetworkOkhttp" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
@@ -136,7 +146,9 @@ compose-libs=[
     "androidx-compose-ui-tooling-preview",
     "androidx-navigation-compose",
     "androidx-compose-material-icons-extended",
-    "desugar-jdk"
+    "desugar-jdk",
+    "coil-compose",
+    "coil-network-okhttp"
 ]
 firebase-libraries = [
     "firebase-firestore-ktx"
