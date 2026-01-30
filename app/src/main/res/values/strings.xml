@@ -10,4 +10,6 @@
 
     <string name="menu_item_add_mission_template">템플릿으로 추가</string>
     <string name="menu_item_add_mission_self">직접 추가</string>
+
+    <string name="copyright">© 2026 Mission! HealthPossible</string>
 </resources>

@@ -6,7 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import kotlinx.coroutines.launch
-
+import kotlinx.coroutines.delay
 
 enum class Direction{ Top, Bottom, Start, End }
 
@@ -27,7 +27,8 @@ fun Direction.toStartOffset(distance: Float): StartOffset =
 fun slideFadeInAnimation (
     direction: Direction,
     distance: Float = 50f,
-    durationMillis: Int = 800
+    durationMillis: Int = 800,
+    delayInfo:DelayInfo = DelayInfo()
 ): Triple<Float, Float, Float> {
 
     val startOffset = direction.toStartOffset(distance)
@@ -37,7 +38,7 @@ fun slideFadeInAnimation (
     val alpha = remember { Animatable(0f) }
 
     LaunchedEffect(Unit) {
-
+        delay(delayInfo.startDelay)
         launch {
             offsetX.animateTo(0f, tween(durationMillis))
         }
@@ -47,6 +48,7 @@ fun slideFadeInAnimation (
         launch {
             alpha.animateTo(1f, tween(durationMillis))
         }
+        delay(delayInfo.endDelay)
     }
 
     return Triple(offsetX.value, offsetY.value, alpha.value)
