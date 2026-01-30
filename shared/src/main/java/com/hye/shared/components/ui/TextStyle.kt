@@ -97,11 +97,12 @@ fun TitleMedium(text:String, color: Color = AppTheme.colors.textPrimary,modifier
 )
 
 @Composable
-fun LabelSmall(text:String, fontWeight: FontWeight = FontWeight.Normal, color: Color = AppTheme.colors.textSecondary) = Text(
+fun LabelSmall(text:String, fontWeight: FontWeight = FontWeight.Normal, color: Color = AppTheme.colors.textSecondary,modifier: Modifier = Modifier) = Text(
     text = text,
     style = MaterialTheme.typography.labelSmall,
     fontWeight = fontWeight,
-    color = color
+    color = color,
+    modifier = modifier
 )
 
 @Composable

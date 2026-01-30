@@ -38,12 +38,25 @@ data class HPAppDimens(
     val dropDownMenuAddMisionPadding :Dp = 110.dp,
 
     val alphaMuted: Float = 0.2f,
-    val alphaPrimary: Float = 0.8f
+    val alphaPrimary: Float = 0.8f,
+
+    //splash관련
+    val logoDuration:Int = 1200,
+    val splashLogoDistance:Float = 60f,
+    val gapTime : Int = 300,
+    val titleDuration : Int = 800,
+    val splashLogoSize : Dp = 190.dp,
+    val splashTitlePadding : Dp = 100.dp,
+
+    val delayed : Long = 2000L
+
+
 )
 
 
 val Dp.toSp
     @Composable
+    @ReadOnlyComposable
     get() =  with(LocalDensity.current) { this@toSp.toSp() }
 /**
  * LazyColumn과 같은 스크롤 컨테이너를 위한 콘텐츠 패딩으로,
