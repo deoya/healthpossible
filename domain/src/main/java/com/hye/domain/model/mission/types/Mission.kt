@@ -7,19 +7,19 @@ sealed interface Mission {
     val title: String
     val days: Set<DayOfWeek> // 수행 요일
     val notificationTime: LocalTime? // 알림 시간 (null이면 알림 없음)
-    val tags: List<String> // 태그
+    val memo: String?
 }
 fun Mission.copyCommon(
     title: String = this.title,
     days: Set<DayOfWeek> = this.days,
-    tags: List<String> = this.tags,
+    memo: String? = this.memo,
     notificationTime: LocalTime? = this.notificationTime
 ): Mission {
     return when (this) {
-        is ExerciseMission -> copy(title = title, days = days, tags = tags, notificationTime = notificationTime)
-        is DietMission -> copy(title = title, days = days, tags = tags, notificationTime = notificationTime)
-        is RoutineMission -> copy(title = title, days = days, tags = tags, notificationTime = notificationTime)
-        is RestrictionMission -> copy(title = title, days = days, tags = tags, notificationTime = notificationTime)
+        is ExerciseMission -> copy(title = title, days = days, memo = memo, notificationTime = notificationTime)
+        is DietMission -> copy(title = title, days = days, memo = memo, notificationTime = notificationTime)
+        is RoutineMission -> copy(title = title, days = days, memo = memo, notificationTime = notificationTime)
+        is RestrictionMission -> copy(title = title, days = days, memo = memo, notificationTime = notificationTime)
     }
 }
 

@@ -8,7 +8,7 @@ data class RoutineMission(
     override val title: String,
     override val days: Set<DayOfWeek>,
     override val notificationTime: LocalTime?,
-    override val tags: List<String> = emptyList(),
+    override val memo: String? = null,
 
     // 특화 설정
     val dailyTargetAmount: Int,  // 하루 총 목표량 (예: 2000ml)
