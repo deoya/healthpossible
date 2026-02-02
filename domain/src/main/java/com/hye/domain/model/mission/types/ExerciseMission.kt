@@ -29,32 +29,29 @@ enum class ExerciseAgentType {
 }
 
 //Todo: target을 별도 data class로 분리 해서 커스텀 할 수 있게 하기 - ExercisePreset
-enum class AiExerciseType(val label: String, val target: String) {
-    SQUAT("스쿼트", "15회"),
-    LUNGE("런지", "양쪽 10회"),
-    PLANK("플랭크", "60초"),
-    SIDE_LUNGE("사이드 런지", "양쪽 12회")
+enum class AiExerciseType(
+    val label: String, val description: String,
+    val defaultTarget: Int,  // 실제 목표 수치 (예: 15 or 60)
+    val isTimeBased: Boolean // 시간 측정인지 횟수 측정인지 구분
+) {
+    SQUAT("스쿼트", "15회", 15, false),
+    LUNGE("런지", "양쪽 10회", 10, false),
+    PLANK("플랭크", "60초", 60, true),
+    SIDE_LUNGE("사이드 런지", "양쪽 12회", 12, false);
 }
 
 sealed interface AiSessionMode {
 
-    // 모드 A: 시간 중심 (Unit == TIME) -> 루틴 없음, 운동 종류 하나만 선택해서 진행
+    // 1. [RUNNING 모드] -> 시간 중심 (목표 시간은 사용자가 설정한 값)
     data class DurationMode(
-        val currentExercise: AiExerciseType = AiExerciseType.SQUAT, // 현재 선택된 운동
         val targetSeconds: Int = 0,     // 목표 시간 (초)
         val currentSeconds: Int = 0     // 현재 진행 시간
     ) : AiSessionMode
 
-    // 모드 B: 횟수/세트 중심 (Unit == SET/COUNT) -> 여러 단계의 루틴 존재
-    data class RoutineMode(
-        val steps: List<AiRoutineStep>, // 루틴 리스트
-        val currentStepIndex: Int = 0   // 현재 진행 중인 단계 인덱스
+    // 2. [SELECTED 모드] -> AI 종목 중심 (목표는 AiExerciseType의 defaultTarget 사용)
+    data class AiRepMode(
+        val exerciseType: AiExerciseType, // 선택된 운동
+        val targetCount: Int,             // 목표 (Enum에서 가져옴)
+        val currentCount: Int = 0         // 현재 진행 (횟수 or 초)
     ) : AiSessionMode
 }
-
-// 루틴 스텝 데이터 (횟수 모드에서만 사용)
-data class AiRoutineStep(
-    val type: AiExerciseType,
-    val targetCount: Int,
-    val currentCount: Int = 0
-)
