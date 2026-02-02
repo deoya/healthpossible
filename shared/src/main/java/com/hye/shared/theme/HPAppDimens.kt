@@ -28,18 +28,24 @@ data class HPAppDimens(
     val xl: Dp = 22.dp,
     val xxl: Dp = 24.dp,
     val xxxl: Dp = 28.dp,
-    val xxxxl :Dp = 36.dp,
-    val xxxxxl: Dp = 40.dp,
+    val xxxxl: Dp = 32.dp,
+    val xxxxxl :Dp = 36.dp,
+    val xxxxxxl: Dp = 40.dp,
 
     val progressSize:Dp = 88.dp,
     val bigBtn: Dp = 50.dp,
     val iconBox: Dp =52.dp,
+    val bigDimen: Dp =80.dp,
     val bottomBarPadding : Dp = 80.dp,
     val dropDownMenuAddMisionPadding :Dp = 110.dp,
 
     val alphaMuted: Float = 0.2f,
     val alphaPrimary: Float = 0.8f,
 
+    val executionContentHeight : Dp = 60.dp,
+    val executionContentLabelHeight : Float = 0.3f,
+    val executionContentInfoHeight : Float = 0.7f,
+    val sheetHeight: Float = 0.6f,
     //splash관련
     val logoDuration:Int = 1200,
     val splashLogoDistance:Float = 60f,
@@ -48,8 +54,10 @@ data class HPAppDimens(
     val splashLogoSize : Dp = 190.dp,
     val splashTitlePadding : Dp = 100.dp,
 
-    val delayed : Long = 2000L
+    val delayed : Long = 2000L,
 
+    val thumbSize : Dp = 64.dp,
+    val exciseTypeThumbnailSize : Dp = 64.dp
 
 )
 

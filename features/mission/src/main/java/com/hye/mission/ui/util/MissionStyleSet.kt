@@ -2,23 +2,20 @@ package com.hye.mission.ui.util
 
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
-import com.hye.domain.model.mission.types.ExerciseUnit
+import com.hye.domain.model.mission.types.ExerciseRecordMode
 import com.hye.domain.model.mission.types.Mission
 import com.hye.domain.model.mission.types.RestrictionType
 import com.hye.features.mission.R
-import com.hye.shared.components.ui.CardStyle
-import com.hye.shared.components.ui.SwitchStyle
-import com.hye.shared.components.ui.common.completedBorder
-import com.hye.shared.components.ui.common.completedElevation
+import com.hye.shared.ui.CardStyle
+import com.hye.shared.ui.button.SwitchStyle
+import com.hye.shared.ui.common.completedBorder
+import com.hye.shared.ui.common.completedElevation
 import com.hye.shared.theme.AppTheme
 import com.hye.shared.util.DateFormatType
 import com.hye.shared.util.text
@@ -35,12 +32,6 @@ val Mission.notificationTimeString: String
 fun Boolean.currentProgress(crrent: String, target: String) : String =
     if (this) R.string.mission_completed.text else "$crrent / $target"
 
-val ExerciseUnit.agentTask : Int
-    @Composable
-    get() = when(this) {
-        ExerciseUnit.DISTANCE -> R.string.mission_pose
-        else -> R.string.mission_step_count
-    }
 
 val RestrictionType.choiceRule : Int
     @Composable

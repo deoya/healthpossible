@@ -7,6 +7,10 @@ import com.hye.domain.model.mission.types.ExerciseMission
 import com.hye.domain.model.mission.types.Mission
 import com.hye.domain.model.mission.types.RestrictionMission
 import com.hye.domain.model.mission.types.RoutineMission
+import com.hye.mission.ui.components.form.type.DietSettingForm
+import com.hye.mission.ui.components.form.type.exercise.ExerciseSettingForm
+import com.hye.mission.ui.components.form.type.RestrictionSettingForm
+import com.hye.mission.ui.components.form.type.RoutineSettingForm
 
 
 val Int.emptyIfZero : String
@@ -16,10 +20,11 @@ val Int.emptyIfZero : String
 @Composable
 fun MissionForm(
     mission: Mission,
-    actions: MissionActionsByType
+    actions: MissionActionsByType,
+    selectedExerciseName: String = ""
 ) {
     when (mission) {
-        is ExerciseMission -> MissionForm(mission, actions)
+        is ExerciseMission -> MissionForm(mission, actions, selectedExerciseName)
         is DietMission -> MissionForm(mission, actions)
         is RoutineMission -> MissionForm(mission, actions)
         is RestrictionMission -> MissionForm(mission, actions)
@@ -30,15 +35,17 @@ fun MissionForm(
 @Composable
 fun MissionForm(
     mission: ExerciseMission,
-    actions: MissionActionsByType
+    actions: MissionActionsByType,
+    selectedExerciseName: String
 ) = ExerciseSettingForm(
     selectedUnit = mission.unit,
     onUnitSelected = actions.onExerciseUnitChange,
-    // UI에서는 String으로 표시 (0일 경우 빈값)
     targetValue = mission.targetValue.emptyIfZero,
     onTargetValueChange = actions.onExerciseTargetChange,
     useSupportAgent = mission.useSupportAgent,
-    onUseSupportAgentChange = actions.onExerciseSupportAgentToggle
+    onUseSupportAgentChange = actions.onExerciseSupportAgentToggle,
+    selectedExerciseName = selectedExerciseName,
+    onExerciseTypeClick = { actions.onChangeBottomSheetState(true) }
 )
 
 @Composable

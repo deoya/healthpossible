@@ -15,4 +15,9 @@
     <string name="mission_all_the_time">상시</string>
     <string name="mission_completed">COMPLETE!</string>
 
+    <string name="mission_exercise_completed_count">%d / %d회</string>
+    <string name="mission_exercise_type_together_support_agent">지원 요원과 함께할 운동 목록</string>
+
+    <string name="mission_in_progress">진행 중</string>
+
 </resources>

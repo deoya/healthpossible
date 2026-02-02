@@ -10,10 +10,10 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.hye.features.mission.R
-import com.hye.shared.components.ui.CardStyle
-import com.hye.shared.components.ui.StyledCard
-import com.hye.shared.components.ui.TitleSmall
 import com.hye.shared.theme.AppTheme
+import com.hye.shared.ui.CardStyle
+import com.hye.shared.ui.StyledCard
+import com.hye.shared.ui.text.TitleSmall
 import com.hye.shared.util.text
 
 @Composable
@@ -21,7 +21,7 @@ fun MissionCreationContent(
     commonInputContent: @Composable () -> Unit,
     categoryTabContent: @Composable () -> Unit,
     detailedFormContent: @Composable () -> Unit,
-    tagInputContent: @Composable () -> Unit
+    tagInputContent: @Composable () -> Unit,
 ) {
     val scrollState = rememberScrollState()
 
@@ -59,7 +59,7 @@ fun MissionCreationContent(
 
         // 3. 태그 입력 섹션 (카드)
         StyledCard(
-            CardStyle(modifier = Modifier.padding(bottom = AppTheme.dimens.xxxxxl).fillMaxWidth())
+            CardStyle(modifier = Modifier.padding(bottom = AppTheme.dimens.xxxxxxl).fillMaxWidth())
         ) {
             Column(modifier = Modifier.padding(AppTheme.dimens.l)) {
                 tagInputContent() 

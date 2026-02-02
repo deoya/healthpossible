@@ -33,9 +33,9 @@ import com.hye.healthpossible.R
 import com.hye.healthpossible.navigation.bottomBarNavGraphBuilder
 import com.hye.healthpossible.ui.component.BottomAppBarItem
 import com.hye.healthpossible.ui.component.BottomBar
-import com.hye.shared.components.ui.MenuItem
+import com.hye.shared.ui.menu.MenuItem
 import com.hye.healthpossible.ui.component.TopBar
-import com.hye.shared.components.ui.StyledIconButton
+import com.hye.shared.ui.button.StyledIconButton
 import com.hye.shared.theme.AppTheme
 import com.hye.shared.navigation.ContentNavRouteDef
 import com.hye.shared.util.text

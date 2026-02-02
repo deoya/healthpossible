@@ -11,8 +11,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import com.hye.features.mission.R
-import com.hye.shared.components.ui.MenuLabel
-import com.hye.shared.components.ui.StyledButton
+import com.hye.shared.ui.text.MenuLabel
+import com.hye.shared.ui.button.StyledButton
 import com.hye.shared.theme.AppTheme
 import com.hye.shared.util.text
 
@@ -26,7 +26,7 @@ fun StartButton(
             onClick = onClick,
             elevation = AppTheme.dimens.xxxxxs,
             contentPadding = PaddingValues(horizontal = AppTheme.dimens.md, vertical = AppTheme.dimens.xxs),
-            modifier = Modifier.height(AppTheme.dimens.xxxxl)
+            modifier = Modifier.height(AppTheme.dimens.xxxxxl)
         ) {
             MenuLabel(R.string.mission_recording.text, color = Color.Unspecified)
         }
@@ -36,7 +36,7 @@ fun StartButton(
             shape = AppTheme.dimens.iconBox,
             containerColor = AppTheme.colors.mainColorLight,
             contentColor = Color.Unspecified,
-            modifier = Modifier.size(AppTheme.dimens.xxxxl),
+            modifier = Modifier.size(AppTheme.dimens.xxxxxl),
             contentPadding = PaddingValues(AppTheme.dimens.zero),
         ){
             Icon(

@@ -7,7 +7,7 @@ import com.hye.domain.model.mission.types.DayOfWeek
 import com.hye.domain.model.mission.types.DietMission
 import com.hye.domain.model.mission.types.DietRecordMethod
 import com.hye.domain.model.mission.types.ExerciseMission
-import com.hye.domain.model.mission.types.ExerciseUnit
+import com.hye.domain.model.mission.types.ExerciseRecordMode
 import com.hye.domain.model.mission.types.Mission
 import com.hye.domain.model.mission.types.RestrictionMission
 import com.hye.domain.model.mission.types.RestrictionType
@@ -24,7 +24,7 @@ fun missionToMap(mission: Mission): Map<String, Any?> {
         "id" to mission.id,
         "title" to mission.title,
         "days" to mission.days.map { it.name }, // Enum -> String 리스트
-        "tags" to mission.tags,
+        "memo" to mission.memo,
         "notificationTime" to mission.notificationTime?.format(DateTimeFormatter.ISO_LOCAL_TIME) // "14:30:00"
     )
 
@@ -35,6 +35,7 @@ fun missionToMap(mission: Mission): Map<String, Any?> {
             commonData["targetValue"] = mission.targetValue
             commonData["unit"] = mission.unit.name
             commonData["useTimer"] = mission.useSupportAgent
+            commonData["selectedExercise"] = mission.selectedExercise
         }
         is DietMission -> {
             commonData["type"] = "DIET"
@@ -64,7 +65,7 @@ fun mapToMission(id: String, data: Map<String, Any?>): Mission? {
     val daysList = data["days"] as? List<String> ?: emptyList()
     val days = daysList.mapNotNull { safeEnum<DayOfWeek>(it) }.toSet()
 
-    val tags = data["tags"] as? List<String> ?: emptyList()
+    val memo = data["memo"] as? String ?: null
 
     val timeString = data["notificationTime"] as? String
     val notificationTime = try {
@@ -79,17 +80,18 @@ fun mapToMission(id: String, data: Map<String, Any?>): Mission? {
             title = title,
             days = days,
             notificationTime = notificationTime,
-            tags = tags,
+            memo = memo,
             targetValue = (data["targetValue"] as? Number)?.toInt() ?: 0,
-            unit = safeEnum<ExerciseUnit>(data["unit"] as? String) ?: ExerciseUnit.TIME,
-            useSupportAgent = data["useTimer"] as? Boolean ?: false
+            unit = safeEnum<ExerciseRecordMode>(data["unit"] as? String) ?: ExerciseRecordMode.RUNNING,
+            useSupportAgent = data["useTimer"] as? Boolean ?: false,
+            selectedExercise = data["selectedExercise"] as? String
         )
         "DIET" -> DietMission(
             id = id,
             title = title,
             days = days,
             notificationTime = notificationTime,
-            tags = tags,
+            memo = memo,
             recordMethod = safeEnum<DietRecordMethod>(data["recordMethod"] as? String) ?: DietRecordMethod.TEXT
         )
         "ROUTINE" -> RoutineMission(
@@ -97,7 +99,7 @@ fun mapToMission(id: String, data: Map<String, Any?>): Mission? {
             title = title,
             days = days,
             notificationTime = notificationTime,
-            tags = tags,
+            memo = memo,
             dailyTargetAmount = (data["dailyTargetAmount"] as? Number)?.toInt() ?: 0,
             amountPerStep = (data["amountPerStep"] as? Number)?.toInt() ?: 0,
             unitLabel = data["unitLabel"] as? String ?: ""
@@ -107,7 +109,7 @@ fun mapToMission(id: String, data: Map<String, Any?>): Mission? {
             title = title,
             days = days,
             notificationTime = notificationTime,
-            tags = tags,
+            memo = memo,
             type = safeEnum<RestrictionType>(data["restrictionType"] as? String) ?: RestrictionType.CHECK,
             maxAllowedMinutes = (data["maxAllowedMinutes"] as? Number)?.toInt()
         )
