@@ -8,7 +8,7 @@ data class RestrictionMission(
     override val title: String,
     override val days: Set<DayOfWeek>,
     override val notificationTime: LocalTime?,
-    override val tags: List<String> = emptyList(),
+    override val memo: String? = null,
 
     // 특화 설정
     val type: RestrictionType,   // 타이머형 vs 체크형

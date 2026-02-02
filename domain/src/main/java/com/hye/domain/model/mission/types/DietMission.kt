@@ -8,7 +8,7 @@ data class DietMission(
     override val title: String,
     override val days: Set<DayOfWeek>,
     override val notificationTime: LocalTime?,
-    override val tags: List<String> = emptyList(),
+    override val memo: String? = null,
 
     // 특화 설정
     val recordMethod: DietRecordMethod // 기록 방식 (사진/글/체크)
