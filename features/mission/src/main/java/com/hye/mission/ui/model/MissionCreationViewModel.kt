@@ -7,7 +7,7 @@ import com.hye.domain.model.mission.types.DayOfWeek
 import com.hye.domain.model.mission.types.DietMission
 import com.hye.domain.model.mission.types.DietRecordMethod
 import com.hye.domain.model.mission.types.ExerciseMission
-import com.hye.domain.model.mission.types.ExerciseUnit
+import com.hye.domain.model.mission.types.ExerciseRecordMode
 import com.hye.domain.model.mission.types.Mission
 import com.hye.domain.model.mission.types.MissionType
 import com.hye.domain.model.mission.types.RestrictionMission
@@ -31,11 +31,34 @@ class MissionCreationViewModel @Inject constructor(
     private val _uiStatus = MutableStateFlow(MissionState())
     val uiStatus = _uiStatus.asStateFlow()
 
+
     init {
         startCreation()
     }
 
-    // 저장
+
+    fun toggleBottomSheet(isOpen: Boolean) {
+        _uiStatus.update { it.copy(isBottomSheetOpen = isOpen) }
+    }
+
+    fun selectExerciseType(typeLabel: String) {
+        _uiStatus.update { state ->
+            val nextState = state.copy(
+                selectedExerciseType = typeLabel,
+                isBottomSheetOpen = false
+            )
+            when(state.inputMission){
+                is ExerciseMission -> {
+                    val updatedMission = state.inputMission.copy(
+                        selectedExercise = typeLabel
+                    )
+                    nextState.copy(inputMission = updatedMission)
+                }
+                else -> nextState
+            }
+        }
+    }
+
     fun insertMission() = viewModelScope.launch {
         val inputMission = _uiStatus.value.inputMission ?: return@launch
 
@@ -76,12 +99,14 @@ class MissionCreationViewModel @Inject constructor(
         val id = current?.id ?: UUID.randomUUID().toString()
         val title = current?.title ?: ""
         val days = current?.days ?: emptySet()
-        val tags = current?.tags ?: emptyList()
+        val memo = current?.memo ?: null
         val notificationTime = current?.notificationTime
 
-        val newMission = MissionFactory.create(id, category, title, days, tags, notificationTime)
+        val newMission = MissionFactory.create(id, category, title, days, memo, notificationTime)
         updateMissionState(newMission)
     }
+
+
     //-------------------
     // 공통 필드 업데이트
     private inline fun updateCommon(block: (Mission) -> Mission) {
@@ -99,14 +124,8 @@ class MissionCreationViewModel @Inject constructor(
         it.copyCommon(days = newDays)
     }
 
-    fun addTag(tag: String) = updateCommon {
-        if (tag.isNotBlank() && !it.tags.contains(tag)) {
-            it.copyCommon(tags = it.tags + tag.trim())
-        } else it
-    }
-
-    fun removeTag(tag: String) = updateCommon {
-        it.copyCommon(tags = it.tags - tag)
+    fun updateMemo(newMemo: String) = updateCommon {
+        it.copyCommon(memo = newMemo)
     }
     //-------------------
     // 카테고리별 필드 업데이트
@@ -119,7 +138,7 @@ class MissionCreationViewModel @Inject constructor(
         }
     }
     // [운동]
-    fun updateExerciseUnit(unit: ExerciseUnit) = updateIfIs<ExerciseMission> {
+    fun updateExerciseUnit(unit: ExerciseRecordMode) = updateIfIs<ExerciseMission> {
         it.copy(unit = unit)
     }
     fun updateExerciseTarget(targetStr: String) = updateIfIs<ExerciseMission> {

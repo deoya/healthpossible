@@ -21,25 +21,23 @@ import com.hye.domain.model.mission.MissionRecord
 import com.hye.domain.model.mission.MissionWithRecord
 import com.hye.domain.model.mission.types.DayOfWeek
 import com.hye.domain.model.mission.types.ExerciseMission
-import com.hye.domain.model.mission.types.ExerciseUnit
+import com.hye.domain.model.mission.types.ExerciseRecordMode
 import com.hye.domain.model.mission.types.RoutineMission
 import com.hye.domain.model.mission.types.type
-import com.hye.mission.ui.components.form.PrograssBar
 import com.hye.mission.ui.util.UserMissionCardStyle
 import com.hye.mission.ui.util.currentProgress
 import com.hye.mission.ui.util.getDesign
 import com.hye.mission.ui.util.getTargetString
 import com.hye.mission.ui.util.notificationTimeString
-import com.hye.shared.components.ui.StyledCard
-import com.hye.shared.components.ui.StyledIconBox
-import com.hye.shared.components.ui.StyledTag
-import com.hye.shared.components.ui.Tag
-import com.hye.shared.components.ui.TextBody
-import com.hye.shared.components.ui.TextSubheading
-import com.hye.shared.components.ui.common.IconStyle
-import com.hye.shared.components.ui.common.completedColor
-import com.hye.shared.components.ui.common.completedIcon
-import com.hye.shared.components.ui.common.light
+import com.hye.shared.ui.StyledCard
+import com.hye.shared.ui.icon.StyledIconBox
+import com.hye.shared.ui.chip.StyledTag
+import com.hye.shared.ui.chip.Tag
+import com.hye.shared.ui.text.TextBody
+import com.hye.shared.ui.text.TextSubheading
+import com.hye.shared.ui.common.completedColor
+import com.hye.shared.ui.common.completedIcon
+import com.hye.shared.ui.common.light
 import com.hye.shared.theme.AppTheme
 import com.hye.shared.theme.toSp
 import com.hye.shared.util.Calculator
@@ -82,11 +80,14 @@ fun UserMissionCard(
                 // (1) 아이콘 박스
                 StyledIconBox(
                     boxColor = isCompleted.completedColor(secondColor).light,
-                    iconStyle = IconStyle(
-                        image = isCompleted.completedIcon(icon),
-                        tint = isCompleted.completedColor(color)
+                ){
+                    Icon(
+                        imageVector = isCompleted.completedIcon(icon),
+                        contentDescription = null,
+                        tint = isCompleted.completedColor(color),
+                        modifier = Modifier.size(AppTheme.dimens.xxl)
                     )
-                )
+                }
 
                 Column(
                     modifier = Modifier.weight(1f),
@@ -161,7 +162,7 @@ fun UserMissionCard_Preview() {
             missionWrapper = MissionWithRecord(
                 mission = ExerciseMission(
                     id = "2", title = "스쿼트 50회", days = setOf(DayOfWeek.MON),
-                    notificationTime = LocalTime.of(18, 0), targetValue = 50, unit = ExerciseUnit.COUNT, useSupportAgent = false
+                    notificationTime = LocalTime.of(18, 0), targetValue = 50, unit = ExerciseRecordMode.RUNNING, useSupportAgent = false
                 ),
                 record = MissionRecord(
                     missionId = "2",

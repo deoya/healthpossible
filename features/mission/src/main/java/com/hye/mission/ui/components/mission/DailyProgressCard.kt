@@ -15,7 +15,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -23,10 +22,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.hye.features.mission.R
 import com.hye.mission.ui.util.cheerMessage
 import com.hye.mission.ui.util.dailyProgressCardStyle
-import com.hye.shared.components.ui.DisplayTextSmall
-import com.hye.shared.components.ui.StyledCard
-import com.hye.shared.components.ui.TextBody
-import com.hye.shared.components.ui.TitleMedium
+import com.hye.shared.ui.text.DisplayTextSmall
+import com.hye.shared.ui.StyledCard
+import com.hye.shared.ui.text.TextBody
+import com.hye.shared.ui.text.TitleMedium
 import com.hye.shared.theme.AppTheme
 import com.hye.shared.util.Calculator
 import com.hye.shared.util.text
@@ -113,7 +112,7 @@ fun DailyProgressCard(
                 painter = painterResource(R.drawable.wireless),
                 contentDescription = null,
                 tint = AppTheme.colors.background,
-                modifier = Modifier.size(AppTheme.dimens.xxxxxl)
+                modifier = Modifier.size(AppTheme.dimens.xxxxxxl)
             )
         }
     )

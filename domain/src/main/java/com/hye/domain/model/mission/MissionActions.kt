@@ -1,14 +1,16 @@
 package com.hye.domain.model.mission
 
 import com.hye.domain.model.mission.types.DietRecordMethod
-import com.hye.domain.model.mission.types.ExerciseUnit
+import com.hye.domain.model.mission.types.ExerciseRecordMode
 import com.hye.domain.model.mission.types.RestrictionType
 
 // form 생성 시 편의성을 위함
 data class MissionActionsByType(
-    val onExerciseUnitChange: (ExerciseUnit) -> Unit,
+    val onExerciseUnitChange: (ExerciseRecordMode) -> Unit,
     val onExerciseTargetChange: (String) -> Unit,
     val onExerciseSupportAgentToggle: (Boolean) -> Unit,
+    val onChangeBottomSheetState : (Boolean) -> Unit,
+    val onSelectExerciseType : (String) -> Unit,
 
     val onDietMethodChange: (DietRecordMethod) -> Unit,
 
@@ -18,4 +20,5 @@ data class MissionActionsByType(
 
     val onRestrictionTypeChange: (RestrictionType) -> Unit,
     val onRestrictionTimeChange: (String) -> Unit,
+
 )

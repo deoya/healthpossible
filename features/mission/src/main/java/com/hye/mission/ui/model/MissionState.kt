@@ -17,5 +17,9 @@ data class MissionState (
     val selectMission: MissionResult<Mission> = MissionResult.NoConstructor,
     val deleteMission: MissionResult<Unit> = MissionResult.NoConstructor,
     val inputMission: Mission? = null,
-    val isInserted: Boolean = false
+    val isInserted: Boolean = false,
+
+    val isBottomSheetOpen: Boolean = false,
+    val selectedExerciseType: String = ""
+
 )

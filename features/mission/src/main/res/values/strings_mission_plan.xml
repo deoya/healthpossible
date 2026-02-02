@@ -2,12 +2,15 @@
     <string name="mission_plan_title">미션 명</string>
     <string name="mission_plan_title_placeholder">예: 아침 조깅, 물 마시기</string>
     <string name="mission_plan_select_day">요일 선택</string>
-    <string name="mission_plan_memo_placeholder">내용(선택)</string>
+    <string name="mission_plan_memo_placeholder">메모(선택)</string>
     <string name="mission_plan_category_setting">카테고리 설정</string>
+    <string name="mission_plan_standards_of_implementation">실행 기준</string>
     <string name="mission_plan_unit_of_measure">측정 단위</string>
     <string name="mission_plan_measure_placeholder">예: ml, 잔, 페이지</string>
 
     <string name="mission_plan_goal">하루 총 목표</string>
+    <string name="mission_plan_select_excise_type_placeholder">운동 종목을 선택해 주세요</string>
+    <string name="mission_plan_running_goal_placeholder">예: 30분</string>
     <string name="mission_plan_goal_placeholder">예: 30</string>
     <string name="mission_plan_goal_rise">증가 량</string>
     <string name="mission_plan_goal_rise_description">버튼을 한 번 누를 때마다 $d $s씩 채워집니다.</string>

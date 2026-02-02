@@ -14,4 +14,12 @@
     <string name="mission_unit_count">번</string>
 
     <string name="mission_forbid">금지</string>
+    <string-array name="mission_exercise_types">
+        <item>스쿼트</item>
+        <item>런지</item>
+        <item>플랭크</item>
+        <item>윗몸 일으키기</item>
+        <item>사이드 런지</item>
+    </string-array>
+
 </resources>

@@ -11,23 +11,24 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.hye.features.mission.R
 import com.hye.mission.ui.components.mission.DailyProgressCard
 import com.hye.mission.ui.components.mission.UserMissionCard
 import com.hye.mission.ui.model.MissionViewModel
-import com.hye.shared.components.ui.StyledIconButton
-import com.hye.shared.components.ui.TitleMedium
-import com.hye.shared.components.ui.common.CalendarIcon
+import com.hye.mission.ui.screen.performing.ExerciseSessionScreen
+import com.hye.shared.ui.button.StyledIconButton
+import com.hye.shared.ui.text.TitleMedium
+import com.hye.shared.ui.icon.CalendarIcon
 import com.hye.shared.theme.AppTheme
 import com.hye.shared.theme.ScaffoldContentPaddingWithBottomBar
-import com.hye.features.mission.R
 import com.hye.shared.util.text
 
 
@@ -41,14 +42,13 @@ fun MissionListScreen(
 
     setTopBarActions({
         StyledIconButton(
-            onClick = {}, // Todo: 이전 날짜 확인 가능 기능
+            onClick = {  }, // Todo: 이전 날짜 확인 가능 기능
             modifier = Modifier
                 .padding(end = AppTheme.dimens.xxs)
                 .background(AppTheme.colors.background, CircleShape)
-                .size(AppTheme.dimens.xxxxxl),
+                .size(AppTheme.dimens.xxxxxxl),
             icon = { CalendarIcon() })
     })
-
     Box(
         modifier = Modifier
             .fillMaxSize()
