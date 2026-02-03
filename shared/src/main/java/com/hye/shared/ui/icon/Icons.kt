@@ -6,6 +6,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CalendarToday
 import androidx.compose.material.icons.filled.KeyboardDoubleArrowLeft
 import androidx.compose.material.icons.filled.SwipeLeftAlt
+import androidx.compose.material.icons.filled.TouchApp
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material3.Icon
 import androidx.compose.ui.Modifier
@@ -62,3 +63,16 @@ fun SlideIcon(
     tint = color,
     modifier = Modifier.size(size)
 )
+
+@Composable
+fun SimplePillIcon(
+    image : ImageVector = Icons.Filled.TouchApp,
+    color : Color =  AppTheme.colors.background,
+    size : Dp = AppTheme.dimens.xxxl,
+) = Icon(
+    image,
+    contentDescription = "Touch Action",
+    tint = color,
+    modifier = Modifier.size(size)
+)
+

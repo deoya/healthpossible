@@ -27,6 +27,7 @@ import com.hye.shared.ui.StyledCard
 import com.hye.shared.ui.text.TextBody
 import com.hye.shared.ui.text.TitleMedium
 import com.hye.shared.theme.AppTheme
+import com.hye.shared.ui.progress.CircularProgressBar
 import com.hye.shared.util.Calculator
 import com.hye.shared.util.text
 
@@ -91,28 +92,16 @@ fun DailyProgressCard(
             )
         },
         indicatorContent = {
-            // 배경 원
-            CircularProgressIndicator(
-                progress = { 1f },
-                modifier = Modifier.size(AppTheme.dimens.progressSize),
-                color = AppTheme.colors.background.copy(alpha = AppTheme.dimens.alphaMuted),
-                strokeWidth = AppTheme.dimens.xxs,
-            )
-            // 진행 원
-            CircularProgressIndicator(
-                progress = { animatedProgress },
-                modifier = Modifier.size(AppTheme.dimens.progressSize),
-                color = AppTheme.colors.background,
-                strokeWidth = AppTheme.dimens.xxs,
-                trackColor = AppTheme.colors.incompleteColor,
-                strokeCap = StrokeCap.Round
-            )
-            // 아이콘
-            Icon(
-                painter = painterResource(R.drawable.wireless),
-                contentDescription = null,
-                tint = AppTheme.colors.background,
-                modifier = Modifier.size(AppTheme.dimens.xxxxxxl)
+            CircularProgressBar(
+                progress = animatedProgress,
+                iconContent = {
+                    Icon(
+                        painter = painterResource(R.drawable.wireless),
+                        contentDescription = null,
+                        tint = AppTheme.colors.background,
+                        modifier = Modifier.size(AppTheme.dimens.xxxxxxl)
+                    )
+                }
             )
         }
     )
