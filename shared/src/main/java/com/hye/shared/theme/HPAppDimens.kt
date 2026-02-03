@@ -11,7 +11,6 @@ import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
-
 data class HPAppDimens(
     val zero : Dp = 0.dp,
     val one : Dp = 1.dp,
@@ -32,10 +31,13 @@ data class HPAppDimens(
     val xxxxxl :Dp = 36.dp,
     val xxxxxxl: Dp = 40.dp,
 
-    val progressSize:Dp = 88.dp,
+    val circularProgressSize:Dp = 88.dp,
+    val RunningCircularProgressSize:Dp = 100.dp,
+    val progressDurationMillis:Int = 1000,
     val bigBtn: Dp = 50.dp,
     val iconBox: Dp =52.dp,
-    val bigDimen: Dp =80.dp,
+    val bigDimen: Dp = 80.dp,
+    val runnigSimplePillHeight : Dp = 120.dp,
     val bottomBarPadding : Dp = 80.dp,
     val dropDownMenuAddMisionPadding :Dp = 110.dp,
 

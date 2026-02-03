@@ -41,12 +41,13 @@ data class HPAppColors (
     val chipSelectedColor: Color,
     val completeColor : Color,
     val incompleteColor:Color,
-
     val inputBoxBorder: Color,
 
     val unSelectedColor : Color,
 
     val mapSimulationColor : Color,
+
+    val InheritColor : Color,
 )
 
 val LightColors = HPAppColors(
@@ -87,7 +88,8 @@ val LightColors = HPAppColors(
     incompleteColor =  Color.Transparent,
     unSelectedColor = Color.Transparent,
     inputBoxBorder = Color.LightGray,
-    mapSimulationColor = Color(0xFFE5E7EB)
+    mapSimulationColor = Color(0xFFE5E7EB),
+    InheritColor = Color.Transparent
 )
 
 val LocalColors = staticCompositionLocalOf { LightColors }

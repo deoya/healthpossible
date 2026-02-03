@@ -88,12 +88,13 @@ fun TitleSmall(text:String, color: Color = AppTheme.colors.textSecondary,modifie
 )
 
 @Composable
-fun TitleMedium(text:String, color: Color = AppTheme.colors.textPrimary,modifier: Modifier = Modifier) = Text(
+fun TitleMedium(text:String, color: Color = AppTheme.colors.textPrimary,modifier: Modifier = Modifier,size: TextUnit = TextUnit.Unspecified) = Text(
     text = text,
     style = MaterialTheme.typography.titleMedium,
     fontWeight = FontWeight.Bold,
     color = color,
-    modifier = modifier
+    modifier = modifier,
+    fontSize = size
 )
 
 @Composable

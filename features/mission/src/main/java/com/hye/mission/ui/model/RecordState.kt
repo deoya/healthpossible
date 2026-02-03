@@ -12,7 +12,11 @@ data class RecordState(
     val isBottomSheetOpen: Boolean = false,
 
     // 세션 모드 (초기값은 임시로 DurationMode)
-    val sessionMode: AiSessionMode = AiSessionMode.DurationMode()
+    val sessionMode: AiSessionMode = AiSessionMode.DurationMode(),
+
+    val isRunning: Boolean = false,
+
+    val currentStep : Int = 0,
 ) {
     // 1. 현재 운동 이름 (UI 표시용)
     val currentExerciseLabel: String
@@ -21,37 +25,35 @@ data class RecordState(
             is AiSessionMode.AiRepMode -> sessionMode.exerciseType.label
         }
 
-    // 2. 진행 상황 텍스트 (슬라이드 버튼 등에 사용)
-    val progressLabel: String
+    // ✅ [New] 현재 진행 값 (예: "05:00" 또는 "12")
+    val currentProgressValue: String
         get() = when (sessionMode) {
-            // A. 러닝 모드 -> "05:00 / 30:00" 형태 (시간)
-            is AiSessionMode.DurationMode -> {
-                val curr = sessionMode.currentSeconds
-                val total = sessionMode.targetSeconds
-                formatTimeProgress(curr, total)
-            }
-
-            // B. AI 종목 모드
+            is AiSessionMode.DurationMode -> formatTime(sessionMode.currentSeconds)
             is AiSessionMode.AiRepMode -> {
-                val type = sessionMode.exerciseType
-                val curr = sessionMode.currentCount
-                val total = sessionMode.targetCount
-
-                if (type.isTimeBased) {
-                    // 플랭크 등 시간 기반 -> "00:45 / 01:00"
-                    formatTimeProgress(curr, total)
-                } else {
-                    // 스쿼트 등 횟수 기반 -> "12 / 15"
-                    "$curr / $total"
-                }
+                if (sessionMode.exerciseType.isTimeBased) formatTime(sessionMode.currentCount)
+                else sessionMode.currentCount.toString()
             }
         }
 
-    // 시간 포맷팅 헬퍼 함수
-    private fun formatTimeProgress(currentSec: Int, totalSec: Int): String {
-        return "%02d:%02d / %02d:%02d".format(
-            currentSec / 60, currentSec % 60,
-            totalSec / 60, totalSec % 60
-        )
+    // ✅ [New] 전체 목표 값 (예: "30:00" 또는 "15")
+    val totalTargetValue: String
+        get() = when (sessionMode) {
+            is AiSessionMode.DurationMode -> formatTime(sessionMode.targetSeconds)
+            is AiSessionMode.AiRepMode -> {
+                if (sessionMode.exerciseType.isTimeBased) formatTime(sessionMode.targetCount)
+                else sessionMode.targetCount.toString()
+            }
+        }
+
+    // ✅ [Update] 기존 라벨은 위 두 변수를 조합해서 유지 (기존 UI 호환용)
+    // 결과: "05:00 / 30:00" 또는 "12 / 15"
+    val progressLabel: String
+        get() = "$currentProgressValue / $totalTargetValue"
+
+
+    // (내부 사용 헬퍼) 초 -> MM:SS 변환
+    private fun formatTime(seconds: Int): String {
+        return "%02d:%02d".format(seconds / 60, seconds % 60)
     }
+
 }

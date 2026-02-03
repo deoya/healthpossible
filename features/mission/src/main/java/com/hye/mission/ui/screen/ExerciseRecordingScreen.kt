@@ -25,6 +25,7 @@ fun ExerciseRecordingScreen(
         uiState = uiState,
         onToggleBottomSheet = viewModel::toggleBottomSheet,
         onSelectExerciseType = viewModel::selectExercise,
+        onToggleTimer = viewModel::toggleTimer
     )
 }
 
@@ -34,6 +35,7 @@ fun ExerciseSessionContent(
     uiState: RecordState,
     onToggleBottomSheet: (Boolean) -> Unit = {},
     onSelectExerciseType: (AiExerciseType) -> Unit = {},
+    onToggleTimer: () -> Unit = {}
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
         when (uiState.exerciseAgentType) {
@@ -44,7 +46,8 @@ fun ExerciseSessionContent(
             )
 
             ExerciseAgentType.RUNNING -> RunningSession(
-                state = uiState
+                state = uiState,
+                onToggleTimer = onToggleTimer,
             )
         }
     }
