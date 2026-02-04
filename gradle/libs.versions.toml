@@ -67,6 +67,17 @@ coroutinTest = "1.7.3"
 #Log
 timber = "5.0.1"
 
+#on-deivce
+camerax  = "1.5.2"
+camerax-compose = "1.5.0"
+
+#Accompanist
+accompanist-permissions = "0.37.3"
+
+#AI
+poseDetection = "18.0.0-beta5"
+
+
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -135,6 +146,21 @@ coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-
 #Log
 timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "timber" }
 
+#on-device - camerax
+camera-core = { group = "androidx.camera", name = "camera-core", version.ref = "camerax" }
+camera-camera2 = { group = "androidx.camera", name = "camera-camera2", version.ref = "camerax" }
+camera-lifecycle = { group = "androidx.camera", name = "camera-lifecycle", version.ref = "camerax" }
+camera-view = { group = "androidx.camera", name = "camera-view", version.ref = "camerax" }
+camera-compose = { group = "androidx.camera", name = "camera-compose", version.ref = "camerax-compose" }
+
+#Accompanist
+accompanist-permissions = { group = "com.google.accompanist", name = "accompanist-permissions", version.ref = "accompanist-permissions" }
+
+#AI - ML Kit POSE
+pose-detection = { group = "com.google.mlkit", name = "pose-detection", version.ref = "poseDetection" }
+pose-detection-common = { group = "com.google.mlkit", name = "pose-detection-common", version.ref = "poseDetection" }
+
+
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
@@ -147,6 +173,7 @@ kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref =
 hilt-gradle = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 google-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 google-gms-google-services = { id = "com.google.gms.google-services", version.ref = "googleGmsServices" }
+
 
 [bundles]
 compose-libs=[
@@ -176,4 +203,17 @@ test-android = [
     "mockk-android",
     "androidx-junit",
     "androidx-compose-ui-test-junit4"
+]
+
+ondevice-camerax-lib = [
+    "camera-core",
+    "camera-camera2",
+    "camera-lifecycle",
+    "camera-view",
+    "camera-compose",
+]
+
+ml-kit-pose =[
+    "pose-detection",
+    "pose-detection-common"
 ]

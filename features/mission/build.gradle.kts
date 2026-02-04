@@ -66,4 +66,8 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+
+    implementation(libs.bundles.ondevice.camerax.lib)
+    implementation(libs.accompanist.permissions)
+    implementation(libs.bundles.ml.kit.pose)
 }
