@@ -1,4 +1,4 @@
-package com.hye.mission.ui.model
+package com.hye.mission.ui.state
 
 import com.hye.domain.model.mission.types.AiSessionMode
 import com.hye.domain.model.mission.types.ExerciseAgentType
@@ -10,6 +10,8 @@ data class RecordState(
     val exerciseAgentType: ExerciseAgentType = ExerciseAgentType.AI_POSTURE,
     val feedbackMessage: String = "준비해주세요.",
     val isBottomSheetOpen: Boolean = false,
+    val isLoading: Boolean = false,
+    val errorMessage: String? = null,
 
     // 세션 모드 (초기값은 임시로 DurationMode)
     val sessionMode: AiSessionMode = AiSessionMode.DurationMode(),
@@ -17,6 +19,8 @@ data class RecordState(
     val isRunning: Boolean = false,
 
     val currentStep : Int = 0,
+
+
 ) {
     // 1. 현재 운동 이름 (UI 표시용)
     val currentExerciseLabel: String

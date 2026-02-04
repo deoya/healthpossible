@@ -10,23 +10,32 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.hye.domain.model.mission.types.AiExerciseType
 import com.hye.domain.model.mission.types.ExerciseAgentType
+import com.hye.features.mission.R
 import com.hye.mission.ui.components.recording.exercise.posture.AiPostureSession
 import com.hye.mission.ui.components.recording.exercise.running.RunningSession
-import com.hye.mission.ui.model.MissionRecordingViewModel
-import com.hye.mission.ui.model.RecordState
+import com.hye.mission.ui.state.RecordState
+import com.hye.mission.ui.viewmodel.MissionRecordingViewModel
+import com.hye.shared.base.BaseScreenTemplate
+import com.hye.shared.util.text
 
 @Composable
 fun ExerciseRecordingScreen(
     viewModel: MissionRecordingViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-
-    ExerciseSessionContent(
-        uiState = uiState,
-        onToggleBottomSheet = viewModel::toggleBottomSheet,
-        onSelectExerciseType = viewModel::selectExercise,
-        onToggleTimer = viewModel::toggleTimer
-    )
+    BaseScreenTemplate(
+        viewModel = viewModel,
+        screenName = R.string.mission_exercise_recording_screen.text,
+        isLoading = uiState.isRunning,
+        errorMessage = uiState.errorMessage,
+    ){
+        ExerciseSessionContent(
+            uiState = uiState,
+            onToggleBottomSheet = viewModel::toggleBottomSheet,
+            onSelectExerciseType = viewModel::selectExercise,
+            onToggleTimer = viewModel::toggleTimer
+        )
+    }
 }
 
 // 2. Preview를 위한 순수 UI (Stateless)

@@ -9,7 +9,7 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.hye.features.mission.R
-import com.hye.mission.ui.model.RecordState
+import com.hye.mission.ui.state.RecordState
 import com.hye.shared.theme.AppTheme
 import com.hye.shared.ui.button.SlideButton
 import com.hye.shared.ui.text.FeedbackBubble

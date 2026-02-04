@@ -8,10 +8,6 @@ sealed class MissionResult <out T>{
 
     data class Success<T>(val resultData: T) : MissionResult<T>()
 
-    data class NetworkError(val exception: Throwable) : MissionResult<Nothing>()
-
-    data class FirebaseError(val exception: Throwable) : MissionResult<Nothing>()
-
-    data class RoomDBError(val exception: Throwable) : MissionResult<Nothing>()
+    data class Error(val exception: Throwable) : MissionResult<Nothing>()
 
 }
