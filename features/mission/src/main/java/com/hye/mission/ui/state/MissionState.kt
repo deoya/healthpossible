@@ -1,4 +1,4 @@
-package com.hye.mission.ui.model
+package com.hye.mission.ui.state
 
 import com.hye.domain.model.mission.types.Mission
 import com.hye.domain.model.mission.MissionWithRecord
@@ -8,7 +8,6 @@ data class MissionState (
     //공통
     val isLoading: Boolean = false,
     val errorMessage: String? = null,
-    val userMessage: String? = null,
     // 미션 정보
     val missions: List<MissionWithRecord> = emptyList(),
     val totalMissionsCount: Int = 0,
@@ -18,7 +17,6 @@ data class MissionState (
     val deleteMission: MissionResult<Unit> = MissionResult.NoConstructor,
     val inputMission: Mission? = null,
     // 입력 관련
-    val isInserted: Boolean = false,
     val selectedExerciseType: String = "",
 
     val isBottomSheetOpen: Boolean = false,

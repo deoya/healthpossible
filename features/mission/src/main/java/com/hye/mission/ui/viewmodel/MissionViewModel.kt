@@ -1,16 +1,16 @@
-package com.hye.mission.ui.model
+package com.hye.mission.ui.viewmodel
 
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.hye.domain.model.mission.types.DietMission
-import com.hye.domain.model.mission.types.ExerciseMission
-import com.hye.domain.model.mission.types.Mission
 import com.hye.domain.model.mission.MissionRecord
 import com.hye.domain.model.mission.MissionWithRecord
+import com.hye.domain.model.mission.types.DietMission
+import com.hye.domain.model.mission.types.ExerciseMission
 import com.hye.domain.model.mission.types.RestrictionMission
 import com.hye.domain.model.mission.types.RoutineMission
 import com.hye.domain.result.MissionResult
 import com.hye.domain.usecase.mission.MissionUseCase
+import com.hye.mission.ui.state.MissionState
+import com.hye.shared.base.BaseViewModel
 import com.hye.shared.util.getCurrentFormattedTime
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,12 +19,13 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
 class MissionViewModel @Inject constructor(
     private val missionUseCase: MissionUseCase
-) : ViewModel() {
+) : BaseViewModel() {
 
     private val _uiStatus = MutableStateFlow(MissionState())
     val uiStatus = _uiStatus.asStateFlow()
@@ -35,40 +36,41 @@ class MissionViewModel @Inject constructor(
         loadData()
     }
 
-    private fun loadData() {
+    private fun loadData() = viewModelScope.launch (commonCeh){
         val missionsFlow = missionUseCase.getMissionList()
         val recordsFlow = missionUseCase.getMissionRecords(todayDate)
+        combine(missionsFlow, recordsFlow) { missionsResult, recordsResult ->
+            if (missionsResult is MissionResult.Success && recordsResult is MissionResult.Success) {
+                val missions = missionsResult.resultData
+                val records = recordsResult.resultData
+                val recordsMap = records.associateBy { it.missionId }
 
-        viewModelScope.launch {
-            combine(missionsFlow, recordsFlow) { missionsResult, recordsResult ->
-                if (missionsResult is MissionResult.Success && recordsResult is MissionResult.Success) {
-                    val missions = missionsResult.resultData
-                    val records = recordsResult.resultData
-                    val recordsMap = records.associateBy { it.missionId }
-
-                    val mergedList = missions.map { mission ->
-                        MissionWithRecord(mission = mission, record = recordsMap[mission.id])
-                    }
-                    MissionResult.Success(mergedList)
-                } else if (missionsResult is MissionResult.Loading || recordsResult is MissionResult.Loading) {
-                    MissionResult.Loading
-                } else {
-                    val exception = (missionsResult as? MissionResult.FirebaseError)?.exception
-                        ?: (recordsResult as? MissionResult.FirebaseError)?.exception
-                        ?: Exception("데이터 로드 실패")
-                    MissionResult.FirebaseError(exception)
+                val mergedList = missions.map { mission ->
+                    MissionWithRecord(mission = mission, record = recordsMap[mission.id])
                 }
-            }.collectLatest { combinedResult ->
-                updateUiState(combinedResult)
+                MissionResult.Success(mergedList)
+
+            } else if (missionsResult is MissionResult.Loading || recordsResult is MissionResult.Loading) {
+                MissionResult.Loading
+            } else {
+                val exception = (missionsResult as? MissionResult.Error)?.exception
+                    ?: (recordsResult as? MissionResult.Error)?.exception
+                    ?: Exception("데이터 로드 실패")
+                Timber.e(exception, "Failed to load mission data")
+                MissionResult.Error(exception)
             }
+        }.collectLatest { combinedResult ->
+            updateUiState(combinedResult)
         }
     }
 
     private fun updateUiState(result: MissionResult<List<MissionWithRecord>>) {
+
         when (result) {
             is MissionResult.Loading -> _uiStatus.update { it.copy(isLoading = true, errorMessage = null) }
             is MissionResult.Success -> {
                 val data = result.resultData
+                Timber.i("Mission data loaded: ${data.size} items")
                 _uiStatus.update {
                     it.copy(
                         isLoading = false,
@@ -79,18 +81,20 @@ class MissionViewModel @Inject constructor(
                     )
                 }
             }
-            is MissionResult.FirebaseError -> {
+            is MissionResult.Error -> {
                 _uiStatus.update {
                     it.copy(isLoading = false, errorMessage = result.exception.message, missions = emptyList())
                 }
             }
-            else -> {}
+            is MissionResult.NoConstructor -> {}
         }
     }
 
     fun onStartButtonClicked(item: MissionWithRecord) {
         val mission = item.mission
         val recordId = "${mission.id}_$todayDate"
+
+        Timber.d("Start button clicked: ${mission.title}")
 
         val currentRecord = item.record ?: MissionRecord(
             id = recordId,
@@ -99,7 +103,9 @@ class MissionViewModel @Inject constructor(
         )
 
         if (currentRecord.isCompleted) {
-            _uiStatus.update { it.copy(userMessage = "이미 완료된 미션입니다! 🎉") }
+            viewModelScope.launch {
+                showToast("이미 완료된 미션입니다! 🎉")
+            }
             return
         }
 
@@ -126,16 +132,24 @@ class MissionViewModel @Inject constructor(
     }
 
     private fun saveRecord(record: MissionRecord) {
-        viewModelScope.launch {
+        viewModelScope.launch (commonCeh){
             updateLocalState(record)
 
             missionUseCase.updateMissionRecord(record).collect { result ->
-                if (result is MissionResult.FirebaseError) {
-                    _uiStatus.update { it.copy(userMessage = "저장 실패: ${result.exception.message}") }
-                } else if (result is MissionResult.Success) {
-                    if (record.isCompleted) {
-                        _uiStatus.update { it.copy(userMessage = "미션 성공! 저장되었습니다.") }
+                when(result){
+                    is MissionResult.Success -> {
+                        if (record.isCompleted) {
+                            Timber.i("Mission completed: ${record.missionId}") // ✅ 완료 로그
+                            showToast("미션 성공! 저장되었습니다.")
+                        }
                     }
+                    is MissionResult.Error -> {
+                        Timber.w(result.exception, "Save failed for record: ${record.id}") // ✅ 경고 로그
+                        // ✅ [변경] 에러 토스트
+                        showToast("저장 실패: ${result.exception.message}")
+
+                    }
+                    else -> {}
                 }
             }
         }
@@ -151,9 +165,5 @@ class MissionViewModel @Inject constructor(
                 completedMissionsCount = newMissions.count { it.record?.isCompleted == true }
             )
         }
-    }
-
-    fun onMessageShown() {
-        _uiStatus.update { it.copy(userMessage = null) }
     }
 }

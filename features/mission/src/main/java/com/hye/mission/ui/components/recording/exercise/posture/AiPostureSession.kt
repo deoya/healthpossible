@@ -7,7 +7,7 @@ import com.hye.domain.model.mission.types.ExerciseAgentType
 import com.hye.mission.ui.components.recording.layout.BaseBottomBarContentLayout
 import com.hye.mission.ui.components.recording.layout.BaseSessionLayout
 import com.hye.mission.ui.components.recording.simulation.CameraSimulationView
-import com.hye.mission.ui.model.RecordState
+import com.hye.mission.ui.state.RecordState
 
 //Todo: 이 화면에서는 가로모드 대응 해놓을 것
 @Composable

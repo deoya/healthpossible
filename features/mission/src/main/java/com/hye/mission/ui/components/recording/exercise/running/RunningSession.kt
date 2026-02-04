@@ -6,7 +6,7 @@ import com.hye.domain.model.mission.types.AiSessionMode
 import com.hye.mission.ui.components.recording.layout.BaseBottomBarContentLayout
 import com.hye.mission.ui.components.recording.layout.BaseSessionLayout
 import com.hye.mission.ui.components.recording.simulation.MapSimulationView
-import com.hye.mission.ui.model.RecordState
+import com.hye.mission.ui.state.RecordState
 
 
 @Preview

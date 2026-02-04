@@ -17,7 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.hye.domain.model.mission.types.AiExerciseType
 import com.hye.domain.model.mission.types.AiSessionMode
-import com.hye.mission.ui.model.RecordState
+import com.hye.mission.ui.state.RecordState
 import com.hye.shared.theme.AppTheme
 import com.hye.shared.ui.StyledDivider
 import com.hye.shared.ui.sheet.CommonBottomSheet

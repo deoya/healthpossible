@@ -17,6 +17,7 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.tasks.await
+import timber.log.Timber
 import javax.inject.Inject
 
 class MissionRepositoryImpl @Inject constructor(
@@ -30,7 +31,6 @@ class MissionRepositoryImpl @Inject constructor(
         .document(currentUserId)
         .collection("missions")
 
-    // [추가] 수행 기록 컬렉션 (users/{uid}/records)
     private fun getRecordCollection() = firestore
         .collection("users")
         .document(currentUserId)
@@ -40,14 +40,15 @@ class MissionRepositoryImpl @Inject constructor(
         operation: suspend () -> T
     ): Flow<MissionResult<T>> = flow {
         emit(MissionResult.Loading)
-
         val result = operation()
-
         emit(MissionResult.Success(result))
     }.catch { e ->
-        emit(MissionResult.FirebaseError(e))
+        Timber.e(e, "CRUD Operation Failed")
+
+        emit(MissionResult.Error(e))
     }.flowOn(Dispatchers.IO)
 
+    //---------------------------------------------------------------------------------
 
     override fun getMissionList(): Flow<MissionResult<List<Mission>>> = flow {
         emit(MissionResult.Loading)
@@ -61,7 +62,8 @@ class MissionRepositoryImpl @Inject constructor(
             }
             emit(MissionResult.Success(missions))
         } catch (e: Exception) {
-            emit(MissionResult.FirebaseError(e))
+            Timber.e(e, "getMissionList failed")
+            emit(MissionResult.Error(e))
         }
     }.flowOn(Dispatchers.IO)
 
@@ -98,7 +100,8 @@ class MissionRepositoryImpl @Inject constructor(
                 .whereEqualTo("date", date) // 해당 날짜의 기록만 필터링
                 .addSnapshotListener { snapshot, e ->
                     if (e != null) {
-                        trySend(MissionResult.FirebaseError(e))
+                        Timber.e(e, "getMissionRecords snapshot listener error")
+                        trySend(MissionResult.Error(e))
                         return@addSnapshotListener
                     }
 
@@ -128,10 +131,10 @@ class MissionRepositoryImpl @Inject constructor(
                 .document(record.id)
                 .set(record, SetOptions.merge()) // data class 그대로 저장 가능 (Firestore KTX 지원 시)
                 .await()
-
             emit(MissionResult.Success(ExecutionResult(true, "기록 업데이트 성공")))
         } catch (e: Exception) {
-            emit(MissionResult.FirebaseError(e))
+            Timber.e(e, "updateMissionRecord failed")
+            emit(MissionResult.Error(e))
         }
     }
 }

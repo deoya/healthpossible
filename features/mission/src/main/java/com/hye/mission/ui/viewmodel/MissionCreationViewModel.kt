@@ -1,6 +1,5 @@
-package com.hye.mission.ui.model
+package com.hye.mission.ui.viewmodel
 
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hye.domain.factory.MissionFactory
 import com.hye.domain.model.mission.types.DayOfWeek
@@ -16,26 +15,28 @@ import com.hye.domain.model.mission.types.RoutineMission
 import com.hye.domain.model.mission.types.copyCommon
 import com.hye.domain.result.MissionResult
 import com.hye.domain.usecase.mission.MissionUseCase
+import com.hye.mission.ui.state.MissionState
+import com.hye.shared.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import java.util.UUID
 import javax.inject.Inject
 
 @HiltViewModel
 class MissionCreationViewModel @Inject constructor(
     private val missionUseCase: MissionUseCase
-): ViewModel(){
+): BaseViewModel(){
+
     private val _uiStatus = MutableStateFlow(MissionState())
     val uiStatus = _uiStatus.asStateFlow()
-
 
     init {
         startCreation()
     }
-
 
     fun toggleBottomSheet(isOpen: Boolean) {
         _uiStatus.update { it.copy(isBottomSheetOpen = isOpen) }
@@ -59,28 +60,26 @@ class MissionCreationViewModel @Inject constructor(
         }
     }
 
-    fun insertMission() = viewModelScope.launch {
+    fun insertMission() = viewModelScope.launch(commonCeh) {
         val inputMission = _uiStatus.value.inputMission ?: return@launch
 
+        Timber.d("Starting mission insertion: ${inputMission.title}")
+
         missionUseCase.insertMission(inputMission).collect { result ->
-            _uiStatus.update { currentState ->
-                when (result) {
-                    is MissionResult.Loading -> currentState.copy(isLoading = true)
-                    is MissionResult.Success -> {
-                        currentState.copy(
-                            isLoading = false,
-                            isInserted = true,
-                            userMessage = result.resultData.result // "성공했습니다" 메시지
-                        )
-                    }
-                    is MissionResult.FirebaseError -> {
-                        currentState.copy(
-                            isLoading = false,
-                            userMessage = result.exception.message ?: "저장 실패"
-                        )
-                    }
-                    else -> currentState.copy(isLoading = false)
+            when (result) {
+                is MissionResult.Loading -> _uiStatus.update{ it.copy(isLoading = true)}
+                is MissionResult.Success -> {
+                    Timber.i("Mission saved successfully: ${result.resultData}")
+                    _uiStatus.update{ it.copy(isLoading = false)}
+                    val msg = result.resultData.result ?: "미션 저장이 완료 되었습니다"
+                    showToast(msg)
                 }
+                is MissionResult.Error -> {
+                    _uiStatus.update{ it.copy(isLoading = false)}
+                    val msg = result.exception.message ?: "저장에 실패하였습니다"
+                    showToast(msg)
+                }
+                else -> _uiStatus.update{ it.copy(isLoading = false)}
             }
         }
     }
