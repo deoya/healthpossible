@@ -8,6 +8,7 @@ data class HPAppColors (
     val primary : Color,
     val primaryLight: Color, // 선택된 항목의 배경 등 강조가 필요한 곳에 사용
     val onPrimary: Color,
+    val error : Color,
     // 배경 및 표면 색상
     val background: Color,
     val backgroundMuted: Color,
@@ -54,6 +55,7 @@ val LightColors = HPAppColors(
     primary = Color(0xFF5174FF),
     primaryLight = Color(0xFFE8EFFF),
     onPrimary = Color.White,
+    error = Color(0xFFFF7A6E),
     background = Color.White,
     backgroundMuted = Color(0xFFF8FAFC),
     surface = Color.White,
