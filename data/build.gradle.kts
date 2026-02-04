@@ -47,14 +47,12 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
-    //implementation(platform(libs.androidx.compose.bom))
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
     implementation(platform(libs.firebase.bom))
+
     implementation(libs.bundles.firebase.libraries)
     // Hilt Core
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
 
+    implementation(libs.timber)
 }

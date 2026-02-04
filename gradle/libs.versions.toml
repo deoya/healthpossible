@@ -60,8 +60,12 @@ foundation = "1.10.1"
 coilCompose = "3.3.0"
 coilNetworkOkhttp = "3.3.0"
 
+#test
+mockk = "1.14.7"
+coroutinTest = "1.7.3"
 
-
+#Log
+timber = "5.0.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -122,6 +126,15 @@ androidx-compose-foundation = { group = "androidx.compose.foundation", name = "f
 coil-compose = { group = "io.coil-kt.coil3", name = "coil-compose", version.ref = "coilCompose" }
 coil-network-okhttp = { group = "io.coil-kt.coil3", name = "coil-network-okhttp", version.ref = "coilNetworkOkhttp" }
 
+#test  mock
+mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
+mockk-android = { group = "io.mockk", name = "mockk-android", version.ref = "mockk" }
+
+coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test",version.ref="coroutinTest" }
+
+#Log
+timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "timber" }
+
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
@@ -153,4 +166,14 @@ compose-libs=[
 firebase-libraries = [
     "firebase-firestore-ktx"
 ]
+test-jvm = [
+    "mockk",
+    "junit",
+    "coroutines-test"
+]
 
+test-android = [
+    "mockk-android",
+    "androidx-junit",
+    "androidx-compose-ui-test-junit4"
+]

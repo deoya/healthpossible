@@ -77,6 +77,8 @@ dependencies {
     implementation(platform(libs.firebase.bom))
     implementation(libs.bundles.firebase.libraries)
 
+    implementation(libs.timber)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

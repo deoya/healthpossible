@@ -61,6 +61,8 @@ dependencies {
     // Hilt Navigation (ViewModel 주입에 필요)
     implementation(libs.hilt.navigation.compose)
 
+    implementation(libs.timber)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
