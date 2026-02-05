@@ -1,5 +1,10 @@
 package com.hye.mission.ui.components.recording.exercise.posture
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
@@ -32,7 +37,13 @@ fun AiPostureContent(
     // 1. 현재 상태에 따른 텍스트 (RecordState의 계산 프로퍼티 사용)
     val progressText = state.progressLabel
     val subText = "${state.currentExerciseLabel} " + R.string.mission_in_progress.text
-    FeedbackBubble(message = state.feedbackMessage)
+    AnimatedVisibility(
+        visible = state.feedbackMessage.isNotEmpty(),
+        enter = fadeIn() + scaleIn(),
+        exit = fadeOut() + scaleOut()
+    ) {
+        FeedbackBubble(message = state.feedbackMessage)
+    }
     SlideButton(
         modifier = Modifier.shadow(AppTheme.dimens.s),
         text = progressText,

@@ -3,4 +3,7 @@
     <string name="mission_list_screen">MissionListScreen</string>
     <string name="mission_creation_screen">MissionCreationScreen</string>
     <string name="mission_exercise_recording_screen">ExerciseRecordingScreen</string>
+
+    <string name="mission_ai_camera_content">Ai-Pose</string>
+    <string name="mission_ai_pose_analyzer">Ai-Pose</string>
 </resources>

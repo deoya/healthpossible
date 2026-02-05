@@ -159,4 +159,13 @@ class MissionRecordingViewModel @Inject constructor(
         timerJob?.cancel()
         Timber.d("ViewModel cleared, timer cancelled")
     }
+
+    fun updateFeedback(message: String) {
+        // 메시지가 같으면 업데이트 안 함 (불필요한 리컴포지션 방지)
+        if (_uiState.value.feedbackMessage == message) return
+
+        _uiState.update {
+            it.copy(feedbackMessage = message)
+        }
+    }
 }

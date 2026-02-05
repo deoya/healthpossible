@@ -8,7 +8,6 @@ import com.google.accompanist.permissions.PermissionStatus
 import com.google.accompanist.permissions.rememberPermissionState
 import com.hye.domain.model.mission.types.AiExerciseType
 import com.hye.domain.model.mission.types.ExerciseAgentType
-import com.hye.mission.ui.components.ondevice.camera.CameraPreviewContent
 import com.hye.mission.ui.components.ondevice.camera.PermissionDeniedContent
 import com.hye.mission.ui.components.recording.layout.BaseBottomBarContentLayout
 import com.hye.mission.ui.components.recording.layout.BaseSessionLayout
@@ -20,22 +19,29 @@ import com.hye.mission.ui.state.RecordState
 @Composable
 fun AiPostureSession(
     state: RecordState,
+    onIncreaseCount: () -> Unit, // 카운트 증가용
     onToggleBottomSheet: (Boolean) -> Unit,
     onSelectExerciseType: (AiExerciseType) -> Unit,
+    onUpdateFeedback: (String) -> Unit
 ) {
+    // 권한 체크
     val cameraPermissionState = rememberPermissionState(android.Manifest.permission.CAMERA)
-
     LaunchedEffect(Unit) {
-        if (cameraPermissionState.status !is PermissionStatus.Granted) {
             cameraPermissionState.launchPermissionRequest()
+        if (cameraPermissionState.status !is PermissionStatus.Granted) {
         }
     }
+
     BaseSessionLayout(
         backgroundContent = {
             when (cameraPermissionState.status) {
                 // [Case A] 권한 허용됨 -> 카메라 미리보기 표시
-                PermissionStatus.Granted -> {
-                    CameraPreviewContent()
+                is PermissionStatus.Granted -> {
+                    AiCameraContent(
+                        state = state,
+                        onRepCounted = onIncreaseCount,
+                        onFeedback = onUpdateFeedback
+                    )
                 }
 
                 // [Case B] 권한 거부됨 -> 안내 문구 및 요청 버튼 표시
@@ -81,6 +87,8 @@ fun PreviewExerciseSessionAi2() {
         ),
         onToggleBottomSheet = {},
         onSelectExerciseType = {},
+        onIncreaseCount = {},
+        onUpdateFeedback = {}
     )
 }
 
