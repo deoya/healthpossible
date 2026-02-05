@@ -1,5 +1,6 @@
 package com.hye.domain.model.mission
 
+import com.hye.domain.model.mission.types.AiExerciseType
 import com.hye.domain.model.mission.types.DietRecordMethod
 import com.hye.domain.model.mission.types.ExerciseRecordMode
 import com.hye.domain.model.mission.types.RestrictionType
@@ -10,7 +11,7 @@ data class MissionActionsByType(
     val onExerciseTargetChange: (String) -> Unit,
     val onExerciseSupportAgentToggle: (Boolean) -> Unit,
     val onChangeBottomSheetState : (Boolean) -> Unit,
-    val onSelectExerciseType : (String) -> Unit,
+    val onSelectExerciseType : (AiExerciseType) -> Unit,
 
     val onDietMethodChange: (DietRecordMethod) -> Unit,
 

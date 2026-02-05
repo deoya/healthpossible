@@ -26,20 +26,21 @@ import com.hye.domain.model.mission.types.RoutineMission
 import com.hye.domain.model.mission.types.type
 import com.hye.mission.ui.util.UserMissionCardStyle
 import com.hye.mission.ui.util.currentProgress
+import com.hye.mission.ui.util.exerciseAgentMission
 import com.hye.mission.ui.util.getDesign
 import com.hye.mission.ui.util.getTargetString
 import com.hye.mission.ui.util.notificationTimeString
+import com.hye.shared.theme.AppTheme
+import com.hye.shared.theme.toSp
 import com.hye.shared.ui.StyledCard
-import com.hye.shared.ui.icon.StyledIconBox
 import com.hye.shared.ui.chip.StyledTag
 import com.hye.shared.ui.chip.Tag
-import com.hye.shared.ui.text.TextBody
-import com.hye.shared.ui.text.TextSubheading
 import com.hye.shared.ui.common.completedColor
 import com.hye.shared.ui.common.completedIcon
 import com.hye.shared.ui.common.light
-import com.hye.shared.theme.AppTheme
-import com.hye.shared.theme.toSp
+import com.hye.shared.ui.icon.StyledIconBox
+import com.hye.shared.ui.text.TextBody
+import com.hye.shared.ui.text.TextSubheading
 import com.hye.shared.util.Calculator
 import java.time.LocalTime
 
@@ -48,7 +49,8 @@ import java.time.LocalTime
 @Composable
 fun UserMissionCard(
     missionWrapper: MissionWithRecord,
-    onClick: () -> Unit = {}
+    onClick: () -> Unit = {},
+    onNavigateToRecording: () -> Unit = {}
 ) {
     val mission = missionWrapper.mission
     val record = missionWrapper.record
@@ -65,7 +67,6 @@ fun UserMissionCard(
         is ExerciseMission -> Calculator.progress(mission.targetValue, currentProgress)
         else -> if (isCompleted) 1f else 0f
     }
-
     StyledCard(
         style = UserMissionCardStyle(isCompleted, 1f)
     ) {
@@ -127,7 +128,13 @@ fun UserMissionCard(
 
                 StartButton(
                     isInProgress = isInProgress && !isCompleted,
-                    onClick = onClick
+                    onClick = {
+                        if(mission.exerciseAgentMission) {
+                            onNavigateToRecording()
+                        } else {
+                            onClick()
+                        }
+                    }
                 )
             }
 

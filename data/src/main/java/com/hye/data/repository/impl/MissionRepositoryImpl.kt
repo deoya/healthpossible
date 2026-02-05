@@ -69,7 +69,19 @@ class MissionRepositoryImpl @Inject constructor(
     }.flowOn(Dispatchers.IO)
 
     override suspend fun getMission(id: String): MissionResult<Mission?> {
-        TODO("Not yet implemented")
+        return try {
+            val snapshot = getMissionCollection().document(id).get().await()
+
+            if (snapshot.exists() && snapshot.data != null) {
+                val mission = mapToMission(snapshot.id, snapshot.data!!)
+                MissionResult.Success(mission)
+            } else {
+                MissionResult.Error(Exception("미션을 찾을 수 없습니다."))
+            }
+        } catch (e: Exception) {
+            Timber.e(e, "getMission failed")
+            MissionResult.Error(e)
+        }
     }
 
     override suspend fun updateMission(id: String): MissionResult<Mission?> {

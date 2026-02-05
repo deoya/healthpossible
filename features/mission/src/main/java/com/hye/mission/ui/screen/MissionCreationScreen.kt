@@ -1,5 +1,8 @@
 package com.hye.mission.ui.screen
 
+import android.annotation.SuppressLint
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
@@ -20,6 +23,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.hye.domain.model.mission.MissionActionsByType
+import com.hye.domain.model.mission.types.AiExerciseType
 import com.hye.domain.model.mission.types.DayOfWeek
 import com.hye.domain.model.mission.types.MissionType
 import com.hye.domain.model.mission.types.type
@@ -114,7 +118,7 @@ fun MissionCreationScreenBody(
     onCategorySelected: (MissionType) -> Unit,
     onMemoChange: (String) -> Unit,
     onDismissBottomSheet: (Boolean) -> Unit,
-    onSelectExerciseType: (String) -> Unit
+    onSelectExerciseType: (AiExerciseType) -> Unit
 ) {
     val inputMission = uiState.inputMission
 
@@ -223,6 +227,8 @@ fun MissionCreationScreenBody(
         }
     }
 }
+@RequiresApi(Build.VERSION_CODES.O)
+@SuppressLint("SuspiciousIndentation")
 @Preview(showBackground = true)
 @Composable
 fun Preview_MissionCreationScreen() {

@@ -25,7 +25,7 @@ import java.time.format.DateTimeFormatter
 val Mission.notificationTimeString: String
     @RequiresApi(Build.VERSION_CODES.O) @Composable
     get() = this.notificationTime?.format(
-            DateTimeFormatter.ofPattern(DateFormatType.SIMPLE_TIME.toString())
+            DateTimeFormatter.ofPattern(DateFormatType.SIMPLE_TIME.pattern)
         ) ?: R.string.mission_all_the_time.text
 
 @Composable

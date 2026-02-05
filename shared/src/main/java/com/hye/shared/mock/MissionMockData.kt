@@ -1,5 +1,7 @@
 package com.hye.shared.mock
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import com.hye.domain.model.mission.MissionRecord
 import com.hye.domain.model.mission.MissionWithRecord
 import com.hye.domain.model.mission.types.*
@@ -11,6 +13,7 @@ object MissionMockData {
     // 오늘 날짜 (예: "2024-02-14")
     private val today = "2024-02-14"
 
+    @RequiresApi(Build.VERSION_CODES.O)
     fun getMockMissions(): List<MissionWithRecord> {
         return listOf(
             // 1. [운동] 스쿼트 (아직 시작 안 함)
@@ -23,7 +26,7 @@ object MissionMockData {
                     memo = "바른 자세로 하기",
                     targetValue = 15,
                     unit = ExerciseRecordMode.SELECTED,
-                    selectedExercise = AiExerciseType.SQUAT.label,
+                    selectedExercise = AiExerciseType.SQUAT,
                     useSupportAgent = true
                 ),
                 record = null // 기록 없음

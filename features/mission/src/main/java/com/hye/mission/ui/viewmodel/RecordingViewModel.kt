@@ -7,9 +7,13 @@ import com.hye.domain.model.mission.types.AiSessionMode
 import com.hye.domain.model.mission.types.ExerciseAgentType
 import com.hye.domain.model.mission.types.ExerciseMission
 import com.hye.domain.model.mission.types.ExerciseRecordMode
+import com.hye.domain.repository.MissionRepository
+import com.hye.domain.result.MissionResult
+import com.hye.domain.usecase.mission.MissionUseCase
 import com.hye.domain.usecase.mission.UpdateMissionRecordUseCase
 import com.hye.mission.ui.state.RecordState
 import com.hye.shared.base.BaseViewModel
+import com.hye.shared.util.getCurrentFormattedTime
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -28,6 +32,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MissionRecordingViewModel @Inject constructor(
+    private val missionUseCase: MissionUseCase,
     private val updateMissionRecordUseCase: UpdateMissionRecordUseCase
 ): BaseViewModel() {
     private val _uiState = MutableStateFlow(RecordState())
@@ -35,6 +40,30 @@ class MissionRecordingViewModel @Inject constructor(
 
     private var timerJob: Job? = null
 
+    fun loadMission(id: String) {
+        viewModelScope.launch(commonCeh) {
+            Timber.d("LoadMission 시작! ID: $id")
+            _uiState.update { it.copy(isLoading = true) }
+            val mission = missionUseCase.getMission(id)
+            when(mission) {
+                is MissionResult.Success -> {
+                    val mission = mission.resultData
+                    if (mission is ExerciseMission) {
+                        initSession(mission)
+                    } else {
+                        _uiState.update { it.copy(isLoading = false, errorMessage = "운동 미션이 아닙니다.") }
+                    }
+                }
+                is MissionResult.Error -> {
+                    Timber.e("미션 로드 실패: ${mission.exception}")
+                _uiState.update { it.copy(isLoading = false, errorMessage = "미션을 불러오지 못했습니다.") }
+             }
+            else -> {
+                _uiState.update { it.copy(isLoading = false) }
+            }
+            }
+        }
+    }
     fun initSession(mission: ExerciseMission) {
         viewModelScope.launch(commonCeh) {
             _uiState.update {
@@ -58,12 +87,11 @@ class MissionRecordingViewModel @Inject constructor(
                         )
                     }
                     ExerciseRecordMode.SELECTED -> {
-                        val type = AiExerciseType.values().find { it.name == mission.selectedExercise }
-                            ?: AiExerciseType.SQUAT
+                        val type = mission.selectedExercise ?: AiExerciseType.SQUAT
 
                         AiSessionMode.AiRepMode(
                             exerciseType = type,
-                            targetCount = type.defaultTarget
+                            targetCount = mission.targetValue
                         )
                     }
                 }
@@ -179,7 +207,7 @@ class MissionRecordingViewModel @Inject constructor(
         // ✅ 변수 대신 State에서 꺼내 씀
         val mission = _uiState.value.mission ?: return
 
-        val todayDate = LocalDate.now().toString()
+        val todayDate = getCurrentFormattedTime()
         val recordId = "${mission.id}_$todayDate"
 
         val record = MissionRecord(
@@ -188,7 +216,7 @@ class MissionRecordingViewModel @Inject constructor(
             date = todayDate,
             progress = progress,
             isCompleted = isCompleted,
-            completedAt = if (isCompleted) LocalTime.now().toString() else null
+            completedAt = if (isCompleted) getCurrentFormattedTime() else null
         )
 
         updateMissionRecordUseCase(record)
