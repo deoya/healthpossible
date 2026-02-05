@@ -3,6 +3,7 @@ package com.hye.mission.ui.screen
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -20,13 +21,20 @@ import com.hye.shared.util.text
 
 @Composable
 fun ExerciseRecordingScreen(
-    viewModel: MissionRecordingViewModel = hiltViewModel()
+    viewModel: MissionRecordingViewModel = hiltViewModel(),
+    missionId: String,
+    onNavigateBack: () -> Unit = {}
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+    LaunchedEffect (missionId) {
+        viewModel.loadMission(missionId)
+    }
+
     BaseScreenTemplate(
         viewModel = viewModel,
         screenName = R.string.mission_exercise_recording_screen.text,
-        isLoading = uiState.isRunning,
+        isLoading = uiState.isLoading,
         errorMessage = uiState.errorMessage,
     ){
         ExerciseSessionContent(

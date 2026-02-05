@@ -12,10 +12,10 @@ data class ExerciseMission(
 
     // 특화 설정
     val targetValue: Int,      // 목표 수치 (예: 30)
-    val unit: ExerciseRecordMode,      // 단위 (예: TIME -> 30분)
+    val unit: ExerciseRecordMode,
     val useSupportAgent: Boolean = false,        // 자세교정 AI 및 만보기 사용 여부
 
-    val selectedExercise: String? = null
+    val selectedExercise: AiExerciseType? = null
 ) : Mission
 
 enum class ExerciseRecordMode(val label: String, val agentTask: String) {

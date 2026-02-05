@@ -19,4 +19,7 @@ sealed interface ContentNavRouteDef : HPNavigation {
     @Serializable
     data object MissionRecommendationTab: ContentNavRouteDef
 
+    @Serializable
+    data class ExerciseRecordingView(val missionId: String) : ContentNavRouteDef
+
 }

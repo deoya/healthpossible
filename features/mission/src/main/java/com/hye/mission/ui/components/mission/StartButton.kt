@@ -19,7 +19,7 @@ import com.hye.shared.util.text
 @Composable
 fun StartButton(
     isInProgress: Boolean,
-    onClick: () -> Unit
+    onClick: () -> Unit,
 ) {
     if (isInProgress) {
         StyledButton (

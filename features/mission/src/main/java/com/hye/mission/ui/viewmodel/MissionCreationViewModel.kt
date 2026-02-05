@@ -2,6 +2,7 @@ package com.hye.mission.ui.viewmodel
 
 import androidx.lifecycle.viewModelScope
 import com.hye.domain.factory.MissionFactory
+import com.hye.domain.model.mission.types.AiExerciseType
 import com.hye.domain.model.mission.types.DayOfWeek
 import com.hye.domain.model.mission.types.DietMission
 import com.hye.domain.model.mission.types.DietRecordMethod
@@ -42,16 +43,17 @@ class MissionCreationViewModel @Inject constructor(
         _uiStatus.update { it.copy(isBottomSheetOpen = isOpen) }
     }
 
-    fun selectExerciseType(typeLabel: String) {
+    fun selectExerciseType(type: AiExerciseType) {
         _uiStatus.update { state ->
             val nextState = state.copy(
-                selectedExerciseType = typeLabel,
+                selectedExerciseType = type.label,
                 isBottomSheetOpen = false
             )
             when(state.inputMission){
                 is ExerciseMission -> {
                     val updatedMission = state.inputMission.copy(
-                        selectedExercise = typeLabel
+                        selectedExercise = type,
+                        targetValue = type.defaultTarget
                     )
                     nextState.copy(inputMission = updatedMission)
                 }

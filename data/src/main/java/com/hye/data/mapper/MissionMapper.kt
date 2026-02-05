@@ -3,6 +3,7 @@ package com.hye.data.mapper
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import com.hye.domain.model.mission.types.AiExerciseType
 import com.hye.domain.model.mission.types.DayOfWeek
 import com.hye.domain.model.mission.types.DietMission
 import com.hye.domain.model.mission.types.DietRecordMethod
@@ -34,8 +35,8 @@ fun missionToMap(mission: Mission): Map<String, Any?> {
             commonData["type"] = "EXERCISE"
             commonData["targetValue"] = mission.targetValue
             commonData["unit"] = mission.unit.name
-            commonData["useTimer"] = mission.useSupportAgent
-            commonData["selectedExercise"] = mission.selectedExercise
+            commonData["useSupportAgent"] = mission.useSupportAgent
+            commonData["selectedExercise"] = mission.selectedExercise?.name
         }
         is DietMission -> {
             commonData["type"] = "DIET"
@@ -57,6 +58,7 @@ fun missionToMap(mission: Mission): Map<String, Any?> {
 }
 
 // [조회용] Map -> Mission 객체 변환 (Type 기반으로 복구)
+@RequiresApi(Build.VERSION_CODES.O)
 fun mapToMission(id: String, data: Map<String, Any?>): Mission? {
     val type = data["type"] as? String ?: return null
 
@@ -83,8 +85,8 @@ fun mapToMission(id: String, data: Map<String, Any?>): Mission? {
             memo = memo,
             targetValue = (data["targetValue"] as? Number)?.toInt() ?: 0,
             unit = safeEnum<ExerciseRecordMode>(data["unit"] as? String) ?: ExerciseRecordMode.RUNNING,
-            useSupportAgent = data["useTimer"] as? Boolean ?: false,
-            selectedExercise = data["selectedExercise"] as? String
+            useSupportAgent = data["useSupportAgent"] as? Boolean ?: false,
+            selectedExercise = safeEnum<AiExerciseType>(data["selectedExercise"] as? String)
         )
         "DIET" -> DietMission(
             id = id,

@@ -39,7 +39,8 @@ import com.hye.shared.util.text
 fun MissionListScreen(
     viewModel: MissionViewModel = hiltViewModel(),
     setTopBarActions: ((@Composable () -> Unit)?) -> Unit,
-    onNavigateBack: () -> Unit = {}
+    onNavigateBack: () -> Unit = {},
+    onNavigateToRecording: (String) -> Unit = {}
 ) {
     val uiState by viewModel.uiStatus.collectAsStateWithLifecycle()
 
@@ -61,18 +62,20 @@ fun MissionListScreen(
             )
         }
     ) {
-        // ✅ UI 그리는 부분을 별도 함수로 분리 (Stateless)
         MissionListContent(
             uiState = uiState,
-            onMissionClick = viewModel::onStartButtonClicked
+            onMissionClick = viewModel::onStartButtonClicked,
+            onNavigateToRecording = onNavigateToRecording
         )
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun MissionListContent(
     uiState: MissionState,
-    onMissionClick: (MissionWithRecord) -> Unit
+    onMissionClick: (MissionWithRecord) -> Unit,
+    onNavigateToRecording: (String) -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -114,7 +117,8 @@ fun MissionListContent(
                 items(uiState.missions) { item ->
                     UserMissionCard(
                         missionWrapper = item,
-                        onClick = { onMissionClick(item) }
+                        onClick = { onMissionClick(item) },
+                        onNavigateToRecording = { onNavigateToRecording(item.mission.id) }
                     )
                 }
             }
@@ -137,7 +141,8 @@ fun MissionListScreen_Preview() {
 
     MissionListContent(
         uiState = dummyState,
-        onMissionClick = {}
+        onMissionClick = {},
+        onNavigateToRecording = {},
     )
 }
 
@@ -147,6 +152,7 @@ fun MissionListScreen_Preview() {
 fun MissionListScreen_Empty_Preview() {
     MissionListContent(
         uiState = MissionState(missions = emptyList()),
-        onMissionClick = {}
+        onMissionClick = {},
+        onNavigateToRecording = {},
     )
 }

@@ -2,5 +2,7 @@
     <string name="add">추가</string>
     <string name="save">저장</string>
 
+    <string name="request_permission">권한 요청</string>
+    <string name="camera_permission_denied">카메라 권한이 거부되었습니다.\n설정에서 권한을 허용해주세요. 🥲</string>
 
 </resources>

@@ -94,3 +94,8 @@ val Float.cheerMessage: String
 
         return messages[index]
     }
+
+
+
+val Mission.exerciseAgentMission : Boolean
+    get() = this is ExerciseMission && useSupportAgent
