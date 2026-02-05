@@ -23,6 +23,8 @@ import com.hye.shared.ui.StyledDivider
 import com.hye.shared.ui.sheet.CommonBottomSheet
 import com.hye.shared.ui.text.TextDescription
 import com.hye.shared.ui.text.TitleMedium
+import com.hye.features.mission.R
+import com.hye.shared.util.text
 
 
 @Composable
@@ -57,7 +59,7 @@ fun BoxScope.AiPostureBottomSheet(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Column {
-                            TitleMedium("운동 종류 변경")
+                            TitleMedium(R.string.mission_change_exercise_type.text)
                             TextDescription(progressText)
                         }
                     }

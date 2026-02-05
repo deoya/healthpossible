@@ -20,4 +20,14 @@
 
     <string name="mission_in_progress">진행 중</string>
 
+
+    <string name="mission_camera_permission_for_exercise">운동 자세 분석을 위해\n카메라 권한이 필요합니다. 👉</string>
+    <string name="mission_change_exercise_type">운동 종목 변경</string>
+
+    <string-array name="mission_squat_feedback_messages">
+        <item>준비 자세</item>
+        <item>천천히 내려가세요</item>
+        <item>조금만 더 깊게!</item>
+        <item>좋아요! 👍</item>
+    </string-array>
 </resources>
