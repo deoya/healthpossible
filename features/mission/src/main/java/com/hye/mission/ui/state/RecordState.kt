@@ -2,6 +2,7 @@ package com.hye.mission.ui.state
 
 import com.hye.domain.model.mission.types.AiSessionMode
 import com.hye.domain.model.mission.types.ExerciseAgentType
+import com.hye.domain.model.mission.types.ExerciseMission
 
 
 // UI 상태 정의
@@ -19,7 +20,7 @@ data class RecordState(
     val isRunning: Boolean = false,
 
     val currentStep : Int = 0,
-
+    val mission: ExerciseMission? = null,
 
 ) {
     // 1. 현재 운동 이름 (UI 표시용)
@@ -59,5 +60,4 @@ data class RecordState(
     private fun formatTime(seconds: Int): String {
         return "%02d:%02d".format(seconds / 60, seconds % 60)
     }
-
 }

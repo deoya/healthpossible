@@ -1,11 +1,13 @@
 package com.hye.mission.ui.viewmodel
 
 import androidx.lifecycle.viewModelScope
+import com.hye.domain.model.mission.MissionRecord
 import com.hye.domain.model.mission.types.AiExerciseType
 import com.hye.domain.model.mission.types.AiSessionMode
 import com.hye.domain.model.mission.types.ExerciseAgentType
 import com.hye.domain.model.mission.types.ExerciseMission
 import com.hye.domain.model.mission.types.ExerciseRecordMode
+import com.hye.domain.usecase.mission.UpdateMissionRecordUseCase
 import com.hye.mission.ui.state.RecordState
 import com.hye.shared.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -14,15 +16,19 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.time.LocalDate
+import java.time.LocalTime
 import javax.inject.Inject
 
 @HiltViewModel
 class MissionRecordingViewModel @Inject constructor(
-
+    private val updateMissionRecordUseCase: UpdateMissionRecordUseCase
 ): BaseViewModel() {
     private val _uiState = MutableStateFlow(RecordState())
     val uiState: StateFlow<RecordState> = _uiState.asStateFlow()
@@ -31,7 +37,8 @@ class MissionRecordingViewModel @Inject constructor(
 
     fun initSession(mission: ExerciseMission) {
         viewModelScope.launch(commonCeh) {
-            _uiState.update { it.copy(isLoading = true, errorMessage = null) }
+            _uiState.update {
+                it.copy(isLoading = true, errorMessage = null, mission = mission) }
 
             Timber.d("Initializing session for mission: ${mission.title}")
 
@@ -60,7 +67,6 @@ class MissionRecordingViewModel @Inject constructor(
                         )
                     }
                 }
-
                 // 초기화 성공 상태 업데이트
                 _uiState.update {
                     it.copy(
@@ -69,7 +75,6 @@ class MissionRecordingViewModel @Inject constructor(
                         sessionMode = initialMode
                     )
                 }
-
                 // 세션 시작과 동시에 타이머 가동
                 startTimer()
 
@@ -167,5 +172,27 @@ class MissionRecordingViewModel @Inject constructor(
         _uiState.update {
             it.copy(feedbackMessage = message)
         }
+    }
+
+    // DB 저장 로직
+    private fun saveProgressToDb(progress: Int, isCompleted: Boolean) {
+        // ✅ 변수 대신 State에서 꺼내 씀
+        val mission = _uiState.value.mission ?: return
+
+        val todayDate = LocalDate.now().toString()
+        val recordId = "${mission.id}_$todayDate"
+
+        val record = MissionRecord(
+            id = recordId,
+            missionId = mission.id,
+            date = todayDate,
+            progress = progress,
+            isCompleted = isCompleted,
+            completedAt = if (isCompleted) LocalTime.now().toString() else null
+        )
+
+        updateMissionRecordUseCase(record)
+            .onEach { Timber.d("Save result: $it") }
+            .launchIn(viewModelScope)
     }
 }
