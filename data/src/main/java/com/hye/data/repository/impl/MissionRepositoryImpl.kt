@@ -20,6 +20,7 @@ import kotlinx.coroutines.tasks.await
 import timber.log.Timber
 import javax.inject.Inject
 
+//Todo : 리소스로 관리 할 것
 class MissionRepositoryImpl @Inject constructor(
     private val firestore: FirebaseFirestore
 ): MissionRepository {
