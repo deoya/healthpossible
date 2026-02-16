@@ -1,8 +1,10 @@
 package com.hye.shared.theme
 
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.staticCompositionLocalOf
@@ -10,6 +12,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+
 
 data class HPAppDimens(
     val zero : Dp = 0.dp,
@@ -38,7 +41,6 @@ data class HPAppDimens(
     val iconBox: Dp =52.dp,
     val bigDimen: Dp = 80.dp,
     val runnigSimplePillHeight : Dp = 120.dp,
-    val bottomBarPadding : Dp = 80.dp,
     val dropDownMenuAddMisionPadding :Dp = 110.dp,
 
     val alphaMuted: Float = 0.2f,
@@ -59,35 +61,45 @@ data class HPAppDimens(
     val delayed : Long = 2000L,
 
     val thumbSize : Dp = 64.dp,
-    val exciseTypeThumbnailSize : Dp = 64.dp
+    val exciseTypeThumbnailSize : Dp = 64.dp,
+    //bottombar
+    val bottomBarPadding : Dp = 80.dp,
+    val bottomBarCurveWidth : Dp = 85.dp,
+    val bottomBarCurveHeight : Dp = 35.dp,
+    val bottomBarContentHeight : Dp = 60.dp,
+    val bottomBarFabSize : Dp = 64.dp,
+    val bottomBarFabOffset : Dp = (-10).dp,
+    val bottomBaRleisurelyHeight : Dp = 90.dp,
 
 )
-
-
 val Dp.toSp
     @Composable
     @ReadOnlyComposable
     get() =  with(LocalDensity.current) { this@toSp.toSp() }
-/**
- * LazyColumn과 같은 스크롤 컨테이너를 위한 콘텐츠 패딩으로,
- * 하단에 추가적인 공간(보통 BottomAppBar를 위한 공간)을 확보합니다.
- */
+
+@Composable
+@ReadOnlyComposable
+private fun Int.toDp(density: androidx.compose.ui.unit.Density) = with(density) { this@toDp.toDp() }
+
 val HPAppDimens.ScaffoldContentPaddingWithBottomBar: PaddingValues
     @Composable
-    @ReadOnlyComposable
     get() {
         val layoutDirection = LocalLayoutDirection.current
+        val density = LocalDensity.current
+
         val basePadding = PaddingValues(md)
-        val bottomBarHeight =60.dp// 하단 여백 높이 (중앙 관리)
+
+        val navBarHeight = WindowInsets.navigationBars.getBottom(density).toDp(density)
+
+        val bottomBarHeight = 60.dp
 
         return PaddingValues(
             start = basePadding.calculateStartPadding(layoutDirection),
             end = basePadding.calculateEndPadding(layoutDirection),
             top = md,
-            bottom = md + bottomBarHeight
+            bottom = md + bottomBarHeight + navBarHeight
         )
     }
-
 
 val LocalDimens = staticCompositionLocalOf {
     HPAppDimens()
