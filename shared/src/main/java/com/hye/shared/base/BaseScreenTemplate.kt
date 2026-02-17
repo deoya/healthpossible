@@ -29,11 +29,9 @@ fun BaseScreenTemplate(
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
-            // 테마 색상을 사용한 로딩바
             CircularProgressIndicator(color = AppTheme.colors.mainColor)
         }
     },
-    //Todo : 커스텀 좀 더 하기
     errorContent: @Composable (String) -> Unit = { msg ->
         Box(
             modifier = Modifier.fillMaxSize(),
@@ -65,7 +63,6 @@ fun BaseScreenTemplate(
     LaunchedEffect(topBarActionContent) {
         setTopBarActions(topBarActionContent)
     }
-
 
     when {
         isLoading -> loadingContent()

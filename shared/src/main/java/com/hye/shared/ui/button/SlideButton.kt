@@ -38,7 +38,6 @@ import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
 
-// =================================================================================
 @Composable
 fun SlideButton(
     modifier: Modifier = Modifier,

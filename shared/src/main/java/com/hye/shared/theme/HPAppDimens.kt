@@ -40,7 +40,7 @@ data class HPAppDimens(
     val bigBtn: Dp = 50.dp,
     val iconBox: Dp =52.dp,
     val bigDimen: Dp = 80.dp,
-    val runnigSimplePillHeight : Dp = 120.dp,
+    val runningSimplePillHeight : Dp = 120.dp,
     val dropDownMenuAddMisionPadding :Dp = 110.dp,
 
     val alphaMuted: Float = 0.2f,
@@ -71,11 +71,19 @@ data class HPAppDimens(
     val bottomBarFabOffset : Dp = (-10).dp,
     val bottomBaRleisurelyHeight : Dp = 90.dp,
 
-)
+    //말풍선
+    val agentBubbleStrokeWidth: Dp = 1.5.dp,
+    val agentBubbleStrokeGap: Dp = 3.dp,
+
+    )
 val Dp.toSp
     @Composable
     @ReadOnlyComposable
     get() =  with(LocalDensity.current) { this@toSp.toSp() }
+val Dp.toPx
+    @Composable
+    @ReadOnlyComposable
+    get() =  with(LocalDensity.current) { this@toPx.toPx() }
 
 @Composable
 @ReadOnlyComposable

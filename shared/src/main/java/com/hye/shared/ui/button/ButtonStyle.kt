@@ -10,45 +10,85 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import com.hye.shared.theme.AppTheme
+import com.hye.shared.util.ClickGuard
+import com.hye.shared.util.ClickGuard.rememberSafeClick
 
-@Composable
-fun StyledButton(
-    onClick: () -> Unit,
-    shape: Dp = AppTheme.dimens.s,
-    containerColor: Color = AppTheme.colors.mainColor,
-    contentColor: Color = AppTheme.colors.background,
-    elevation: Dp = AppTheme.dimens.zero,
-    contentPadding: PaddingValues = ButtonDefaults.ContentPadding,
-    modifier: Modifier = Modifier,
-    content: @Composable () -> Unit
-) {
-
-    Button(
-        onClick = onClick,
-        shape = RoundedCornerShape(shape),
-        colors = ButtonDefaults.buttonColors(
-            containerColor = containerColor,
-            contentColor = contentColor
-        ),
-        elevation = ButtonDefaults.buttonElevation(elevation),
-        modifier = modifier,
-        contentPadding = contentPadding
+object StyledButton {
+    @Composable
+    operator fun invoke(
+        onClick: () -> Unit,
+        shape: Dp = AppTheme.dimens.s,
+        containerColor: Color = AppTheme.colors.mainColor,
+        contentColor: Color = AppTheme.colors.background,
+        elevation: Dp = AppTheme.dimens.zero,
+        contentPadding: PaddingValues = ButtonDefaults.ContentPadding,
+        modifier: Modifier = Modifier,
+        content: @Composable () -> Unit
     ) {
-        content()
+        Button(
+            onClick = onClick,
+            shape = RoundedCornerShape(shape),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = containerColor,
+                contentColor = contentColor
+            ),
+            elevation = ButtonDefaults.buttonElevation(elevation),
+            modifier = modifier,
+            contentPadding = contentPadding
+        ) {
+            content()
+        }
+    }
+
+    @Composable
+    fun SafeClick(
+        onClick: () -> Unit,
+        shape: Dp = AppTheme.dimens.s,
+        containerColor: Color = AppTheme.colors.mainColor,
+        contentColor: Color = AppTheme.colors.background,
+        elevation: Dp = AppTheme.dimens.zero,
+        contentPadding: PaddingValues = ButtonDefaults.ContentPadding,
+        modifier: Modifier = Modifier,
+        content: @Composable () -> Unit
+    ){
+        invoke(
+            onClick = rememberSafeClick{onClick},
+            shape = shape,
+            containerColor = containerColor,
+            contentColor = contentColor,
+            elevation = elevation,
+            contentPadding = contentPadding,
+            modifier = modifier,
+            content = content
+        )
     }
 }
 
-@Composable
-fun StyledIconButton(
-    onClick: () -> Unit,
-    icon: @Composable () -> Unit,
-    modifier: Modifier = Modifier,
-){
-    IconButton(
-        onClick = {onClick()},
-        modifier = modifier
-    ) {
-       icon()
+object StyledIconButton{
+    @Composable
+    operator fun invoke(
+        onClick: () -> Unit,
+        icon: @Composable () -> Unit,
+        modifier: Modifier = Modifier,
+    ){
+        IconButton(
+            onClick = onClick,
+            modifier = modifier
+        ) {
+            icon()
+        }
+    }
+    @Composable
+    fun SafeClick(
+        onClick: () -> Unit,
+        icon: @Composable () -> Unit,
+        modifier: Modifier = Modifier,
+    ){
+        invoke(
+            onClick = rememberSafeClick{onClick},
+            icon = icon,
+            modifier = modifier
+        )
     }
 }
 
