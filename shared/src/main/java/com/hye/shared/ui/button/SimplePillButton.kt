@@ -23,7 +23,6 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import com.hye.shared.theme.AppTheme
-import com.hye.shared.ui.icon.SimplePillIcon
 
 
 @Composable

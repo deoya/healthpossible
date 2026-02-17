@@ -1,7 +1,11 @@
 package com.hye.shared.theme
 
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.Dp
 
 data class HPAppColors (
     // 기본 테마 색상
@@ -93,5 +97,11 @@ val LightColors = HPAppColors(
     mapSimulationColor = Color(0xFFE5E7EB),
     InheritColor = Color.Transparent
 )
+
+val Color.alphaPrimary
+    @Composable
+    @ReadOnlyComposable
+    get() =  with(LocalDensity.current) { this@alphaPrimary.copy(alpha = AppTheme.dimens.alphaPrimary) }
+
 
 val LocalColors = staticCompositionLocalOf { LightColors }
