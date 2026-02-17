@@ -38,6 +38,7 @@ fun ExerciseTypeSelectorItem(
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(AppTheme.dimens.xxxxs),
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(AppTheme.dimens.s))
