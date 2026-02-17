@@ -13,6 +13,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import com.hye.domain.model.mission.types.ExerciseAgentType
 import com.hye.features.mission.R
 import com.hye.mission.ui.state.RecordState
 import com.hye.shared.theme.AppTheme
@@ -24,7 +25,7 @@ import com.hye.shared.util.text
 @Composable
 fun AiPostureContent_Preview() {
     AiPostureContent(
-        state = RecordState(),
+        state = RecordState(ExerciseAgentType.AI_POSTURE),
         onToggleBottomSheet = {},
     )
 }

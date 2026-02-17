@@ -84,7 +84,7 @@ fun BoxScope.AiPostureBottomSheet(
                         val isSelected = currentType == type
 
                         ExerciseTypeSelectorItem(
-                            type = currentType,
+                            type = type,
                             isSelected = isSelected,
                             onClick = { onSelectExercise(type) }
                         )

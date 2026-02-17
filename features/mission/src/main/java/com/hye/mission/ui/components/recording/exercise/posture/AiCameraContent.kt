@@ -15,20 +15,19 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
-import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.viewinterop.AndroidView
 import com.google.mlkit.vision.pose.Pose
 import com.google.mlkit.vision.pose.PoseDetection
 import com.google.mlkit.vision.pose.defaults.PoseDetectorOptions
 import com.hye.domain.model.mission.types.AiExerciseType
 import com.hye.domain.model.mission.types.AiSessionMode
+import com.hye.features.mission.R
 import com.hye.mission.ui.analyzer.AiPoseAnalyzer
 import com.hye.mission.ui.state.RecordState
+import com.hye.shared.util.text
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.asExecutor
 import timber.log.Timber
-import com.hye.features.mission.R
-import com.hye.shared.util.text
 
 @Composable
 fun AiCameraContent(
@@ -36,7 +35,6 @@ fun AiCameraContent(
     onRepCounted: () -> Unit,
     onFeedback: (String) -> Unit
 ) {
-
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     val tagName = R.string.mission_ai_camera_content.text
@@ -60,22 +58,18 @@ fun AiCameraContent(
     val cameraController = remember { LifecycleCameraController(context) }
     val executor = remember { Dispatchers.Default.limitedParallelism(1).asExecutor() }
 
-    //Todo : 더 좋은 관리법 강구해보기
-    val feedbackMessages = context.resources.getStringArray(
-        R.array.mission_squat_feedback_messages
-    ).toList()
-
     LaunchedEffect(cameraController, currentExercise) {
         Timber.tag(tagName).d("Starting camera session for $currentExercise")
         try {
             cameraController.cameraSelector = CameraSelector.DEFAULT_FRONT_CAMERA
             cameraController.bindToLifecycle(lifecycleOwner)
 
-            Timber.tag(tagName).d("Binding Analyzer: AiPoseAnalyzer")
+            Timber.tag(tagName).d("분석기 시작")
 
             cameraController.setImageAnalysisAnalyzer(
                 executor,
                 AiPoseAnalyzer(
+                    context = context,
                     aiPoseAnalyzerTagName= aiPoseAnalyzerTagName,
                     exerciseType = currentExercise,
                     poseDetector = poseDetector,
@@ -88,7 +82,6 @@ fun AiCameraContent(
                         imageWidth = w
                         imageHeight = h
                     },
-                    feedbackMessages = feedbackMessages
                 )
             )
         }catch (e:Exception){

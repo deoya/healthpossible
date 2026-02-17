@@ -14,7 +14,7 @@ import com.hye.shared.ui.sheet.CommonBottomSheet
 fun ExerciseSettingFormBottomSeet(
     onDismissRequest : (Boolean)-> Unit,
     selectedExerciseType : String,
-    itemOnclick : (String) -> Unit
+    itemOnclick : (AiExerciseType) -> Unit
 ) {
     CommonBottomSheet (
         sheetHeightFraction = AppTheme.dimens.sheetHeight,
@@ -32,7 +32,7 @@ fun ExerciseSettingFormBottomSeet(
                 ExerciseTypeSelectorItem (
                     type = exercise,
                     isSelected = selectedExerciseType == exercise.label,
-                    onClick = { itemOnclick(exercise.label) }
+                    onClick = { itemOnclick(exercise) }
                 )
             }
         }

@@ -24,10 +24,85 @@
     <string name="mission_camera_permission_for_exercise">운동 자세 분석을 위해\n카메라 권한이 필요합니다. 👉</string>
     <string name="mission_change_exercise_type">운동 종목 변경</string>
 
-    <string-array name="mission_squat_feedback_messages">
-        <item>준비 자세</item>
-        <item>천천히 내려가세요</item>
-        <item>조금만 더 깊게!</item>
-        <item>좋아요! 👍</item>
+
+    <string-array name="squat_descent_normal">
+        <item>요원, 엉덩이를 뒤로 빼며 하강.</item>
+        <item>무릎을 발끝 방향으로 여십시오.</item>
+        <item>발바닥 전체로 지지.</item>
     </string-array>
+
+    <string-array name="squat_descent_warning">
+        <item>속도 위반! 천천히 통제하십시오.</item>
+        <item>너무 빠릅니다. 근육으로 버티십시오.</item>
+    </string-array>
+
+    <string-array name="squat_bottom">
+        <item>타겟 확보. 허벅지 긴장 유지.</item>
+        <item>정지. 자세를 뇌에 각인하십시오.</item>
+    </string-array>
+
+    <string-array name="squat_ascent">
+        <item>발뒤꿈치로 지면을 밀어내며 상승!</item>
+        <item>힙 드라이브 가동. 엉덩이를 조이십시오.</item>
+    </string-array>
+
+    <string-array name="squat_error_knee">
+        <item>경보! 무릎을 바깥쪽으로 더 벌리십시오.</item>
+        <item>무릎 사이 간격 확보. 밴드를 찢는 느낌으로.</item>
+    </string-array>
+
+    <string-array name="squat_error_back">
+        <item>가슴을 펴십시오! 정면 주시.</item>
+        <item>상체 각도 추락. 허리를 세우십시오.</item>
+    </string-array>
+
+
+    <string-array name="lunge_descent_normal">
+        <item>전방으로 진입. 수직 하강하라.</item>
+        <item>무릎 각도 90도 확보.</item>
+        <item>상체 고정. 흔들리면 발각된다.</item>
+        <item>뒷무릎을 지면 5cm까지.</item>
+    </string-array>
+
+    <string-array name="lunge_descent_warning">
+        <item>경보! 앞무릎이 발끝을 넘었다.</item>
+        <item>중심이 쏠리고 있다. 후방으로 이동.</item>
+        <item>균형 제어 실패 위험.</item>
+    </string-array>
+
+    <string-array name="lunge_bottom">
+        <item>타겟 지점 도달. 하체 고립.</item>
+        <item>위치 사수. 허벅지를 불태워라.</item>
+        <item>완벽한 90도. 자세 유지.</item>
+    </string-array>
+
+    <string-array name="lunge_ascent">
+        <item>앞발로 지면을 타격하여 복귀.</item>
+        <item>폭발적 상승. 원위치로.</item>
+        <item>코어 잠금. 즉시 이탈.</item>
+    </string-array>
+
+    <string-array name="lunge_error_back">
+        <item>상체 붕괴 감지. 가슴을 펴라.</item>
+        <item>시선 정면. 땅을 보지 마라.</item>
+    </string-array>
+
+    <string name="mission_agent_missing">요원 실종. 통신 두절.</string>
+    <string name="mission_status_identifying">신원 확인 중... 자세 유지.</string>
+    <string name="mission_status_ready">작전 승인. 침투 준비 완료.</string>
+    <string name="mission_error_stand_straight">자세 이탈. 똑바로 서십시오.</string>
+    <string name="mission_error_return_to_screen">화면 안으로 복귀하라. 작전 재개 대기 중.</string>
+    <string name="mission_climax_alert">지금이 임무의 분기점입니다.</string>
+    <string-array name="mission_success_generic">
+        <item>성공. 한 단계 돌파.</item>
+        <item>적 제압 완료.</item>
+        <item>나이스 킬.</item>
+        <item>타겟 제거.</item>
+    </string-array>
+
+    <string name="mission_success_last_one">마지막 하나. 이것이 보고서에 기록됩니다.</string>
+    <string name="mission_success_complete">미션 완료. 데이터 저장 중... 훌륭했습니다.</string>
+    <string name="mission_success_mid_check">작전 %d회차 성공. 호흡 정비.</string>
+    <string name="mission_success_count_report">%d회. 순조롭습니다.</string>
+
 </resources>

@@ -1,8 +1,18 @@
 package com.hye.mission.ui.components.recording.exercise.posture
 
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionStatus
 import com.google.accompanist.permissions.rememberPermissionState
@@ -12,6 +22,7 @@ import com.hye.mission.ui.components.ondevice.camera.PermissionDeniedContent
 import com.hye.mission.ui.components.recording.layout.BaseBottomBarContentLayout
 import com.hye.mission.ui.components.recording.layout.BaseSessionLayout
 import com.hye.mission.ui.state.RecordState
+import com.hye.shared.theme.AppTheme
 
 //Todo: 이 화면에서는 가로모드 대응 해놓을 것
 //Todo : 권한관리
@@ -22,7 +33,8 @@ fun AiPostureSession(
     onIncreaseCount: () -> Unit, // 카운트 증가용
     onToggleBottomSheet: (Boolean) -> Unit,
     onSelectExerciseType: (AiExerciseType) -> Unit,
-    onUpdateFeedback: (String) -> Unit
+    onUpdateFeedback: (String) -> Unit,
+    onNavigateBack : () -> Unit
 ) {
     // 권한 체크
     val cameraPermissionState = rememberPermissionState(android.Manifest.permission.CAMERA)
@@ -55,6 +67,17 @@ fun AiPostureSession(
         },
         topBarContent = {
             // Todo: TopBar implementation
+            Column(modifier = Modifier.padding(top = 48.dp, start = AppTheme.dimens.l)) {
+                Surface(
+                    color = AppTheme.colors.background,
+                    shape = CircleShape,
+                    shadowElevation = AppTheme.dimens.xxxxs,
+                    modifier = Modifier.clickable { onNavigateBack() }
+                ) {
+                    Icon(Icons.Default.ArrowBack, null, modifier = Modifier.padding(AppTheme.dimens.xxs))
+                }
+            }
+
         },
         bottomBarContent = {
             BaseBottomBarContentLayout(
@@ -88,7 +111,8 @@ fun PreviewExerciseSessionAi2() {
         onToggleBottomSheet = {},
         onSelectExerciseType = {},
         onIncreaseCount = {},
-        onUpdateFeedback = {}
+        onUpdateFeedback = {},
+        onNavigateBack = {}
     )
 }
 

@@ -19,7 +19,14 @@ sealed interface ContentNavRouteDef : HPNavigation {
     @Serializable
     data object MissionRecommendationTab: ContentNavRouteDef
 
+
+    //Todo : 현재 어떤 운동을 시작했는지 추가 할 것
     @Serializable
     data class ExerciseRecordingView(val missionId: String) : ContentNavRouteDef
+
+    @Serializable
+    data object ExerciseRecordingViewToRunning : ContentNavRouteDef
+
+
 
 }
