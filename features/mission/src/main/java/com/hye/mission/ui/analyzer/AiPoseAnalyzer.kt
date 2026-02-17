@@ -85,8 +85,8 @@ class AiPoseAnalyzer(
                         // 2. 카테고리 별 로직 분기
                         when (exerciseType) {
                             AiExerciseType.SQUAT -> checkSquatLogic(pose)
-                            // Todo : 추후 LUNGE, PLANK 등 추가 예정
-                            else -> {}
+                            AiExerciseType.LUNGE -> checkLungeLogic(pose)
+                            else -> {} // 추후 추가
                         }
                     } catch (e: Exception) {
                         Timber.tag(aiPoseAnalyzerTagName).e(e, "Analysis Error")
