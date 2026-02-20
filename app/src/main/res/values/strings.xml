@@ -12,4 +12,19 @@
     <string name="menu_item_add_mission_self">직접 추가</string>
 
     <string name="copyright">© 2026 Mission! HealthPossible</string>
+
+    <!-- 온보딩 -->
+    <string name="codename">코드네임</string>
+    <!-- Todo: 코드네임만 변경시 연관된 데이터도 자동 변경될 수 있도록 바꿔놓기-->
+    <string name="error_codename_already_use">이미 사용 중인 코드네임입니다</string>
+    <string name="error_codename_length">2글자 이상 입력해주세요</string>
+    <string name="first_greeting">CONFIDENTIAL: OPERATION HEALTHPOSSIBLE</string>
+
+    <string name="second_greeting">반갑습니다, 요원님. 당신의 일상을 재설계할 특수 작전, 'HealthPossible'이 지금부터 시작됩니다.\n\n본 작전에 사용하실 코드네임을 입력해 주십시오</string>
+    <string name="onboarding_link_kakao_description">KaKao 계정에 연결된 요원 정보를 불러옵니다</string>
+    <string name="start_button">시작하기</string>
+
+
+
+
 </resources>

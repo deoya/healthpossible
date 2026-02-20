@@ -25,9 +25,8 @@ import com.hye.shared.ui.button.StyledSwitch
 import com.hye.shared.ui.chip.StyledFilterChip
 import com.hye.shared.ui.text.LabelMedium
 import com.hye.shared.ui.text.LabelSmall
-import com.hye.shared.ui.text.StyledTextField
 import com.hye.shared.ui.text.TextBody
-import com.hye.shared.ui.text.TextFieldStyle
+import com.hye.shared.ui.text.StyledInputField
 import com.hye.shared.util.text
 
 @Composable
@@ -92,13 +91,11 @@ private fun InputTargetAount(
     onTargetValueChange: (String) -> Unit
 ) {
     LabelMedium(R.string.mission_plan_goal.text)
-    StyledTextField(
-        TextFieldStyle(
+    StyledInputField(
             value = targetValue,
             onValueChange = { if (it.all { char -> char.isDigit() }) onTargetValueChange(it) },
             placeholder = R.string.mission_plan_running_goal_placeholder.text,
             keyboardType = KeyboardType.Number
-        )
     )
 }
 
@@ -108,8 +105,7 @@ private fun SeleteExciseType(
     onSelectClick: () -> Unit
 ) {
     Box(modifier = Modifier.fillMaxWidth()) {
-        StyledTextField(
-            TextFieldStyle(
+        StyledInputField(
                 value = exSelectedName,
                 onValueChange = {},
                 placeholder = R.string.mission_plan_select_excise_type_placeholder.text,
@@ -121,7 +117,6 @@ private fun SeleteExciseType(
                         tint = AppTheme.colors.textSecondary
                     )
                 }
-            )
         )
         // 투명한 클릭 영역 오버레이
         Box(

@@ -32,6 +32,16 @@ fun MenuLabel(
     fontWeight = weight,
     fontSize = size
 )
+
+@Composable
+fun ErrorMessage(errorMessage: String,errorColor : Color = AppTheme.colors.error, modifier: Modifier = Modifier.padding(top = AppTheme.dimens.xxxxs, start = AppTheme.dimens.xxs)) = Text(
+    text= errorMessage,
+    color = errorColor,
+    style = MaterialTheme.typography.labelSmall,
+    modifier = modifier
+)
+
+
 @Composable
 fun TextDescription(
     text: String,
@@ -54,14 +64,16 @@ fun TextSubheading(
     size: TextUnit = TextUnit.Unspecified,
     color: Color = AppTheme.colors.textSecondary,
     modifier: Modifier = Modifier,
-    weight: FontWeight = FontWeight.Normal
+    weight: FontWeight = FontWeight.Normal,
+    lineHeight: TextUnit = TextUnit.Unspecified,
 ) = Text(
     text = text,
     style = MaterialTheme.typography.bodyLarge,
     fontWeight = weight,
     color = color,
     modifier = modifier,
-    fontSize = size
+    fontSize = size,
+    lineHeight = lineHeight,
 )
 
 @Composable
@@ -115,7 +127,7 @@ fun LabelMedium(text:String, fontWeight: FontWeight = FontWeight.Normal, color: 
 )
 
 @Composable
-fun DisplayTextSmall(text: String, color : Color = AppTheme.colors.background,modifier: Modifier = Modifier) = Text(
+fun DisplayTextSmall(text: String, color : Color = AppTheme.colors.textPrimary,modifier: Modifier = Modifier) = Text(
     text = text,
     style = MaterialTheme.typography.displaySmall,
     fontWeight = FontWeight.Bold,

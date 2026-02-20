@@ -16,14 +16,14 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import com.hye.domain.model.mission.types.DayOfWeek
 import com.hye.features.mission.R
-import com.hye.shared.ui.text.StyledInputSection
-import com.hye.shared.ui.common.selectionFontWeight
+import com.hye.shared.theme.AppTheme
 import com.hye.shared.ui.common.selectionBtnColor
 import com.hye.shared.ui.common.selectionContentColor
+import com.hye.shared.ui.common.selectionFontWeight
 import com.hye.shared.ui.text.MenuLabel
-import com.hye.shared.ui.text.TextFieldStyle
+import com.hye.shared.ui.text.StyledInputSection
 import com.hye.shared.ui.text.TitleMedium
-import com.hye.shared.theme.AppTheme
+import com.hye.shared.ui.text.StyledInputField
 import com.hye.shared.util.text
 
 @Composable
@@ -34,13 +34,16 @@ fun CommonInputSection(
     onDayToggle: (DayOfWeek) -> Unit
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(AppTheme.dimens.xxl)) {
+
         StyledInputSection(
             label = { TitleMedium(R.string.mission_plan_title.text) },
-            TextFieldStyle(
-                value = name,
-                onValueChange = onNameChange,
-                placeholder = R.string.mission_plan_title_placeholder.text
-            )
+            text = {
+                StyledInputField(
+                    value = name,
+                    onValueChange = onNameChange,
+                    placeholder = R.string.mission_plan_title_placeholder.text
+                )
+            }
         )
 
 
@@ -76,7 +79,7 @@ fun CommonInputSection(
 
 @Preview
 @Composable
-fun Preview_CommonInputSection(){
+fun Preview_CommonInputSection() {
     CommonInputSection(
         name = "",
         onNameChange = {},
