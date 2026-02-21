@@ -9,11 +9,10 @@ import com.hye.domain.model.mission.types.AiExerciseType
 import com.hye.mission.ui.components.recording.exercise.posture.ExerciseTypeSelectorItem
 import com.hye.shared.theme.AppTheme
 import com.hye.shared.ui.sheet.CommonBottomSheet
-
 @Composable
 fun ExerciseSettingFormBottomSeet(
     onDismissRequest : (Boolean)-> Unit,
-    selectedExerciseType : String,
+    selectedExerciseType : AiExerciseType?,
     itemOnclick : (AiExerciseType) -> Unit
 ) {
     CommonBottomSheet (
@@ -31,7 +30,7 @@ fun ExerciseSettingFormBottomSeet(
             itemsIndexed(AiExerciseType.entries) { _, exercise ->
                 ExerciseTypeSelectorItem (
                     type = exercise,
-                    isSelected = selectedExerciseType == exercise.label,
+                    isSelected = selectedExerciseType == exercise,
                     onClick = { itemOnclick(exercise) }
                 )
             }

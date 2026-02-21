@@ -16,7 +16,19 @@ data class ExerciseMission(
     val useSupportAgent: Boolean = false,        // 자세교정 AI 및 만보기 사용 여부
 
     val selectedExercise: AiExerciseType? = null
-) : Mission
+) : Mission{
+    override fun updateCommon(
+        title: String,
+        days: Set<DayOfWeek>,
+        memo: String?,
+        notificationTime: LocalTime?
+    ): Mission = copy(
+        title = title,
+        days = days,
+        memo = memo,
+        notificationTime = notificationTime
+    )
+}
 
 enum class ExerciseRecordMode(val label: String, val agentTask: String) {
     RUNNING("러닝", "걸음 수"),

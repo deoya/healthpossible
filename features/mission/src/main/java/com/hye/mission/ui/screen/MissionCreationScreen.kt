@@ -26,17 +26,16 @@ import com.hye.domain.model.mission.MissionActionsByType
 import com.hye.domain.model.mission.types.AiExerciseType
 import com.hye.domain.model.mission.types.DayOfWeek
 import com.hye.domain.model.mission.types.MissionType
-import com.hye.domain.model.mission.types.type
 import com.hye.features.mission.R
 import com.hye.mission.ui.components.form.MissionForm
 import com.hye.mission.ui.components.form.common.CategorySelectionTab
 import com.hye.mission.ui.components.form.common.CommonInputSection
 import com.hye.mission.ui.components.form.type.exercise.ExerciseSettingFormBottomSeet
 import com.hye.mission.ui.components.mission.MissionCreationContent
-import com.hye.mission.ui.viewmodel.MissionCreationViewModel
 import com.hye.mission.ui.state.MissionState
 import com.hye.mission.ui.util.SettingRules.ANIMATION_SPEC
 import com.hye.mission.ui.util.getDesign
+import com.hye.mission.ui.viewmodel.MissionCreationViewModel
 import com.hye.shared.base.BaseScreenTemplate
 import com.hye.shared.mock.MissionMockData
 import com.hye.shared.theme.AppTheme
@@ -47,13 +46,12 @@ import com.hye.shared.ui.common.selectionContentColor
 import com.hye.shared.ui.menu.MenuStyle
 import com.hye.shared.ui.menu.StyledMenu
 import com.hye.shared.ui.text.MenuLabel
+import com.hye.shared.ui.text.StyledInputField
 import com.hye.shared.ui.text.StyledInputSection
 import com.hye.shared.ui.text.TitleMedium
-import com.hye.shared.ui.text.StyledInputField
 import com.hye.shared.util.TopBarAction
 import com.hye.shared.util.text
 import com.hye.shared.R as commonR
-
 
 @Composable
 fun MissionCreationScreen(
@@ -62,7 +60,6 @@ fun MissionCreationScreen(
     onNavigateBack: () -> Unit = {}
 ) {
     val uiState by viewModel.uiStatus.collectAsStateWithLifecycle()
-    val inputMission = uiState.inputMission
 
     val actions = remember(viewModel) {
         MissionActionsByType(
@@ -88,7 +85,7 @@ fun MissionCreationScreen(
         setTopBarActions = setTopBarActions,
         onNavigateBack = onNavigateBack,
         topBarActionContent = {
-            val isTitleValid = inputMission != null && inputMission.title.isNotBlank()
+            val isTitleValid = uiState.titleInput.isNotBlank()
             TopBarAction(
                 onClick = { viewModel.insertMission() },
                 enabled = isTitleValid,
@@ -102,13 +99,14 @@ fun MissionCreationScreen(
             actions = actions,
             onTitleChange = viewModel::updateTitle,
             onDayToggle = viewModel::toggleDay,
-            onCategorySelected = viewModel::startCreation,
+            onCategorySelected = viewModel::changeCategory,
             onMemoChange = viewModel::updateMemo,
             onDismissBottomSheet = { viewModel.toggleBottomSheet(false) },
             onSelectExerciseType = viewModel::selectExerciseType
         )
     }
 }
+
 @Composable
 fun MissionCreationScreenBody(
     uiState: MissionState,
@@ -120,95 +118,80 @@ fun MissionCreationScreenBody(
     onDismissBottomSheet: (Boolean) -> Unit,
     onSelectExerciseType: (AiExerciseType) -> Unit
 ) {
-    val inputMission = uiState.inputMission
-
     Box(modifier = Modifier.fillMaxSize()) {
 
         MissionCreationContent(
-            // 1. 상단 공통 입력
             commonInputContent = {
-                if (inputMission != null) {
-                    CommonInputSection(
-                        name = inputMission.title,
-                        onNameChange = onTitleChange,
-                        selectedDays = inputMission.days,
-                        onDayToggle = onDayToggle
-                    )
-                }
+                CommonInputSection(
+                    name = uiState.titleInput,
+                    onNameChange = onTitleChange,
+                    selectedDays = uiState.daysInput,
+                    onDayToggle = onDayToggle
+                )
             },
 
-            // 2. 카테고리 탭
             categoryTabContent = {
-                if (inputMission != null) {
-                    CategorySelectionTab(
-                        selectedCategory = inputMission.type,
-                        onCategorySelected = onCategorySelected,
-                        itemContent = { category, isSelected ->
-                            StyledMenu(
-                                MenuStyle(
-                                    modifier = Modifier.padding(
-                                        horizontal = AppTheme.dimens.l,
-                                        vertical = AppTheme.dimens.s
-                                    ),
-                                    icon = IconStyle(
-                                        image = category.getDesign().icon,
-                                        tint = isSelected.selectionContentColor(),
-                                        size = AppTheme.dimens.l
-                                    ),
-                                    spacedBy = AppTheme.dimens.xxs
+                CategorySelectionTab(
+                    selectedCategory = uiState.selectedCategory,
+                    onCategorySelected = onCategorySelected,
+                    itemContent = { category, isSelected ->
+                        StyledMenu(
+                            MenuStyle(
+                                modifier = Modifier.padding(
+                                    horizontal = AppTheme.dimens.l,
+                                    vertical = AppTheme.dimens.s
                                 ),
-                                content = {
-                                    MenuLabel(
-                                        category.label,
-                                        color = isSelected.selectionContentColor()
-                                    )
-                                },
-                                orientation = Orientation.Row
-                            )
-                        }
-                    )
-                }
-            },
-
-            // 3. 상세 폼
-            detailedFormContent = {
-                if (inputMission != null) {
-                    AnimatedContent(
-                        targetState = inputMission,
-                        transitionSpec = {
-                            fadeIn(animationSpec = tween(ANIMATION_SPEC)) togetherWith fadeOut(
-                                animationSpec = tween(ANIMATION_SPEC)
-                            )
-                        },
-                        contentKey = { it.type },
-                        label = "MissionFormAnimation"
-                    ) { mission ->
-                        MissionForm(
-                            mission = mission,
-                            actions = actions,
-                            selectedExerciseName = uiState.selectedExerciseType
+                                icon = IconStyle(
+                                    image = category.getDesign().icon,
+                                    tint = isSelected.selectionContentColor(),
+                                    size = AppTheme.dimens.l
+                                ),
+                                spacedBy = AppTheme.dimens.xxs
+                            ),
+                            content = {
+                                MenuLabel(
+                                    category.label,
+                                    color = isSelected.selectionContentColor()
+                                )
+                            },
+                            orientation = Orientation.Row
                         )
                     }
-                }
+                )
             },
 
-            // 4. 메모 입력
-            tagInputContent = {
-                if (inputMission != null) {
-                    StyledInputSection(
-                        label = { TitleMedium(R.string.mission_plan_memo_placeholder.text) },
-                        text = {
-                            StyledInputField(
-                                value = inputMission.memo ?: "", // memo null 처리 필요할 수 있음
-                                onValueChange = onMemoChange,
-                            )
-                        }
+            detailedFormContent = {
+                AnimatedContent(
+                    targetState = uiState.selectedCategory,
+                    transitionSpec = {
+                        fadeIn(animationSpec = tween(ANIMATION_SPEC)) togetherWith fadeOut(
+                            animationSpec = tween(ANIMATION_SPEC)
+                        )
+                    },
+                    contentKey = { it },
+                    label = "MissionFormAnimation"
+                ) { category ->
+                    MissionForm(
+                        missionCategory = category,
+                        uiState = uiState,
+                        actions = actions
                     )
                 }
             },
+
+            tagInputContent = {
+                StyledInputSection(
+                    label = { TitleMedium(R.string.mission_plan_memo_placeholder.text) },
+                    text = {
+                        StyledInputField(
+                            value = uiState.memoInput,
+                            onValueChange = onMemoChange,
+                        )
+                    }
+                )
+            }
         )
 
-        // 바텀 시트
         AnimatedVisibility(
             visible = uiState.isBottomSheetOpen,
             enter = slideInVertically(
@@ -223,7 +206,7 @@ fun MissionCreationScreenBody(
         ) {
             ExerciseSettingFormBottomSeet(
                 onDismissRequest = onDismissBottomSheet,
-                selectedExerciseType = uiState.selectedExerciseType,
+                selectedExerciseType = uiState.selectedExerciseTypeInput,
                 itemOnclick = onSelectExerciseType
             )
         }
