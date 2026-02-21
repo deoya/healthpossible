@@ -20,16 +20,15 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.hye.shared.ui.text.StyledTextField
-import com.hye.shared.ui.text.TextFieldStyle
-import com.hye.shared.theme.AppTheme
 import com.hye.features.mission.R
-import com.hye.shared.R as CommonR
+import com.hye.shared.theme.AppTheme
 import com.hye.shared.ui.chip.StyledTag
 import com.hye.shared.ui.chip.Tag
-import com.hye.shared.ui.text.TitleSmall
 import com.hye.shared.ui.icon.CloseIcon
+import com.hye.shared.ui.text.TitleSmall
+import com.hye.shared.ui.text.StyledInputField
 import com.hye.shared.util.text
+import com.hye.shared.R as CommonR
 
 
 @OptIn(ExperimentalLayoutApi::class)
@@ -44,7 +43,7 @@ fun TagInputSection(
     Column(verticalArrangement = Arrangement.spacedBy(AppTheme.dimens.s)) {
         TitleSmall(R.string.mission_tags.text)
 
-        StyledTextField(TextFieldStyle(
+        StyledInputField(
             value = inputValue,
             onValueChange = onValueChange,
             placeholder = R.string.mission_tags_placeholder.text,
@@ -57,8 +56,8 @@ fun TagInputSection(
                     )
                 }
             },
-            onDone = { onAddTag() }
-        ))
+            keyboardActions = { onAddTag() }
+        )
 
         FlowRow(
             modifier = Modifier.fillMaxWidth(),

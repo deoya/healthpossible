@@ -20,17 +20,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import com.hye.domain.model.mission.types.RestrictionType
-import com.hye.shared.ui.text.TextFieldStyle
-import com.hye.shared.theme.AppTheme
 import com.hye.features.mission.R
 import com.hye.mission.ui.util.choiceRule
-import com.hye.shared.ui.text.TextDescription
-import com.hye.shared.ui.text.LabelMedium
+import com.hye.shared.theme.AppTheme
+import com.hye.shared.theme.toSp
 import com.hye.shared.ui.button.StyledButton
-import com.hye.shared.ui.text.StyledInputSection
 import com.hye.shared.ui.common.selectionBtnColor
 import com.hye.shared.ui.common.selectionContentColor
-import com.hye.shared.theme.toSp
+import com.hye.shared.ui.text.LabelMedium
+import com.hye.shared.ui.text.StyledInputSection
+import com.hye.shared.ui.text.TextDescription
+import com.hye.shared.ui.text.StyledInputField
 import com.hye.shared.util.text
 
 
@@ -67,13 +67,15 @@ fun RestrictionSettingForm(
                 RestrictionType.TIMER -> {
                     StyledInputSection(
                         { LabelMedium(R.string.mission_plan_goal_time.text) },
-                        style = TextFieldStyle(
-                            value = maxAllowedTime,
-                            onValueChange = { if (it.all { char -> char.isDigit() }) onMaxTimeChange(it) },
-                            placeholder = R.string.mission_plan_goal_time_placeholder.text,
-                            suffix = R.string.mission_unit_times.text,
-                            keyboardType = KeyboardType.Number
-                        ),
+                        text = {
+                            StyledInputField(
+                                value = maxAllowedTime,
+                                onValueChange = { if (it.all { char -> char.isDigit() }) onMaxTimeChange(it) },
+                                placeholder = R.string.mission_plan_goal_time_placeholder.text,
+                                suffix = R.string.mission_unit_times.text,
+                                keyboardType = KeyboardType.Number
+                            )
+                        },
                         description = {
                             TextDescription(text = R.string.mission_plan_goal_time_description.text)
                         }

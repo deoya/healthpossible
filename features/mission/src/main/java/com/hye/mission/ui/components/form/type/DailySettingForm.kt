@@ -14,11 +14,11 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import com.hye.features.mission.R
 import com.hye.mission.ui.util.SettingRules.MISSION_PLAN_GOAL_SUFFIX
+import com.hye.shared.theme.AppTheme
 import com.hye.shared.ui.text.LabelMedium
 import com.hye.shared.ui.text.StyledInputSection
 import com.hye.shared.ui.text.TextDescription
-import com.hye.shared.ui.text.TextFieldStyle
-import com.hye.shared.theme.AppTheme
+import com.hye.shared.ui.text.StyledInputField
 import com.hye.shared.util.text
 
 @Composable
@@ -33,18 +33,18 @@ fun RoutineSettingForm(
     Column(verticalArrangement = Arrangement.spacedBy(AppTheme.dimens.l)) {
         StyledInputSection(
             label = { LabelMedium(R.string.mission_plan_unit_of_measure.text) },
-            style = TextFieldStyle(
+            text = {StyledInputField(
                 value = unitLabel,
                 onValueChange = onUnitLabelChange,
                 placeholder = R.string.mission_plan_measure_placeholder.text
-            ),
+            )},
         )
 
         Row(horizontalArrangement = Arrangement.spacedBy(AppTheme.dimens.s)) {
             Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(AppTheme.dimens.xxs)) {
                 StyledInputSection(
                     label = { LabelMedium(R.string.mission_plan_goal.text) },
-                    style = TextFieldStyle(
+                    text = {StyledInputField(
                         value = totalTarget,
                         onValueChange = {
                             if (it.all { char -> char.isDigit() }) onTotalTargetChange(
@@ -54,13 +54,13 @@ fun RoutineSettingForm(
                         placeholder = R.string.mission_plan_goal_placeholder.text,
                         suffix = unitLabel.take(MISSION_PLAN_GOAL_SUFFIX),
                         keyboardType = KeyboardType.Number
-                    )
+                    )}
                 )
             }
             Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(AppTheme.dimens.xxs)) {
                 StyledInputSection(
                     label = { LabelMedium(R.string.mission_plan_goal_rise.text) },
-                    style = TextFieldStyle(
+                    text = {StyledInputField(
                         value = stepAmount ?: 1.toString(),
                         onValueChange = {
                             if (it.all { char -> char.isDigit() }) onStepAmountChange(
@@ -69,7 +69,7 @@ fun RoutineSettingForm(
                         },
                         suffix = unitLabel.take(MISSION_PLAN_GOAL_SUFFIX),
                         keyboardType = KeyboardType.Number
-                    )
+                    )}
                 )
             }
         }

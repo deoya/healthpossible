@@ -48,8 +48,8 @@ import com.hye.shared.ui.menu.MenuStyle
 import com.hye.shared.ui.menu.StyledMenu
 import com.hye.shared.ui.text.MenuLabel
 import com.hye.shared.ui.text.StyledInputSection
-import com.hye.shared.ui.text.TextFieldStyle
 import com.hye.shared.ui.text.TitleMedium
+import com.hye.shared.ui.text.StyledInputField
 import com.hye.shared.util.TopBarAction
 import com.hye.shared.util.text
 import com.hye.shared.R as commonR
@@ -197,10 +197,12 @@ fun MissionCreationScreenBody(
                 if (inputMission != null) {
                     StyledInputSection(
                         label = { TitleMedium(R.string.mission_plan_memo_placeholder.text) },
-                        TextFieldStyle(
-                            value = inputMission.memo, // memo null 처리 필요할 수 있음
-                            onValueChange = onMemoChange,
-                        )
+                        text = {
+                            StyledInputField(
+                                value = inputMission.memo ?: "", // memo null 처리 필요할 수 있음
+                                onValueChange = onMemoChange,
+                            )
+                        }
                     )
                 }
             },
