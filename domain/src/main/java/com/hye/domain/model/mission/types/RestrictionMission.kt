@@ -14,7 +14,19 @@ data class RestrictionMission(
     val type: RestrictionType,   // 타이머형 vs 체크형
     val maxAllowedMinutes: Int?  // 허용 시간 (타이머형일 경우만 사용, null 가능)
 
-) : Mission
+) : Mission{
+    override fun updateCommon(
+        title: String,
+        days: Set<DayOfWeek>,
+        memo: String?,
+        notificationTime: LocalTime?
+    ): Mission = copy(
+        title = title,
+        days = days,
+        memo = memo,
+        notificationTime = notificationTime
+    )
+}
 
 // 제한(금지) 방식
 enum class RestrictionType {

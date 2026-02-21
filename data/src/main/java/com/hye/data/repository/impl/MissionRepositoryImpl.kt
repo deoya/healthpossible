@@ -1,154 +1,105 @@
 package com.hye.data.repository.impl
 
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.SetOptions
-import com.hye.data.mapper.mapToMission
-import com.hye.data.mapper.missionToMap
+import com.hye.data.datasource.MissionDataSource
+import com.hye.data.di.IoDispatcher
+import com.hye.data.mapper.toDomain
+import com.hye.data.mapper.toDto
+import com.hye.data.mapper.toRecordDomain
+import com.hye.data.mapper.toRecordDto
 import com.hye.domain.common.ExecutionResult
-import com.hye.domain.model.mission.types.Mission
 import com.hye.domain.model.mission.MissionRecord
+import com.hye.domain.model.mission.types.Mission
 import com.hye.domain.repository.MissionRepository
 import com.hye.domain.result.MissionResult
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.withContext
 import timber.log.Timber
+import java.time.LocalDate
 import javax.inject.Inject
 
-//Todo : 리소스로 관리 할 것
+
+
 class MissionRepositoryImpl @Inject constructor(
-    private val firestore: FirebaseFirestore
-): MissionRepository {
+    private val missionDataSource: MissionDataSource,
+    @IoDispatcher private val ioDispatcher: CoroutineDispatcher
+) : MissionRepository {
 
-    private val currentUserId = "test_user"
-
-    private fun getMissionCollection() = firestore
-        .collection("users")
-        .document(currentUserId)
-        .collection("missions")
-
-    private fun getRecordCollection() = firestore
-        .collection("users")
-        .document(currentUserId)
-        .collection("records")
-
-    private fun <T> wrapCRUDOperation(
-        operation: suspend () -> T
-    ): Flow<MissionResult<T>> = flow {
-        emit(MissionResult.Loading)
-        val result = operation()
-        emit(MissionResult.Success(result))
-    }.catch { e ->
-        Timber.e(e, "CRUD Operation Failed")
-
-        emit(MissionResult.Error(e))
-    }.flowOn(Dispatchers.IO)
-
-    //---------------------------------------------------------------------------------
-
-    override fun getMissionList(): Flow<MissionResult<List<Mission>>> = flow {
+    private fun <T> resultFlow(block: suspend () -> T): Flow<MissionResult<T>> = flow {
         emit(MissionResult.Loading)
 
-        try {
-            val snapshot = getMissionCollection().get().await()
-            val missions = snapshot.documents.mapNotNull { doc ->
-                doc.data?.let { data ->
-                    mapToMission(doc.id, data)
-                }
-            }
-            emit(MissionResult.Success(missions))
-        } catch (e: Exception) {
-            Timber.e(e, "getMissionList failed")
-            emit(MissionResult.Error(e))
+        runCatching {
+            block()
+        }.onSuccess { result ->
+            emit(MissionResult.Success(result))
+        }.onFailure { e ->
+            Timber.e(e, "Repository operation failed: ${e.message}")
+            emit(MissionResult.Error(e as Exception))
         }
-    }.flowOn(Dispatchers.IO)
+    }.flowOn(ioDispatcher)
+
+    override fun getMissionList(): Flow<MissionResult<List<Mission>>> {
+        return missionDataSource.getMissions()
+            .map { dtoList ->
+                val domainList = dtoList.map { it.toDomain() }
+                MissionResult.Success(domainList) as MissionResult<List<Mission>>
+            }
+            .catch { e ->
+                Timber.e(e, "getMissionList failed")
+                emit(MissionResult.Error(e as Exception))
+            }
+            .flowOn(ioDispatcher)
+    }
 
     override suspend fun getMission(id: String): MissionResult<Mission?> {
-        return try {
-            val snapshot = getMissionCollection().document(id).get().await()
-
-            if (snapshot.exists() && snapshot.data != null) {
-                val mission = mapToMission(snapshot.id, snapshot.data!!)
-                MissionResult.Success(mission)
-            } else {
-                MissionResult.Error(Exception("미션을 찾을 수 없습니다."))
-            }
-        } catch (e: Exception) {
-            Timber.e(e, "getMission failed")
-            MissionResult.Error(e)
-        }
-    }
-
-    override suspend fun updateMission(id: String): MissionResult<Mission?> {
-        TODO("Not yet implemented")
-    }
-
-    override fun insertMission(mission: Mission): Flow<MissionResult<ExecutionResult>> = wrapCRUDOperation {
-        val missionMap = missionToMap(mission)
-
-        getMissionCollection()
-            .document(mission.id)
-            .set(missionMap, SetOptions.merge())
-            .await()
-
-        ExecutionResult(
-            isSuccess = true,
-            result = "미션이 성공적으로 등록되었습니다"
-        )
-    }
-    override suspend fun deleteMission(habit: Mission): MissionResult<Unit> {
-        TODO("Not yet implemented")
-    }
-
-    override fun getMissionRecords(date: String): Flow<MissionResult<List<MissionRecord>>> =
-        callbackFlow {
-            trySend(MissionResult.Loading)
-
-            val listener = getRecordCollection()
-                .whereEqualTo("date", date) // 해당 날짜의 기록만 필터링
-                .addSnapshotListener { snapshot, e ->
-                    if (e != null) {
-                        Timber.e(e, "getMissionRecords snapshot listener error")
-                        trySend(MissionResult.Error(e))
-                        return@addSnapshotListener
-                    }
-
-                    if (snapshot != null) {
-                        val records = snapshot.documents.map { doc ->
-                            MissionRecord(
-                                id = doc.id,
-                                missionId = doc.getString("missionId") ?: "",
-                                date = doc.getString("date") ?: "",
-                                progress = doc.getLong("progress")?.toInt() ?: 0,
-                                isCompleted = doc.getBoolean("isCompleted") ?: false,
-                                completedAt = doc.getString("completedAt")
-                            )
-                        }
-                        trySend(MissionResult.Success(records))
-                    }
+        return withContext(ioDispatcher) {
+            runCatching {
+                val dto = missionDataSource.getMission(id)
+                dto?.toDomain()
+            }.fold(
+                onSuccess = { MissionResult.Success(it) },
+                onFailure = {
+                    Timber.e(it, "getMission failed")
+                    MissionResult.Error(it as Exception)
                 }
+            )
+        }
+    }
 
-            awaitClose { listener.remove() }
-        }
-    // [구현] 기록 업데이트 (없으면 생성, 있으면 갱신)
-    override fun updateMissionRecord(record: MissionRecord): Flow<MissionResult<ExecutionResult>> = flow {
-        emit(MissionResult.Loading)
-        try {
-            // Firestore에 저장 (문서 ID를 지정하여 덮어쓰기)
-            getRecordCollection()
-                .document(record.id)
-                .set(record, SetOptions.merge()) // data class 그대로 저장 가능 (Firestore KTX 지원 시)
-                .await()
-            emit(MissionResult.Success(ExecutionResult(true, "기록 업데이트 성공")))
-        } catch (e: Exception) {
-            Timber.e(e, "updateMissionRecord failed")
-            emit(MissionResult.Error(e))
-        }
+    override fun insertMission(mission: Mission): Flow<MissionResult<ExecutionResult>> = resultFlow {
+        missionDataSource.addMission(mission.toDto())
+        ExecutionResult(true, "미션이 성공적으로 등록되었습니다")
+    }
+
+    override fun updateMission(mission: Mission): Flow<MissionResult<ExecutionResult>> = resultFlow {
+        missionDataSource.updateMission(mission.toDto())
+        ExecutionResult(true, "미션이 성공적으로 수정되었습니다")
+    }
+
+    override fun deleteMission(missionId: String): Flow<MissionResult<ExecutionResult>> = resultFlow {
+        missionDataSource.deleteMission(missionId)
+        ExecutionResult(true, "미션이 삭제되었습니다")
+    }
+
+    override fun getMissionRecords(date: LocalDate): Flow<MissionResult<List<MissionRecord>>> {
+        return missionDataSource.getMissionRecords(date)
+            .map { dtoList ->
+                val domainList = dtoList.map { it.toRecordDomain() }
+                MissionResult.Success(domainList) as MissionResult<List<MissionRecord>>
+            }
+            .catch { e ->
+                Timber.e(e, "getMissionRecords failed")
+                emit(MissionResult.Error(e as Exception))
+            }
+            .flowOn(ioDispatcher)
+    }
+
+    override fun updateMissionRecord(record: MissionRecord): Flow<MissionResult<ExecutionResult>> = resultFlow {
+        missionDataSource.updateMissionRecord(record.toRecordDto())
+        ExecutionResult(true, "기록이 업데이트되었습니다")
     }
 }
-

@@ -8,30 +8,28 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import com.hye.features.mission.R
 import com.hye.mission.ui.util.cheerMessage
 import com.hye.mission.ui.util.dailyProgressCardStyle
-import com.hye.shared.ui.text.DisplayTextSmall
+import com.hye.shared.theme.AppTheme
+import com.hye.shared.theme.toSp
 import com.hye.shared.ui.StyledCard
+import com.hye.shared.ui.progress.CircularProgressBar
+import com.hye.shared.ui.text.DisplayTextSmall
 import com.hye.shared.ui.text.TextBody
 import com.hye.shared.ui.text.TitleMedium
-import com.hye.shared.theme.AppTheme
-import com.hye.shared.ui.progress.CircularProgressBar
 import com.hye.shared.util.Calculator
 import com.hye.shared.util.text
 
-// ✅ 1. 레이아웃 (Layout)
 @Composable
 fun DailyProgressCardLayout(
     messageContent: @Composable () -> Unit,
@@ -67,7 +65,6 @@ fun DailyProgressCardLayout(
     }
 }
 
-// ✅ 2. 구현체 (Stateful)
 @Composable
 fun DailyProgressCard(
     totalCount: Int,
@@ -79,10 +76,10 @@ fun DailyProgressCard(
 
     DailyProgressCardLayout(
         messageContent = {
-            TitleMedium(cheerMessage, color = AppTheme.colors.background)
+            TitleMedium(cheerMessage, color = AppTheme.colors.background, size = AppTheme.dimens.sm.toSp)
         },
         progressTextContent = {
-            DisplayTextSmall(R.string.mission_current_progress.text((progress * 100).toInt()))
+            DisplayTextSmall(R.string.mission_current_progress.text((progress * 100).toInt()), color = AppTheme.colors.background)
         },
         resultTextContent = {
             TextBody(

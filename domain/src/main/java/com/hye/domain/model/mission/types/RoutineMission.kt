@@ -14,4 +14,16 @@ data class RoutineMission(
     val dailyTargetAmount: Int,  // 하루 총 목표량 (예: 2000ml)
     val amountPerStep: Int,      // 1회 클릭당 증가량 (예: 250ml)
     val unitLabel: String        // 단위 표기 (예: "ml", "잔")
-) : Mission
+) : Mission{
+    override fun updateCommon(
+        title: String,
+        days: Set<DayOfWeek>,
+        memo: String?,
+        notificationTime: LocalTime?
+    ): Mission = copy(
+        title = title,
+        days = days,
+        memo = memo,
+        notificationTime = notificationTime
+    )
+}

@@ -8,19 +8,13 @@ sealed interface Mission {
     val days: Set<DayOfWeek> // 수행 요일
     val notificationTime: LocalTime? // 알림 시간 (null이면 알림 없음)
     val memo: String?
-}
-fun Mission.copyCommon(
-    title: String = this.title,
-    days: Set<DayOfWeek> = this.days,
-    memo: String? = this.memo,
-    notificationTime: LocalTime? = this.notificationTime
-): Mission {
-    return when (this) {
-        is ExerciseMission -> copy(title = title, days = days, memo = memo, notificationTime = notificationTime)
-        is DietMission -> copy(title = title, days = days, memo = memo, notificationTime = notificationTime)
-        is RoutineMission -> copy(title = title, days = days, memo = memo, notificationTime = notificationTime)
-        is RestrictionMission -> copy(title = title, days = days, memo = memo, notificationTime = notificationTime)
-    }
+
+    fun updateCommon(
+        title: String = this.title,
+        days: Set<DayOfWeek> = this.days,
+        memo: String? = this.memo,
+        notificationTime: LocalTime? = this.notificationTime
+    ): Mission
 }
 
 sealed interface MissionReminder {

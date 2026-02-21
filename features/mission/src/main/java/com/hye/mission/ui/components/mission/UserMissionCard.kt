@@ -42,6 +42,7 @@ import com.hye.shared.ui.icon.StyledIconBox
 import com.hye.shared.ui.text.TextBody
 import com.hye.shared.ui.text.TextSubheading
 import com.hye.shared.util.Calculator
+import java.time.LocalDate
 import java.time.LocalTime
 
 
@@ -173,7 +174,7 @@ fun UserMissionCard_Preview() {
                 ),
                 record = MissionRecord(
                     missionId = "2",
-                    date = "2024-01-01",
+                    date = LocalDate.now(),
                     progress = 25,
                     isCompleted = false
                 )
@@ -187,7 +188,7 @@ fun UserMissionCard_Preview() {
                     id = "3", title = "비타민 먹기", days = setOf(DayOfWeek.MON),
                     notificationTime = LocalTime.of(8, 0), dailyTargetAmount = 1, amountPerStep = 1, unitLabel = "회"
                 ),
-                record = MissionRecord(missionId = "3", date = "2024-01-01", progress = 1, isCompleted = true)
+                record = MissionRecord(missionId = "3", date = LocalDate.now(), progress = 1, isCompleted = true)
             )
         )
     }
