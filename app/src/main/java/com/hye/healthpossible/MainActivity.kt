@@ -10,6 +10,7 @@ import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.hye.healthpossible.ui.MainViewModel
 import com.hye.healthpossible.ui.screen.EntryPoint
+import com.hye.healthpossible.ui.screen.OnboardingScreen
 import com.hye.healthpossible.ui.screen.SplashScreen
 import com.hye.shared.theme.HPAppTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -23,9 +24,9 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             HPAppTheme {
-                val isSplashLoading by viewModel.isSplashLoading.collectAsStateWithLifecycle()
+                val uiState by viewModel.uiStatus.collectAsStateWithLifecycle()
 
-                Crossfade(targetState = isSplashLoading, label = "Splash") { isLoading ->
+                Crossfade(targetState = uiState.isSplashLoading, label = "Splash") { isLoading ->
                     if (isLoading) {
                         SplashScreen (
                             onSplashFinished = {
@@ -33,7 +34,7 @@ class MainActivity : ComponentActivity() {
                             }
                         )
                     } else {
-                        EntryPoint()
+                        EntryPoint(uiState.isLoggedIn)
                     }
                 }
 

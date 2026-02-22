@@ -35,9 +35,10 @@ import com.hye.shared.navigation.ContentNavRouteDef
 import com.hye.shared.theme.AppTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Preview(showBackground = true)
 @Composable
-fun EntryPoint() {
+fun EntryPoint(
+    isLoggedIn: Boolean
+) {
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
@@ -48,6 +49,20 @@ fun EntryPoint() {
     var showAddMissionMenu by remember { mutableStateOf(false) }
     var pendingDestination by remember { mutableStateOf<Any?>(null) }
 
+    //Todo : 분리 시킬 것
+    val fullScreenRoutes = remember {
+        listOf(
+            ContentNavRouteDef.ExerciseRecordingView::class,
+            ContentNavRouteDef.OnboardingTab::class,
+        )
+    }
+
+    val startDestination = if(isLoggedIn) ContentNavRouteDef.MissionTab else ContentNavRouteDef.OnboardingTab
+
+    val isFullScreen = fullScreenRoutes.any { routeClass ->
+        currentDestination?.hasRoute(routeClass) == true
+    }
+    val isHideTopBar = currentDestination?.hasRoute<ContentNavRouteDef.MypageTab>() == true
     LaunchedEffect(showAddMissionMenu) {
         if (!showAddMissionMenu && pendingDestination != null) {
             val destination = pendingDestination!!
@@ -67,7 +82,13 @@ fun EntryPoint() {
         Scaffold(
             containerColor = AppTheme.colors.backgroundMuted,
             topBar = {
-                TopBar(navController = navController, topBarActions = topBarActions)
+                if (!isFullScreen && !isHideTopBar) {
+                    TopBar(
+                        navController = navController,
+                        topBarActions = topBarActions,
+                        isFullScreen = isFullScreen
+                    )
+                }
             },
             bottomBar = {
                 if (!isFullScreen) {
@@ -82,14 +103,18 @@ fun EntryPoint() {
             },
         ) {
             paddingValues ->
+
+
+
             NavHost(
                 navController = navController,
-                startDestination = ContentNavRouteDef.MissionTab,
+                startDestination = startDestination,
                 modifier = Modifier
-                    .padding(paddingValues = paddingValues)
+                    .padding(top = paddingValues.calculateTopPadding())
+                    .fillMaxSize()
                     .background(AppTheme.colors.background)
             ) {
-                bottomBarNavGraphBuilder(
+                customNavGraphBuilder(
                     navController = navController,
                     setTopBarActions = { actions ->
                         topBarActions = actions

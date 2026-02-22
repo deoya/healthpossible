@@ -1,6 +1,8 @@
 package com.hye.data.di
 
+import com.hye.data.repository.impl.AuthRepositoryImpl
 import com.hye.data.repository.impl.MissionRepositoryImpl
+import com.hye.domain.repository.AuthRepository
 import com.hye.domain.repository.MissionRepository
 import dagger.Binds
 import dagger.Module
@@ -15,4 +17,8 @@ abstract class RepositoryModule {
     @Binds
     @Singleton
     abstract fun bindMissionRepository(impl: MissionRepositoryImpl): MissionRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindAuthRepository(impl: AuthRepositoryImpl): AuthRepository
 }
