@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -77,7 +78,7 @@ fun OnboardingStep1Content(
     Column(modifier = Modifier.fillMaxSize()) {
         Box(
             modifier = Modifier
-                .weight(0.45f)
+                .weight(0.25f)
                 .fillMaxWidth()
                 .background(AppTheme.colors.background),
             contentAlignment = Alignment.Center
@@ -93,6 +94,7 @@ fun OnboardingStep1Content(
         Column(
             modifier = Modifier
                 .weight(0.55f)
+                .navigationBarsPadding()
                 .padding(AppTheme.dimens.xxl),
             verticalArrangement = Arrangement.SpaceBetween
         ) {

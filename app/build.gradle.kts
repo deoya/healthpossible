@@ -41,6 +41,9 @@ android {
         targetCompatibility = JavaVersion.VERSION_21
     }
     buildFeatures {
+
+        buildConfig = true
+
         compose = true
     }
 }
@@ -71,9 +74,11 @@ dependencies {
     implementation(libs.hilt.android)
     implementation(libs.androidx.compose.foundation.layout)
     implementation(libs.androidx.compose.foundation)
+    implementation(libs.androidx.compose.runtime)
     ksp(libs.hilt.compiler)
     // Hilt Navigation (ViewModel 주입에 필요)
     implementation(libs.hilt.navigation.compose)
+    //firebase
     implementation(platform(libs.firebase.bom))
     implementation(libs.bundles.firebase.libraries)
 

@@ -41,7 +41,6 @@ hiltNavigationCompose = "1.2.0"
 
 #Firestore
 firebaseBom = "34.6.0"
-firebaseFirestoreKtx = "25.1.4"
 googleGmsServices = "4.4.4"
 
 #kotlin-seriaization
@@ -74,6 +73,7 @@ accompanist-permissions = "0.37.3"
 
 #AI
 poseDetection = "18.0.0-beta5"
+runtime = "1.10.3"
 
 
 [libraries]
@@ -125,7 +125,9 @@ mockwebserver = { group = "com.squareup.okhttp3", name = "mockwebserver", versio
 
 #Firestore
 firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBom" }
-firebase-firestore-ktx = { group = "com.google.firebase", name = "firebase-firestore-ktx", version.ref = "firebaseFirestoreKtx" }
+firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore" }
+firebase-auth = { group = "com.google.firebase", name = "firebase-auth" }
+
 
 play-services-analytics-impl = { group = "com.google.android.gms", name = "play-services-analytics-impl", version.ref = "playServicesAnalyticsImpl" }
 androidx-compose-foundation-layout = { group = "androidx.compose.foundation", name = "foundation-layout", version.ref = "foundationLayout" }
@@ -157,6 +159,7 @@ accompanist-permissions = { group = "com.google.accompanist", name = "accompanis
 #AI - ML Kit POSE
 pose-detection = { group = "com.google.mlkit", name = "pose-detection", version.ref = "poseDetection" }
 pose-detection-common = { group = "com.google.mlkit", name = "pose-detection-common", version.ref = "poseDetection" }
+androidx-compose-runtime = { group = "androidx.compose.runtime", name = "runtime", version.ref = "runtime" }
 
 
 [plugins]
@@ -189,7 +192,8 @@ compose-libs=[
     "coil-network-okhttp"
 ]
 firebase-libraries = [
-    "firebase-firestore-ktx"
+    "firebase-firestore",
+    "firebase-auth"
 ]
 test-jvm = [
     "mockk",

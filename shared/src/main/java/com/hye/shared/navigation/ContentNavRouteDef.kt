@@ -4,6 +4,10 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 sealed interface ContentNavRouteDef : HPNavigation {
+
+    @Serializable
+    data object OnboardingTab : ContentNavRouteDef
+
     @Serializable
     data object MissionTab : ContentNavRouteDef
 

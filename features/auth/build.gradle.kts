@@ -2,6 +2,9 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+
+    alias(libs.plugins.hilt.gradle)
+    alias(libs.plugins.google.ksp)
 }
 
 android {
@@ -39,6 +42,9 @@ kotlin{
 }
 
 dependencies {
+    implementation(project(":shared"))
+    implementation(project(":domain"))
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
@@ -47,6 +53,12 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+
+    // Hilt Core
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.compiler)
+    // Hilt Navigation (ViewModel 주입에 필요)
+    implementation(libs.hilt.navigation.compose)
 
     implementation(libs.timber)
 }

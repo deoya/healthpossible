@@ -1,8 +1,9 @@
 package com.hye.healthpossible.ui.viewmodel
 
 import androidx.lifecycle.viewModelScope
-import com.hye.domain.usecase.auth.CheckCodenameUseCase
-import com.hye.domain.usecase.auth.ValidateCodenameUseCase
+import com.hye.domain.usecase.AuthUseCase
+import com.hye.healthpossible.ui.state.OnboardingUiState
+import com.hye.healthpossible.ui.state.SelectionType
 import com.hye.shared.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -11,19 +12,11 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-data class OnboardingUiState(
-    val codename: String = "",
-    val codenameErrorMessage: String = "",
-    val isCodenameValid: Boolean = false,
-    val isCheckingCodename: Boolean = false,
-    val isLoading: Boolean = false,
-    val error: String? = null
-)
 
+// Todo : 로그, 에러 관리
 @HiltViewModel
 class OnboardingViewModel @Inject constructor(
-    private val validateCodenameUseCase: ValidateCodenameUseCase,
-    private val checkCodenameUseCase: CheckCodenameUseCase
+    private val authUseCase: AuthUseCase
 ) : BaseViewModel() {
 
     private val _uiState = MutableStateFlow(OnboardingUiState())
@@ -34,7 +27,7 @@ class OnboardingViewModel @Inject constructor(
         if (codename.isBlank()) {
             return
         }
-        val localValidationResult = validateCodenameUseCase(codename)
+        val localValidationResult = authUseCase.validateCodename(codename)
         if (localValidationResult.isFailure) {
             _uiState.update { it.copy(codenameErrorMessage = localValidationResult.exceptionOrNull()?.message ?: "") }
         }
@@ -50,7 +43,7 @@ class OnboardingViewModel @Inject constructor(
             _uiState.update { it.copy(isCheckingCodename = true) }
 
             runCatching {
-                checkCodenameUseCase(codename).getOrThrow()
+                authUseCase.checkCodename(codename).getOrThrow()
             }.onSuccess {
                 _uiState.update {
                     it.copy(
@@ -70,4 +63,34 @@ class OnboardingViewModel @Inject constructor(
             }
         }
     }
+
+    fun signUpGuest() {
+        val codename = _uiState.value.codename
+        if (!uiState.value.isCodenameValid) return
+
+        viewModelScope.launch(commonCeh) {
+            _uiState.update { it.copy(isLoading = true) } // 로딩 시작
+
+            runCatching {
+                authUseCase.signUpGuest(codename).getOrThrow()
+            }.onSuccess {
+                _uiState.update {
+                    it.copy(isLoading = false, navigateToNextStep = true) // 성공 시 다음 페이지로
+                }
+            }.onFailure { throwable ->
+                _uiState.update {
+                    it.copy(isLoading = false, error = throwable.message)
+                }
+            }
+        }
+    }
+    // 네비게이션 완료 후 상태 초기화 함수
+    fun onNavigatedToNextStep() {
+        _uiState.update { it.copy(navigateToNextStep = false) }
+    }
+
+    fun updateSelectionType(type: SelectionType) {
+        _uiState.update { it.copy(selectionType = type) }
+    }
+
 }

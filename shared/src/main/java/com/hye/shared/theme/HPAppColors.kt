@@ -78,7 +78,7 @@ val LightColors = HPAppColors(
     supportAgentSecondColor = Color(0xFFCDB6FC),
 
 
-    inactive = Color(0xFFBDBDBD),
+    inactive = Color(0xFFE7E7E7),
     divider = Color(0xFFEEEEEE),
     dark = Color.Black,
     darkScreen = Color.DarkGray,
