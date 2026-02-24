@@ -1,4 +1,4 @@
-package com.hye.healthpossible.ui.component.onboard
+package com.hye.auth.ui.screen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -26,11 +26,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
-import com.hye.domain.validation.CodeNamePolicy
-import com.hye.healthpossible.R
 import com.hye.shared.theme.AppTheme
 import com.hye.shared.theme.toSp
 import com.hye.shared.ui.text.ErrorMessage
@@ -39,31 +36,11 @@ import com.hye.shared.ui.text.StyledInputField
 import com.hye.shared.ui.text.TextSubheading
 import com.hye.shared.ui.text.TrailingIcon
 import com.hye.shared.util.text
+import com.hye.features.auth.R
+
 
 @Composable
-fun OnboardingStep1(
-    codename: String,
-    isChecking: Boolean,
-    isValid: Boolean,
-    errorMessage: String,
-    onCodenameChange: (String) -> Unit,
-    onDebouncedCodenameChange: (String) -> Unit,
-    onNext: () -> Unit,
-) {
-    OnboardingStep1Content(
-        codename = codename,
-        isChecking = isChecking,
-        isValid = isValid,
-        errorMessage = errorMessage,
-        onCodenameChange = { if (it.length <= CodeNamePolicy.CODENAME_MAX_LEN) onCodenameChange(it) },
-        onDebouncedCodenameChange = onDebouncedCodenameChange,
-        onKakaoLoginClick = { /* Todo : 카카오 로그인 로직 연동 */ },
-        onNextClick = onNext
-    )
-}
-
-@Composable
-fun OnboardingStep1Content(
+fun CodenameSetup(
     codename: String,
     isChecking: Boolean,
     isValid: Boolean,
@@ -172,49 +149,4 @@ fun OnboardingStep1Content(
             }
         }
     }
-}
-
-@Preview(showBackground = true, name = "1. 초기 기본 상태")
-@Composable
-fun OnboardingStep1Preview_Default() {
-    OnboardingStep1Content(
-        codename = "",
-        isChecking = false,
-        isValid = false,
-        errorMessage = "",
-        onCodenameChange = {},
-        onDebouncedCodenameChange = {},
-        onKakaoLoginClick = {},
-        onNextClick = {}
-    )
-}
-
-@Preview(showBackground = true, name = "2. 에러 상태 (사용 불가 닉네임)")
-@Composable
-fun OnboardingStep1Preview_Error() {
-    OnboardingStep1Content(
-        codename = "운영자",
-        isChecking = false,
-        isValid = false,
-        errorMessage = "사용할 수 없는 단어가 포함되어 있어요.",
-        onCodenameChange = {},
-        onDebouncedCodenameChange = {},
-        onKakaoLoginClick = {},
-        onNextClick = {}
-    )
-}
-
-@Preview(showBackground = true, name = "3. 통과 상태 (버튼 활성화)")
-@Composable
-fun OnboardingStep1Preview_Valid() {
-    OnboardingStep1Content(
-        codename = "스쿼트요정",
-        isChecking = false,
-        isValid = true,
-        errorMessage = "",
-        onCodenameChange = {},
-        onDebouncedCodenameChange = {},
-        onKakaoLoginClick = {},
-        onNextClick = {}
-    )
 }

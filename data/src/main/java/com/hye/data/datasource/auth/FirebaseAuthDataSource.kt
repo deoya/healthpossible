@@ -14,7 +14,7 @@ class FirebaseAuthDataSource @Inject constructor(
 
     override suspend fun signInAnonymously(): String {
         val authResult = auth.signInAnonymously().await()
-        return authResult.user?.uid ?: throw Exception("익명 로그인에 실패했습니다.")
+        return authResult.user?.uid ?: throw Exception("익명 로그인에 실패했습니다. (UID Null)")
     }
 
     override suspend fun saveUserProfile(uid: String, codename: String) {
@@ -28,7 +28,7 @@ class FirebaseAuthDataSource @Inject constructor(
 
     override suspend fun checkCodenameDuplication(codename: String): Boolean {
         val snapshot = userCollection.whereEqualTo("codename", codename).get().await()
-        return !snapshot.isEmpty // 비어있지 않다면 중복(true)
+        return !snapshot.isEmpty
     }
 
     override fun isLoggedIn(): Boolean {
