@@ -1,7 +1,7 @@
 package com.hye.mission.ui.util
 
 import android.content.Context
-import com.hye.domain.model.mission.feedback.AgentMessageSet
+import com.hye.domain.model.agent.feedback.AgentMessageSet
 import com.hye.domain.model.mission.types.AiExerciseType
 import com.hye.features.mission.R
 

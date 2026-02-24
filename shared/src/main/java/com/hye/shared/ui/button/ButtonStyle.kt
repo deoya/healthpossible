@@ -10,8 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import com.hye.shared.theme.AppTheme
-import com.hye.shared.util.ClickGuard
-import com.hye.shared.util.ClickGuard.rememberSafeClick
+import com.hye.shared.util.ClickGuard.RememberSafeClick
 
 object StyledButton {
     @Composable
@@ -52,7 +51,7 @@ object StyledButton {
         content: @Composable () -> Unit
     ){
         invoke(
-            onClick = rememberSafeClick{onClick},
+            onClick = RememberSafeClick{onClick},
             shape = shape,
             containerColor = containerColor,
             contentColor = contentColor,
@@ -85,7 +84,7 @@ object StyledIconButton{
         modifier: Modifier = Modifier,
     ){
         invoke(
-            onClick = rememberSafeClick{onClick},
+            onClick = RememberSafeClick{onClick},
             icon = icon,
             modifier = modifier
         )

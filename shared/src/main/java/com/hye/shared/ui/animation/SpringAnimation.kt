@@ -11,7 +11,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
-fun lowSpringAnimation(durationMillis:Int = 800 , dampingRatio: Float = 0.6f, delayInfo:DelayInfo = DelayInfo()): Pair<Float, Float> {
+fun LowSpringAnimation(durationMillis:Int = 800, dampingRatio: Float = 0.6f, delayInfo:DelayInfo = DelayInfo()): Pair<Float, Float> {
     val scale = remember { Animatable(0f) }
     val alpha = remember { Animatable(0f) }
 

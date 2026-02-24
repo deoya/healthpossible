@@ -2,7 +2,7 @@ package com.hye.domain.usecase.auth
 
 import com.hye.domain.repository.AuthRepository
 import com.hye.domain.result.AuthResult
-import jakarta.inject.Inject
+import javax.inject.Inject
 
 class SignUpGuestUseCase @Inject constructor(
     private val authRepository: AuthRepository

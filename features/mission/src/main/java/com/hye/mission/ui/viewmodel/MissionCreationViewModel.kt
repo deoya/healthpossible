@@ -10,7 +10,7 @@ import com.hye.domain.model.mission.types.Mission
 import com.hye.domain.model.mission.types.MissionType
 import com.hye.domain.model.mission.types.RestrictionType
 import com.hye.domain.result.MissionResult
-import com.hye.domain.usecase.mission.MissionUseCase
+import com.hye.domain.usecase.MissionUseCase
 import com.hye.mission.ui.state.MissionState
 import com.hye.shared.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
