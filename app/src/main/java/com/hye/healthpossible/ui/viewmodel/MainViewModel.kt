@@ -1,4 +1,4 @@
-package com.hye.healthpossible.ui
+package com.hye.healthpossible.ui.viewmodel
 
 import com.hye.domain.usecase.AuthUseCase
 import com.hye.healthpossible.ui.state.UiState

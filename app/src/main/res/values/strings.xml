@@ -13,26 +13,4 @@
 
     <string name="copyright">© 2026 Mission! HealthPossible</string>
 
-    <!-- 온보딩 -->
-    <string name="codename">코드네임</string>
-    <!-- Todo: 코드네임만 변경시 연관된 데이터도 자동 변경될 수 있도록 바꿔놓기-->
-    <string name="error_codename_already_use">이미 사용 중인 코드네임입니다</string>
-    <string name="error_codename_length">2글자 이상 입력해주세요</string>
-    <string name="first_greeting">CONFIDENTIAL: OPERATION HEALTHPOSSIBLE</string>
-
-    <string name="second_greeting">반갑습니다, 요원님. 당신의 일상을 재설계할 특수 작전, \'HealthPossible\'이 지금부터 시작됩니다.\n\n본 작전에 사용하실 코드네임을 입력해 주십시오</string>
-    <string name="onboarding_link_kakao_description">KaKao 계정에 연결된 요원 정보를 불러옵니다</string>
-    <string name="start_button">시작하기</string>
-
-    <!-- Onboarding Step 2 -->
-    <string name="onboarding_step2_strategy_briefing">STRATEGY BRIEFING</string>
-    <string name="onboarding_step2_title">본부의 전략 분석 에이전트(Agent)로부터\n전술 지원을 받으시겠습니까?</string>
-    <string name="onboarding_step2_ai_card_title">전략 분석 에이전트(Agent) 지원 프로토콜</string>
-    <string name="onboarding_step2_ai_card_description">본부 소속 분석 에이전트가 요원님의 현재 신체 데이터를 정밀 스캔합니다. 몇 가지 질의응답을 통해 작전 성공률이 가장 높은 \'최적화된 루틴\'을 설계해 드립니다. 초행길인 요원님께 이 방식을 적극 권장합니다.</string>
-    <string name="onboarding_step2_ai_card_action">에이전트 지원 승인</string>
-    <string name="onboarding_step2_manual_card_title">요원 현장 지휘 프로토콜</string>
-    <string name="onboarding_step2_manual_card_description">에이전트의 개입 없이 요원님의 직관과 판단으로 직접 미션을 하달합니다. 이미 본인만의 전술이 확립된 숙련된 요원님을 위한 방식입니다. 모든 목표 설정 권한은 요원님께 귀속됩니다.</string>
-    <string name="onboarding_step2_manual_card_action">직접 지휘권 행사</string>
-    <string name="onboarding_step2_notice">※ 참고: 에이전트의 분석 결과는 현장 상황에 따라\n언제든 수정하거나 재수립할 수 있습니다.</string>
-
 </resources>
