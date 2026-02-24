@@ -18,8 +18,8 @@ import com.hye.healthpossible.R
 import com.hye.healthpossible.ui.component.SplashContent
 import com.hye.shared.ui.animation.DelayInfo
 import com.hye.shared.ui.animation.Direction
-import com.hye.shared.ui.animation.lowSpringAnimation
-import com.hye.shared.ui.animation.slideFadeInAnimation
+import com.hye.shared.ui.animation.LowSpringAnimation
+import com.hye.shared.ui.animation.SlideFadeInAnimation
 import com.hye.shared.ui.text.LabelSmall
 import com.hye.shared.ui.common.light
 import com.hye.shared.theme.AppTheme
@@ -37,9 +37,9 @@ fun SplashScreen(
     val titleDuration = AppTheme.dimens.titleDuration //타이틀 애니메이션 시간
     val delayed = AppTheme.dimens.delayed
 
-    val (logoScale, logoAlpha) = lowSpringAnimation(durationMillis = logoDuration)
+    val (logoScale, logoAlpha) = LowSpringAnimation(durationMillis = logoDuration)
     val (titleOffsetX, titleOffsetY, titleAlpha) =
-        slideFadeInAnimation(
+        SlideFadeInAnimation(
             direction = Direction.Bottom,
             distance = AppTheme.dimens.splashLogoDistance,
             delayInfo = DelayInfo(startDelay = titleDelay),

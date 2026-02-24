@@ -24,7 +24,7 @@ fun Direction.toStartOffset(distance: Float): StartOffset =
     }
 
 @Composable
-fun slideFadeInAnimation (
+fun SlideFadeInAnimation (
     direction: Direction,
     distance: Float = 50f,
     durationMillis: Int = 800,

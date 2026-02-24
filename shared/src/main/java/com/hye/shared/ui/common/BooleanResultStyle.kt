@@ -20,7 +20,7 @@ import com.hye.shared.theme.AppTheme
 val Boolean.selectionIconMenuColor: Color
     @ReadOnlyComposable
     @Composable
-    get() = if (this) AppTheme.colors.mainColor else AppTheme.colors.textSecondary
+    get() = if (this) AppTheme.colors.mainColor else AppTheme.colors.inactive
 
 @ReadOnlyComposable
 @Composable

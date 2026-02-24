@@ -45,20 +45,13 @@ dependencies {
     implementation(project(":shared"))
     implementation(project(":domain"))
 
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.appcompat)
-    implementation(libs.material)
     implementation(platform(libs.androidx.compose.bom))
-    implementation(libs.bundles.compose.libs)
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
+    implementation(libs.bundles.android.core)
+    implementation(libs.bundles.compose)
+    implementation(libs.bundles.coil)
 
-    // Hilt Core
-    implementation(libs.hilt.android)
+    implementation(libs.bundles.hilt)
     ksp(libs.hilt.compiler)
-    // Hilt Navigation (ViewModel 주입에 필요)
-    implementation(libs.hilt.navigation.compose)
 
     implementation(libs.timber)
 }

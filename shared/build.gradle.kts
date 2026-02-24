@@ -44,18 +44,13 @@ kotlin{
 
 dependencies {
     implementation(project(":domain"))
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.appcompat)
-    implementation(libs.material)
+
     implementation(platform(libs.androidx.compose.bom))
+    implementation(libs.bundles.android.core)
+    implementation(libs.bundles.compose)
+    implementation(libs.bundles.coil)
 
     implementation(libs.kotlinx.serialization.json)
-    implementation(libs.bundles.compose.libs)
-
-
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
 
     implementation(libs.timber)
 }

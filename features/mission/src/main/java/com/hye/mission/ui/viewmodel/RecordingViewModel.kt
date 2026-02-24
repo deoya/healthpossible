@@ -9,7 +9,7 @@ import com.hye.domain.model.mission.types.ExerciseMission
 import com.hye.domain.model.mission.types.ExerciseRecordMode
 import com.hye.domain.repository.MissionRepository
 import com.hye.domain.result.MissionResult
-import com.hye.domain.usecase.mission.MissionUseCase
+import com.hye.domain.usecase.MissionUseCase
 import com.hye.domain.usecase.mission.UpdateMissionRecordUseCase
 import com.hye.mission.ui.state.RecordState
 import com.hye.shared.base.BaseViewModel
@@ -207,7 +207,7 @@ class MissionRecordingViewModel @Inject constructor(
         // ✅ 변수 대신 State에서 꺼내 씀
         val mission = _uiState.value.mission ?: return
 
-        val todayDate = getCurrentFormattedTime()
+        val todayDate = LocalDate.now()
         val recordId = "${mission.id}_$todayDate"
 
         val record = MissionRecord(

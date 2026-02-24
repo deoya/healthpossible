@@ -2,8 +2,8 @@ package com.hye.data.datasource.auth
 
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import jakarta.inject.Inject
 import kotlinx.coroutines.tasks.await
+import javax.inject.Inject
 
 class FirebaseAuthDataSource @Inject constructor(
     private val auth: FirebaseAuth,

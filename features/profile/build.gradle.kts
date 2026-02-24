@@ -1,30 +1,23 @@
 plugins {
-    alias(libs.plugins.android.application)
+    alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
 
-    alias(libs.plugins.kotlin.serialization)
-
     alias(libs.plugins.hilt.gradle)
-    alias(libs.plugins.google.gms.google.services)
     alias(libs.plugins.google.ksp)
 
 }
-
 android {
-    namespace = "com.hye.healthpossible"
+    namespace = "com.hye.features.profile"
     compileSdk {
         version = release(36)
     }
 
     defaultConfig {
-        applicationId = "com.hye.healthpossible"
         minSdk = 26
-        targetSdk = 36
-        versionCode = 1
-        versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles("consumer-rules.pro")
     }
 
     buildTypes {
@@ -41,34 +34,27 @@ android {
         targetCompatibility = JavaVersion.VERSION_21
     }
     buildFeatures {
-
-        buildConfig = true
-
         compose = true
     }
 }
 kotlin{
-jvmToolchain(21)
+    jvmToolchain(21)
 }
 
 dependencies {
-    implementation(project(":domain"))
-    implementation(project(":features:auth"))
-    implementation(project(":features:community"))
-    implementation(project(":features:mission"))
-    implementation(project(":features:profile"))
     implementation(project(":shared"))
-    implementation(project(":data"))
-
+    implementation(project(":domain"))
 
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.bundles.android.core)
     implementation(libs.bundles.compose)
     implementation(libs.bundles.coil)
-    implementation(libs.kotlinx.serialization.json)
 
     implementation(libs.bundles.hilt)
     ksp(libs.hilt.compiler)
 
     implementation(libs.timber)
+
+    implementation(libs.bundles.camerax)
+    implementation(libs.bundles.mlkit.pose)
 }

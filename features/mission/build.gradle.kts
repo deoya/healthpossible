@@ -46,28 +46,18 @@ dependencies {
     implementation(project(":shared"))
     implementation(project(":domain"))
 
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.lifecycle.runtime.ktx)
-    implementation(libs.androidx.appcompat)
-    implementation(libs.material)
-
     implementation(platform(libs.androidx.compose.bom))
-    implementation(libs.bundles.compose.libs)
+    implementation(libs.bundles.android.core)
+    implementation(libs.bundles.compose)
+    implementation(libs.bundles.coil)
 
-    // Hilt Core
-    implementation(libs.hilt.android)
+    implementation(libs.bundles.hilt)
     ksp(libs.hilt.compiler)
-
-    // Hilt Navigation (ViewModel 주입에 필요)
-    implementation(libs.hilt.navigation.compose)
 
     implementation(libs.timber)
 
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
+    implementation(libs.bundles.camerax)
+    implementation(libs.bundles.mlkit.pose)
 
-    implementation(libs.bundles.ondevice.camerax.lib)
     implementation(libs.accompanist.permissions)
-    implementation(libs.bundles.ml.kit.pose)
 }

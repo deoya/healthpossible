@@ -44,15 +44,15 @@ dependencies {
     implementation(project(":domain"))
     implementation(project(":shared"))
 
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.appcompat)
-    implementation(libs.material)
+    implementation(libs.bundles.android.core)
+//    implementation(libs.androidx.appcompat)
+//    implementation(libs.material)
     //firebase
     implementation(platform(libs.firebase.bom))
-    implementation(libs.bundles.firebase.libraries)
+    implementation(libs.bundles.firebase)
 
     // Hilt Core
-    implementation(libs.hilt.android)
+    implementation(libs.bundles.hilt)
     ksp(libs.hilt.compiler)
 
     implementation(libs.timber)
