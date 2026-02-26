@@ -1,7 +1,7 @@
 package com.hye.data.datasource.mission
 
-import com.hye.data.model.MissionDto
-import com.hye.data.model.MissionRecordDto
+import com.hye.data.dto.MissionDto
+import com.hye.data.dto.MissionRecordDto
 import kotlinx.coroutines.flow.Flow
 import java.time.LocalDate
 

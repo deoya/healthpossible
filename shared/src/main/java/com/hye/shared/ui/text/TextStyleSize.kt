@@ -6,7 +6,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.TextUnit
 import com.hye.shared.theme.AppTheme
@@ -44,20 +43,39 @@ fun LabelText(
         style = resultStyle,
         fontWeight = fontWeight,
         color = color,
-        lineHeight = lineHeight
+        lineHeight = lineHeight,
+        modifier = Modifier.padding(bottom = AppTheme.dimens.xxxxs)
+    )
+}
+@Composable
+fun SectionText(
+    text: String,
+    style: TextStyleSize = TextStyleSize.Medium,
+    fontWeight: FontWeight = FontWeight.Bold,
+    color: Color = AppTheme.colors.textPrimary,
+){
+    val resultStyle = when (style) {
+        TextStyleSize.Small -> {
+            MaterialTheme.typography.headlineSmall
+        }
+
+        TextStyleSize.Medium -> {
+            MaterialTheme.typography.headlineMedium
+        }
+
+        TextStyleSize.Large -> {
+            MaterialTheme.typography.headlineLarge
+        }
+    }
+    Text(
+        text = text,
+        style = resultStyle,
+        fontWeight = fontWeight,
+        color = color,
     )
 }
 //Todo : style별이 아니라 typograpy 별.  상황별로 묶기
-
 //------------------------------------------
-@Composable
-fun SectionTitle(text: String) = Text(
-    text = text,
-    style = MaterialTheme.typography.titleMedium,
-    fontWeight = FontWeight.Bold,
-    color = AppTheme.colors.textPrimary,
-    modifier = Modifier.padding(bottom = AppTheme.dimens.xxs)
-)
 
 @Composable
 fun MenuLabel(

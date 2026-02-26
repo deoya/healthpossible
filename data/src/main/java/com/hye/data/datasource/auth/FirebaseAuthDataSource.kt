@@ -2,6 +2,8 @@ package com.hye.data.datasource.auth
 
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.hye.data.dto.UserProfileDto
+import com.hye.data.mapper.toInitialProfileMap
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
@@ -18,16 +20,12 @@ class FirebaseAuthDataSource @Inject constructor(
     }
 
     override suspend fun saveUserProfile(uid: String, codename: String) {
-        val userData = hashMapOf(
-            "codename" to codename,
-            "createdAt" to System.currentTimeMillis(),
-            "isAnonymous" to true
-        )
+        val userData = codename.toInitialProfileMap()
         userCollection.document(uid).set(userData).await()
     }
 
     override suspend fun checkCodenameDuplication(codename: String): Boolean {
-        val snapshot = userCollection.whereEqualTo("codename", codename).get().await()
+        val snapshot = userCollection.whereEqualTo(UserProfileDto.CODENAME, codename).get().await()
         return !snapshot.isEmpty
     }
 

@@ -1,7 +1,7 @@
 package com.hye.data.mapper
 
-import com.hye.data.model.MissionDto
-import com.hye.data.model.MissionRecordDto
+import com.hye.data.dto.MissionDto
+import com.hye.data.dto.MissionRecordDto
 import com.hye.domain.model.mission.MissionRecord
 import com.hye.domain.model.mission.types.AiExerciseType
 import com.hye.domain.model.mission.types.DayOfWeek
