@@ -2,8 +2,8 @@ package com.hye.data.datasource.mission
 
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
-import com.hye.data.model.MissionDto
-import com.hye.data.model.MissionRecordDto
+import com.hye.data.dto.MissionDto
+import com.hye.data.dto.MissionRecordDto
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow

@@ -34,6 +34,7 @@ data class HPAppDimens(
     val xxxxxl :Dp = 36.dp,
     val xxxxxxl: Dp = 40.dp,
 
+    val backButtonInTopBar: Dp = 48.dp,
     val circularProgressSize:Dp = 88.dp,
     val RunningCircularProgressSize:Dp = 100.dp,
     val progressDurationMillis:Int = 1000,
@@ -56,6 +57,7 @@ data class HPAppDimens(
     val gapTime : Int = 300,
     val titleDuration : Int = 800,
     val splashLogoSize : Dp = 190.dp,
+
     val splashTitlePadding : Dp = 100.dp,
 
     val delayed : Long = 2000L,
@@ -75,6 +77,8 @@ data class HPAppDimens(
     val agentBubbleStrokeWidth: Dp = 1.5.dp,
     val agentBubbleStrokeGap: Dp = 3.dp,
 
+    //onboarding
+    val nextButton : Dp = 56.dp,
     )
 val Dp.toSp
     @Composable

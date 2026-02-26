@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Onboarding Step 2 -->
+    <string name="onboarding_step2_strategy_briefing">STRATEGY BRIEFING</string>
+    <string name="onboarding_step2_title">본부의 전략 분석 에이전트(Agent)로부터
+전술 지원을 받으시겠습니까?</string>
+    <string name="onboarding_step2_ai_card_title">전략 분석 에이전트(Agent) 지원 프로토콜</string>
+    <string name="onboarding_step2_ai_card_description">본부 소속 분석 에이전트가 요원님의 현재 신체 데이터를 정밀 스캔합니다. 몇 가지 질의응답을 통해 작전 성공률이 가장 높은 \'최적화된 루틴\'을 설계해 드립니다. 초행길인 요원님께 이 방식을 적극 권장합니다.</string>
+    <string name="onboarding_step2_ai_card_action">에이전트 지원 승인</string>
+    <string name="onboarding_step2_manual_card_title">요원 현장 지휘 프로토콜</string>
+    <string name="onboarding_step2_manual_card_description">에이전트의 개입 없이 요원님의 직관과 판단으로 직접 미션을 하달합니다. 이미 본인만의 전술이 확립된 숙련된 요원님을 위한 방식입니다. 모든 목표 설정 권한은 요원님께 귀속됩니다.</string>
+    <string name="onboarding_step2_manual_card_action">직접 지휘권 행사</string>
+    <string name="onboarding_step2_notice">※ 참고: 에이전트의 분석 결과는 현장 상황에 따라
+언제든 수정하거나 재수립할 수 있습니다.</string>
+
+    <!-- Onboarding Step 3 -->
+    <string name="onboarding_step3_cancel">작전 중단</string>
+    <string name="onboarding_step3_q1_tag">[Q1]</string>
+    <string name="onboarding_step3_q1_title">본 작전의 최우선 목표를 설정하십시오.
+분석 에이전트가 해당 타겟을 중심으로 전술을 수립합니다.</string>
+    <string name="onboarding_step3_q2_tag">[Q2]</string>
+    <string name="onboarding_step3_q2_title">작전 수행 중 주의가 필요한 신체 취약 지점을 스캔합니다.
+이는 안전 프로토콜 수립에 반영됩니다.</string>
+    <string name="onboarding_step3_q3_tag">[Q3]</string>
+    <string name="onboarding_step3_q3_title">작전 효율을 저하시키는 일상의 위협 요소를 탐지합니다.
+중화가 시급한 습관을 선택해 주십시오.</string>
+    <string name="onboarding_step3_q4_tag">[Q4]</string>
+    <string name="onboarding_step3_q4_title">요원님의 현재 필드 가동 능력을 측정합니다.
+초기 미션의 강도를 결정하는 핵심 지표입니다.</string>
+    <string name="onboarding_step3_complete_button">분석 완료 및 작전 개시</string>
+    <string name="onboarding_step3_multi_select_caption">다중 목표 설정 가능</string>
+
+    <string name="onboarding_step3_q1_option1">혈당 안정 프로토콜(혈당 관리)</string>
+    <string name="onboarding_step3_q1_option2">혈압 최적화 프로토콜(혈압 관리)</string>
+    <string name="onboarding_step3_q1_option3">신체 질량 최적화(체중 조절)</string>
+    <string name="onboarding_step3_q1_option4">구조적 정렬 보정(바른 자세)</string>
+    <string name="onboarding_step3_q1_option5">올라운드 컨디셔닝(전반적 건강)</string>
+
+    <string name="onboarding_step3_q2_option1">무릎/관절</string>
+    <string name="onboarding_step3_q2_option2">허리/척추</string>
+    <string name="onboarding_step3_q2_option3">심혈관계</string>
+    <string name="onboarding_step3_q2_option4">취약 지점 없음</string>
+    <string name="onboarding_step3_q2_option_none_healthy">없음 / 건강함</string>
+
+    <string name="onboarding_step3_q3_option1">잦은 야식/단 음료</string>
+    <string name="onboarding_step3_q3_option2">오래 앉아있음</string>
+    <string name="onboarding_step3_q3_option3">수분 부족</string>
+    <string name="onboarding_step3_q3_option4">과도한 폰 사용</string>
+
+    <string name="onboarding_step3_q4_option1">기초 가동 단계(매우 적음)</string>
+    <string name="onboarding_step3_q4_option2">일반 작전 수행 가능(보통)</string>
+    <string name="onboarding_step3_q4_option3">고도화된 작전 수행 가능(활동적임)</string>
+</resources>

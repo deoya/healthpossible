@@ -10,8 +10,8 @@ import com.hye.auth.model.AuthViewModel
 import com.hye.auth.ui.screen.CodenameSetup
 import com.hye.healthpossible.ui.screen.OnboardingScreen
 import com.hye.profile.model.ProfileViewModel
-import com.hye.profile.ui.StrategySelection
 import com.hye.profile.ui.HealthSurvey
+import com.hye.profile.ui.StrategySelection
 import com.hye.shared.base.BaseScreenTemplate
 import kotlinx.coroutines.launch
 
@@ -34,7 +34,7 @@ fun OnboardingRoute(
                 viewModel = authViewModel,
                 screenName = "CodenameSetup",
                 isLoading = authState.isLoading,
-                errorMessage = authState.error, // AuthUiState의 에러 사용
+                errorMessage = authState.error,
                 onNavigateBack = onNavigateBack
             ) {
                 CodenameSetup(
@@ -80,7 +80,6 @@ fun OnboardingRoute(
                 errorMessage = profileState.error
             ) {
                 HealthSurvey(
-                    questions = profileState.surveyQuestions,
                     selectedAnswers = profileState.surveyAnswers,
                     onAnswerToggled = profileViewModel::toggleSurveyAnswer,
                     onComplete = { profileViewModel.saveProfileData(onSuccess = onOnboardingFinished) },

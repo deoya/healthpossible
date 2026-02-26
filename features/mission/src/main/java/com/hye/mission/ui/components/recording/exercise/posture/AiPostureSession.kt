@@ -23,6 +23,8 @@ import com.hye.mission.ui.components.recording.layout.BaseBottomBarContentLayout
 import com.hye.mission.ui.components.recording.layout.BaseSessionLayout
 import com.hye.mission.ui.state.RecordState
 import com.hye.shared.theme.AppTheme
+import com.hye.shared.ui.button.BackButton
+import com.hye.shared.util.LockScreenOrientation
 
 //Todo: 이 화면에서는 가로모드 대응 해놓을 것
 //Todo : 권한관리
@@ -66,18 +68,7 @@ fun AiPostureSession(
             }
         },
         topBarContent = {
-            // Todo: TopBar implementation
-            Column(modifier = Modifier.padding(top = 48.dp, start = AppTheme.dimens.l)) {
-                Surface(
-                    color = AppTheme.colors.background,
-                    shape = CircleShape,
-                    shadowElevation = AppTheme.dimens.xxxxs,
-                    modifier = Modifier.clickable { onNavigateBack() }
-                ) {
-                    Icon(Icons.Default.ArrowBack, null, modifier = Modifier.padding(AppTheme.dimens.xxs))
-                }
-            }
-
+            BackButton(onBack = onNavigateBack)
         },
         bottomBarContent = {
             BaseBottomBarContentLayout(
