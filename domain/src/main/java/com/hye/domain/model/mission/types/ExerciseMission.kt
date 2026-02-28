@@ -6,9 +6,12 @@ import java.time.LocalTime
 data class ExerciseMission(
     override val id: String,
     override val title: String,
-    override val days: Set<DayOfWeek>,
-    override val notificationTime: LocalTime?,
     override val memo: String? = null,
+    override val notificationTime: LocalTime?,
+
+    override val weeklyTargetCount: Int,
+    override val weekIdentifier: String? = null,
+    override val isTemplate: Boolean = false,
 
     // 특화 설정
     val targetValue: Int,      // 목표 수치 (예: 30)
@@ -19,12 +22,12 @@ data class ExerciseMission(
 ) : Mission{
     override fun updateCommon(
         title: String,
-        days: Set<DayOfWeek>,
+        weeklyTargetCount: Int,
         memo: String?,
         notificationTime: LocalTime?
     ): Mission = copy(
         title = title,
-        days = days,
+        weeklyTargetCount = weeklyTargetCount,
         memo = memo,
         notificationTime = notificationTime
     )

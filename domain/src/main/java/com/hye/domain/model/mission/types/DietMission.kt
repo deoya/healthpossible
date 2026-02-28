@@ -5,21 +5,22 @@ import java.time.LocalTime
 data class DietMission(
     override val id: String,
     override val title: String,
-    override val days: Set<DayOfWeek>,
     override val notificationTime: LocalTime?,
     override val memo: String? = null,
-
+    override val weeklyTargetCount: Int,
+    override val weekIdentifier: String? = null,
+    override val isTemplate: Boolean = false,
     // 특화 설정
     val recordMethod: DietRecordMethod // 기록 방식 (사진/글/체크)
 ) : Mission{
     override fun updateCommon(
         title: String,
-        days: Set<DayOfWeek>,
+        weeklyTargetCount: Int,
         memo: String?,
         notificationTime: LocalTime?
     ): Mission = copy(
         title = title,
-        days = days,
+        weeklyTargetCount = weeklyTargetCount,
         memo = memo,
         notificationTime = notificationTime
     )

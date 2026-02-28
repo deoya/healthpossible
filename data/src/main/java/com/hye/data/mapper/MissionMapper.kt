@@ -19,7 +19,6 @@ import java.time.LocalDate
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 
-
 fun MissionDto.toDomain(): Mission {
     return when (MissionType.valueOf(this.type)) {
         MissionType.EXERCISE -> this.toExerciseMission()
@@ -29,8 +28,7 @@ fun MissionDto.toDomain(): Mission {
     }
 }
 
-private fun MissionDto.getCommonDays(): Set<DayOfWeek> =
-    this.days.map { DayOfWeek.valueOf(it) }.toSet()
+// 🔥 요일(days) 관련 함수 제거됨
 
 private fun MissionDto.getCommonNotificationTime(): LocalTime? =
     this.notificationTime?.let { LocalTime.parse(it, DateTimeFormatter.ISO_LOCAL_TIME) }
@@ -40,8 +38,13 @@ private fun MissionDto.toExerciseMission(): ExerciseMission {
         id = this.id,
         title = this.title,
         memo = this.memo,
-        days = this.getCommonDays(),
         notificationTime = this.getCommonNotificationTime(),
+
+        // 🔥 하드코딩 제거 및 새로운 공통 필드 매핑
+        weeklyTargetCount = this.weeklyTargetCount ?: 1,
+        weekIdentifier = this.weekIdentifier,
+        isTemplate = this.isTemplate ?: false,
+
         unit = this.unit?.let { ExerciseRecordMode.valueOf(it) } ?: ExerciseRecordMode.SELECTED,
         selectedExercise = this.selectedExercise?.let { AiExerciseType.valueOf(it) },
         targetValue = this.targetValue ?: 0,
@@ -54,8 +57,13 @@ private fun MissionDto.toDietMission(): DietMission {
         id = this.id,
         title = this.title,
         memo = this.memo,
-        days = this.getCommonDays(),
         notificationTime = this.getCommonNotificationTime(),
+
+        // 🔥 새로운 공통 필드 매핑
+        weeklyTargetCount = this.weeklyTargetCount ?: 1,
+        weekIdentifier = this.weekIdentifier,
+        isTemplate = this.isTemplate ?: false,
+
         recordMethod = this.recordMethod?.let { DietRecordMethod.valueOf(it) } ?: DietRecordMethod.CHECK
     )
 }
@@ -65,8 +73,13 @@ private fun MissionDto.toRoutineMission(): RoutineMission {
         id = this.id,
         title = this.title,
         memo = this.memo,
-        days = this.getCommonDays(),
         notificationTime = this.getCommonNotificationTime(),
+
+        // 🔥 새로운 공통 필드 매핑
+        weeklyTargetCount = this.weeklyTargetCount ?: 1,
+        weekIdentifier = this.weekIdentifier,
+        isTemplate = this.isTemplate ?: false,
+
         dailyTargetAmount = this.dailyTargetAmount ?: 0,
         amountPerStep = this.amountPerStep ?: 0,
         unitLabel = this.unitLabel ?: ""
@@ -78,8 +91,13 @@ private fun MissionDto.toRestrictionMission(): RestrictionMission {
         id = this.id,
         title = this.title,
         memo = this.memo,
-        days = this.getCommonDays(),
         notificationTime = this.getCommonNotificationTime(),
+
+        // 🔥 새로운 공통 필드 매핑
+        weeklyTargetCount = this.weeklyTargetCount ?: 1,
+        weekIdentifier = this.weekIdentifier,
+        isTemplate = this.isTemplate ?: false,
+
         type = this.restrictionType?.let { RestrictionType.valueOf(it) } ?: RestrictionType.CHECK,
         maxAllowedMinutes = this.maxAllowedMinutes
     )
@@ -88,11 +106,16 @@ private fun MissionDto.toRestrictionMission(): RestrictionMission {
 fun Mission.toDto(): MissionDto {
     val baseDto = MissionDto(
         id = this.id,
+        uid = "", // 💡 DataSource나 Repository에서 현재 유저의 UID를 덮어씌워야 합니다!
         title = this.title,
         type = this.type.name,
-        days = this.days.map { it.name }.toList(),
         notificationTime = this.notificationTime?.format(DateTimeFormatter.ISO_LOCAL_TIME),
-        memo = this.memo
+        memo = this.memo,
+
+        // 🔥 새로운 공통 필드 매핑 (days 리스트 제거)
+        weeklyTargetCount = this.weeklyTargetCount,
+        weekIdentifier = this.weekIdentifier,
+        isTemplate = this.isTemplate
     )
 
     return when (this) {
@@ -118,9 +141,8 @@ fun Mission.toDto(): MissionDto {
 }
 
 // ===================================
-// Mission Record Mappers
+// Mission Record Mappers (기존과 동일하게 유지)
 // ===================================
-
 fun MissionRecordDto.toRecordDomain(): MissionRecord {
     return MissionRecord(
         id = this.id,
@@ -135,6 +157,7 @@ fun MissionRecordDto.toRecordDomain(): MissionRecord {
 fun MissionRecord.toRecordDto(): MissionRecordDto {
     return MissionRecordDto(
         id = this.id,
+        uid = "", // 💡 DataSource나 Repository에서 현재 유저의 UID를 덮어씌워야 합니다!
         missionId = this.missionId,
         date = this.date.toString(),
         progress = this.progress,

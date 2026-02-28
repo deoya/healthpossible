@@ -1,8 +1,12 @@
-package com.hye.data.model
+package com.hye.data.dto
 
 import com.google.firebase.firestore.PropertyName
 
 data class MissionDto(
+    @get:PropertyName(UID)
+    @set:PropertyName(UID)
+    var uid: String = "",
+
     // --- 공통 필드 ---
     @get:PropertyName(ID)
     @set:PropertyName(ID)
@@ -16,9 +20,20 @@ data class MissionDto(
     @set:PropertyName(TYPE)
     var type: String = "",
 
-    @get:PropertyName(DAYS)
-    @set:PropertyName(DAYS)
-    var days: List<String> = emptyList(),
+    @get:PropertyName(WEEKLY_TARGET_COUNT)
+    @set:PropertyName(WEEKLY_TARGET_COUNT)
+    var weeklyTargetCount: Int = 0,
+
+    @get:PropertyName(WEEK_IDENTIFIER)
+    @set:PropertyName(WEEK_IDENTIFIER)
+    var weekIdentifier : String? = null,
+
+    @get:PropertyName(IS_TEMPLATE)
+    @set:PropertyName(IS_TEMPLATE)
+    var isTemplate: Boolean = false,
+
+
+
 
     @get:PropertyName(NOTIFICATION_TIME)
     @set:PropertyName(NOTIFICATION_TIME)
@@ -73,10 +88,14 @@ data class MissionDto(
     var maxAllowedMinutes: Int? = null
 ) {
     companion object Fields {
+        const val UID = "uid"
         const val ID = "id"
         const val TITLE = "title"
         const val TYPE = "type"
-        const val DAYS = "days"
+        const val WEEKLY_TARGET_COUNT = "weekly_target_count"
+        const val WEEK_IDENTIFIER = "week_identifier"
+        const val IS_TEMPLATE = "is_template"
+
         const val NOTIFICATION_TIME = "notification_time"
         const val MEMO = "memo"
 
