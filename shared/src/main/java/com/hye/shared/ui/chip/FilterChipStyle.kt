@@ -25,6 +25,7 @@ fun StyledFilterChip(
     borderSelectedColor: Color = AppTheme.colors.chipSelectedColor,
     shape: Dp = AppTheme.dimens.s,
 ) {
+
     FilterChip(
         selected = selected,
         onClick = onClick,

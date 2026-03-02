@@ -7,6 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.TextUnit
 import com.hye.shared.theme.AppTheme
 import com.hye.shared.theme.toSp
@@ -74,6 +75,67 @@ fun SectionText(
         color = color,
     )
 }
+@Composable
+fun TitleText(
+    text: String,
+    style: TextStyleSize = TextStyleSize.Medium,
+    fontWeight: FontWeight = FontWeight.Bold,
+    color: Color = AppTheme.colors.textPrimary,
+    maxLines : Int = 1,
+    overflow : TextOverflow = TextOverflow.Ellipsis
+){
+    val resultStyle = when (style) {
+        TextStyleSize.Small -> {
+            MaterialTheme.typography.titleSmall
+        }
+
+        TextStyleSize.Medium -> {
+            MaterialTheme.typography.titleMedium
+        }
+
+        TextStyleSize.Large -> {
+            MaterialTheme.typography.titleLarge
+        }
+    }
+    Text(
+        text = text,
+        style = resultStyle,
+        fontWeight = fontWeight,
+        color = color,
+        maxLines = maxLines,
+        overflow = overflow
+    )
+}
+@Composable
+fun BodyText(
+    text: String,
+    style: TextStyleSize = TextStyleSize.Medium,
+    fontWeight: FontWeight = FontWeight.Normal,
+    color: Color = AppTheme.colors.textPrimary,
+){
+    val resultStyle = when (style) {
+        TextStyleSize.Small -> {
+            MaterialTheme.typography.bodySmall
+        }
+
+        TextStyleSize.Medium -> {
+            MaterialTheme.typography.bodyMedium
+        }
+
+        TextStyleSize.Large -> {
+            MaterialTheme.typography.bodyLarge
+        }
+    }
+    Text(
+        text = text,
+        style = resultStyle,
+        fontWeight = fontWeight,
+        color = color,
+    )
+}
+
+
+
 //Todo : style별이 아니라 typograpy 별.  상황별로 묶기
 //------------------------------------------
 

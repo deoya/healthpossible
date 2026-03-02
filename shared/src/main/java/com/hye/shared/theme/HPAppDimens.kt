@@ -33,6 +33,7 @@ data class HPAppDimens(
     val xxxxl: Dp = 32.dp,
     val xxxxxl :Dp = 36.dp,
     val xxxxxxl: Dp = 40.dp,
+    val bigDimen: Dp = 80.dp,
 
     val backButtonInTopBar: Dp = 48.dp,
     val circularProgressSize:Dp = 88.dp,
@@ -40,7 +41,6 @@ data class HPAppDimens(
     val progressDurationMillis:Int = 1000,
     val bigBtn: Dp = 50.dp,
     val iconBox: Dp =52.dp,
-    val bigDimen: Dp = 80.dp,
     val runningSimplePillHeight : Dp = 120.dp,
     val dropDownMenuAddMisionPadding :Dp = 110.dp,
 

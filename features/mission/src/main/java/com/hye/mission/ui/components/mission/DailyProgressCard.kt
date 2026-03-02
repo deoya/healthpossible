@@ -22,7 +22,7 @@ import com.hye.mission.ui.util.cheerMessage
 import com.hye.mission.ui.util.dailyProgressCardStyle
 import com.hye.shared.theme.AppTheme
 import com.hye.shared.theme.toSp
-import com.hye.shared.ui.StyledCard
+import com.hye.shared.ui.card.StyledCard
 import com.hye.shared.ui.progress.CircularProgressBar
 import com.hye.shared.ui.text.DisplayTextSmall
 import com.hye.shared.ui.text.TextBody

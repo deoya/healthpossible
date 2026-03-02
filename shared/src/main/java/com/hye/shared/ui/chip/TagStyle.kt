@@ -15,6 +15,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import com.hye.shared.ui.text.LabelMedium
 import com.hye.shared.theme.AppTheme
+import com.hye.shared.util.clickableSingle
 
 
 @Composable
@@ -40,7 +41,7 @@ fun StyledTag(
         shape = RoundedCornerShape(shape),
         color = color,
         border = border,
-        modifier = Modifier.clickable { onClick }
+        modifier = Modifier.clickableSingle(onClick = {onClick})
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,

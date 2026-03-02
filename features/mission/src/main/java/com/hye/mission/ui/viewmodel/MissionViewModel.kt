@@ -2,7 +2,7 @@ package com.hye.mission.ui.viewmodel
 
 import androidx.lifecycle.viewModelScope
 import com.hye.domain.model.mission.MissionRecord
-import com.hye.domain.model.mission.MissionWithRecord
+import com.hye.domain.model.mission.WeeklyMissionState
 import com.hye.domain.model.mission.types.DietMission
 import com.hye.domain.model.mission.types.ExerciseMission
 import com.hye.domain.model.mission.types.RestrictionMission
@@ -43,10 +43,17 @@ class MissionViewModel @Inject constructor(
             if (missionsResult is MissionResult.Success && recordsResult is MissionResult.Success) {
                 val missions = missionsResult.resultData
                 val records = recordsResult.resultData
-                val recordsMap = records.associateBy { it.missionId }
+                val recordsByMission = records.groupBy { it.missionId }
 
                 val mergedList = missions.map { mission ->
-                    MissionWithRecord(mission = mission, record = recordsMap[mission.id])
+                    val missionRecords = recordsByMission[mission.id] ?: emptyList()
+                    val todayRecord = missionRecords.find { it.date == todayDate }
+
+                    WeeklyMissionState(
+                        mission = mission,
+                        todayRecord = todayRecord,
+                        weeklyRecords = missionRecords
+                    )
                 }
                 MissionResult.Success(mergedList)
 
@@ -64,7 +71,7 @@ class MissionViewModel @Inject constructor(
         }
     }
 
-    private fun updateUiState(result: MissionResult<List<MissionWithRecord>>) {
+    private fun updateUiState(result: MissionResult<List<WeeklyMissionState>>) {
 
         when (result) {
             is MissionResult.Loading -> _uiStatus.update { it.copy(isLoading = true, errorMessage = null) }
@@ -77,7 +84,7 @@ class MissionViewModel @Inject constructor(
                         errorMessage = null,
                         missions = data,
                         totalMissionsCount = data.size,
-                        completedMissionsCount = data.count { item -> item.record?.isCompleted == true }
+                        completedMissionsCount = data.count { item -> item.isDoneToday }
                     )
                 }
             }
@@ -90,13 +97,14 @@ class MissionViewModel @Inject constructor(
         }
     }
 
-    fun onStartButtonClicked(item: MissionWithRecord) {
+    fun onStartButtonClicked(item: WeeklyMissionState) {
         val mission = item.mission
         val recordId = "${mission.id}_$todayDate"
 
         Timber.d("Start button clicked: ${mission.title}")
 
-        val currentRecord = item.record ?: MissionRecord(
+        // 🔥 item.record 대신 item.todayRecord 사용
+        val currentRecord = item.todayRecord ?: MissionRecord(
             id = recordId,
             missionId = mission.id,
             date = todayDate
@@ -157,11 +165,20 @@ class MissionViewModel @Inject constructor(
     private fun updateLocalState(updatedRecord: MissionRecord) {
         _uiStatus.update { state ->
             val newMissions = state.missions.map { item ->
-                if (item.mission.id == updatedRecord.missionId) item.copy(record = updatedRecord) else item
+                if (item.mission.id == updatedRecord.missionId) {
+
+                    val newWeeklyRecords = item.weeklyRecords.filterNot { it.id == updatedRecord.id } + updatedRecord
+                    item.copy(
+                        todayRecord = updatedRecord,
+                        weeklyRecords = newWeeklyRecords
+                    )
+                } else {
+                    item
+                }
             }
             state.copy(
                 missions = newMissions,
-                completedMissionsCount = newMissions.count { it.record?.isCompleted == true }
+                completedMissionsCount = newMissions.count { it.isDoneToday }
             )
         }
     }

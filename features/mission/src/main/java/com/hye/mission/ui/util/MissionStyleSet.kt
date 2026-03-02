@@ -2,21 +2,25 @@ package com.hye.mission.ui.util
 
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.hye.domain.model.mission.types.ExerciseRecordMode
+import androidx.compose.ui.graphics.vector.ImageVector
 import com.hye.domain.model.mission.types.Mission
 import com.hye.domain.model.mission.types.RestrictionType
 import com.hye.features.mission.R
-import com.hye.shared.ui.CardStyle
-import com.hye.shared.ui.button.SwitchStyle
-import com.hye.shared.ui.common.completedBorder
-import com.hye.shared.ui.common.completedElevation
 import com.hye.shared.theme.AppTheme
+import com.hye.shared.ui.bubble.RadioBubble
+import com.hye.shared.ui.button.SwitchStyle
+import com.hye.shared.ui.card.CardStyle
+import com.hye.shared.ui.card.StyledCard
+import com.hye.shared.ui.chip.StyledTag
+import com.hye.shared.ui.chip.Tag
+import com.hye.shared.ui.common.completedCardBorder
+import com.hye.shared.ui.common.completedElevation
 import com.hye.shared.util.DateFormatType
 import com.hye.shared.util.text
 import java.time.format.DateTimeFormatter
@@ -52,19 +56,20 @@ val dailyProgressCardStyle: CardStyle
         elevation = AppTheme.dimens.xxxxs
     )
 
-
+//
 @Composable
-fun UserMissionCardStyle(isCompleted: Boolean, cardAlpha: Float): CardStyle =
-    CardStyle(
+fun UserMissionCardStyle(isCompleted: Boolean, content: @Composable () -> Unit) {
+    StyledCard(CardStyle(
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(bottom = AppTheme.dimens.s)
-            .clickable { /* Todo 상세 보기 or 기록하기 */ },
-        containerColor = AppTheme.colors.background.copy(alpha = cardAlpha),
+            .fillMaxWidth(),
+        containerColor = AppTheme.colors.background,
         elevation = isCompleted.completedElevation(),
-        border = isCompleted.completedBorder(),
+        border = isCompleted.completedCardBorder(),
         shape = RoundedCornerShape(AppTheme.dimens.l)
-    )
+    )){
+        content()
+    }
+}
 
 
 @Composable
@@ -76,3 +81,30 @@ fun UserSwitch(checked: Boolean, onCheckedChange: (Boolean) -> Unit): SwitchStyl
     uncheckedThumbColor = AppTheme.colors.selectedLabelColor,
     uncheckedTrackColor = AppTheme.colors.uncheckedTrackColor
 )
+
+@Composable
+fun AgentDialogBubble(message:String){
+    RadioBubble(message = message, color = AppTheme.colors.supportAgentColor)
+}
+
+@Composable
+fun UserMissionTag(
+    icon: ImageVector,
+    tagText: String
+){
+    StyledTag(
+        color = AppTheme.colors.backgroundMuted,
+        shape = AppTheme.dimens.xxxs,
+        horizontal = AppTheme.dimens.xxxs,
+        vertical = AppTheme.dimens.xxxxxs,
+        content = {
+            Icon(
+                icon,
+                null,
+                tint = AppTheme.colors.textSecondary,
+                modifier = Modifier.size(AppTheme.dimens.s)
+            )
+        },
+        content2 = { Tag(tagText, color = AppTheme.colors.textSecondary) }
+    )
+}

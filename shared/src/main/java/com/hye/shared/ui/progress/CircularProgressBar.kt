@@ -40,7 +40,6 @@ fun CircularProgressBar(
 
     size: Dp = AppTheme.dimens.circularProgressSize,
     color: Color = AppTheme.colors.background,
-    trackColor: Color = AppTheme.colors.incompleteColor,
     strokeWidth: Dp = AppTheme.dimens.xxs,
     backgroundAlpha: Float = AppTheme.dimens.alphaMuted // 배경 원의 투명도
 ) {
@@ -59,7 +58,7 @@ fun CircularProgressBar(
             progress = { 1f },
             modifier = Modifier.fillMaxSize(),
             color = color.copy(alpha = backgroundAlpha),
-            trackColor = trackColor,
+            trackColor = Color.Transparent,
             strokeWidth = strokeWidth,
         )
 
@@ -69,7 +68,7 @@ fun CircularProgressBar(
             modifier = Modifier.fillMaxSize(),
             color = color,
             strokeWidth = strokeWidth,
-            trackColor = trackColor,
+            trackColor = Color.Transparent,
             strokeCap = StrokeCap.Round
         )
 

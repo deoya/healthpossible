@@ -1,4 +1,4 @@
-package com.hye.shared.ui
+package com.hye.shared.ui.card
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.fillMaxWidth

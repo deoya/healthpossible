@@ -19,7 +19,7 @@ import com.hye.shared.theme.AppTheme
 
 
 data class SwitchStyle(
-    val checked : Boolean = false,
+    val checked: Boolean = false,
     val onCheckedChange: (Boolean) -> Unit,
     val checkedThumbColor: Color,
     val checkedTrackColor: Color,
@@ -37,15 +37,23 @@ data class SwitchLabelStyle(
 
 @Composable
 fun StyledSwitch(
-    switchLabelStyle : SwitchLabelStyle = SwitchLabelStyle(),
+    switchLabelStyle: SwitchLabelStyle = SwitchLabelStyle(),
     label: @Composable () -> Unit,
     switchStyle: SwitchStyle
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .background( switchLabelStyle.background ?: AppTheme.colors.backgroundMuted, RoundedCornerShape(switchLabelStyle.shape ?: AppTheme.dimens.s))
-            .padding(switchLabelStyle.padding ?: PaddingValues(horizontal = AppTheme.dimens.md, vertical = AppTheme.dimens.s)),
+            .background(
+                switchLabelStyle.background ?: AppTheme.colors.backgroundMuted,
+                RoundedCornerShape(switchLabelStyle.shape ?: AppTheme.dimens.s)
+            )
+            .padding(
+                switchLabelStyle.padding ?: PaddingValues(
+                    horizontal = AppTheme.dimens.md,
+                    vertical = AppTheme.dimens.s
+                )
+            ),
         verticalAlignment = switchLabelStyle.verticalAlignment ?: Alignment.CenterVertically,
         horizontalArrangement = switchLabelStyle.horizontalArrangement ?: Arrangement.SpaceBetween
     ) {
@@ -59,8 +67,9 @@ fun StyledSwitch(
                 checkedThumbColor = switchStyle.checkedThumbColor,
                 checkedTrackColor = switchStyle.checkedTrackColor,
                 uncheckedThumbColor = switchStyle.uncheckedThumbColor,
-                uncheckedTrackColor = switchStyle.uncheckedTrackColor
-
+                uncheckedTrackColor = switchStyle.uncheckedTrackColor.copy(alpha = 1f),
+                uncheckedBorderColor = Color.Transparent,
+                checkedBorderColor = Color.Transparent
             )
         )
     }

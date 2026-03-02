@@ -9,9 +9,10 @@
 
     <string name="mission_today_missions">수행할 미션 (%d)</string>
     <string name="mission_current_progress">%d%% 달성</string>
-    <string name="mission_current_result">%d 중 %d개 완료</string>
+    <string name="mission_current_result">주 %d회 목표 중 %d회 완료</string>
 
-    <string name="mission_recording">기록</string>
+    <string name="mission_record_start">임무 시작</string>
+    <string name="mission_today_completed">작전 성공</string>
     <string name="mission_all_the_time">상시</string>
     <string name="mission_completed">COMPLETE!</string>
 
@@ -19,6 +20,14 @@
     <string name="mission_exercise_type_together_support_agent">지원 요원과 함께할 운동 목록</string>
 
     <string name="mission_in_progress">진행 중</string>
+
+    <!-- UserMissionCard 관련 -->
+    <string name="mission_card_ai_support">AI 분석 지원</string>
+    <string name="mission_card_diet_record_method">인증 방식: %s</string>
+    <string name="mission_card_today_progress">오늘의 진행도</string>
+    <string name="mission_card_restriction_method">방식: %s</string>
+    <string name="mission_card_allowed_time">허용 시간: %d분</string>
+    <string name="mission_card_today_completed">오늘 수행 완료</string>
 
 
     <string name="mission_camera_permission_for_exercise">운동 자세 분석을 위해\n카메라 권한이 필요합니다. 👉</string>
