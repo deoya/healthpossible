@@ -1,9 +1,8 @@
-package com.hye.mission.ui.viewmodel
+package com.hye.mission.ui.model
 
 import androidx.lifecycle.viewModelScope
 import com.hye.domain.factory.MissionFactory
 import com.hye.domain.model.mission.types.AiExerciseType
-import com.hye.domain.model.mission.types.DayOfWeek
 import com.hye.domain.model.mission.types.DietRecordMethod
 import com.hye.domain.model.mission.types.ExerciseRecordMode
 import com.hye.domain.model.mission.types.Mission

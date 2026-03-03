@@ -5,7 +5,6 @@ import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.unit.Dp
 
 data class HPAppColors (
     // 기본 테마 색상
@@ -66,14 +65,14 @@ val LightColors = HPAppColors(
     textPrimary = Color(0xFF1E293B),
     textSecondary = Color(0xFF64748B),
 
-    exerciseColor=Color(0xFF06B6D4),
-    exerciseSecondColor=Color(0xFFB9F2F8),
-    dietColor=Color( 0xFFEB5DCC),
-    dietSecondColor=Color(0xFFF4B0EB ),
-    routineColor=Color(0xFFF3B128),
-    routineSecondColor=Color(0xFFF6DFB4),
-    restrictionColor=Color( 0xFF905EEF),//Color(0xFF04C8B4),
-    restrictionSecondColor=Color(0xFFCDB6FC),//Color(0xFF66DCAD),
+    exerciseColor=Color(0xFF488aff),
+    exerciseSecondColor=Color(0xFFD9E4FF),
+    dietColor=Color(0xFFff9685),
+    dietSecondColor=Color(0xFFFFF8EB),
+    routineColor=Color(0xFFD071E7),
+    routineSecondColor=Color(0xFFFBE8FF),
+    restrictionColor=Color( 0xFFec486a),//Color(0xFF04C8B4),
+    restrictionSecondColor=Color(0xFFFFE5FB),//Color(0xFF66DCAD),
     supportAgentColor = Color(0xFF1168EC ),
     supportAgentSecondColor = Color(0xFF8FBEF2),
 
@@ -82,8 +81,8 @@ val LightColors = HPAppColors(
     divider = Color(0xFFEEEEEE),
     dark = Color.Black,
     darkScreen = Color.DarkGray,
-    mainColor = Color(0xFF3B82F6),
-    mainColorLight = Color(0xFFEFF6FF),
+    mainColor = Color(0xFF3B82F6), //0xFF5174FF),//
+    mainColorLight = Color(0xFFEFF6FF),//0xFFE8EFFF),
     successColor = Color(0xFF10B981),
     selectedLabelColor = Color.White,
     uncheckedTrackColor = Color(0xFFE2E8F0),

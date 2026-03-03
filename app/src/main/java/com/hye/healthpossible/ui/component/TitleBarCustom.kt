@@ -12,11 +12,11 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavDestination.Companion.hasRoute
 import com.hye.healthpossible.R
-import com.hye.shared.components.ui.LabelSmall
-import com.hye.shared.components.ui.MenuLabel
 import com.hye.shared.navigation.ContentNavRouteDef
 import com.hye.shared.theme.AppTheme
 import com.hye.shared.theme.toSp
+import com.hye.shared.ui.text.LabelSmall
+import com.hye.shared.ui.text.MenuLabel
 import com.hye.shared.util.DateFormatType
 import com.hye.shared.util.getCurrentFormattedTime
 import com.hye.shared.util.text

@@ -1,18 +1,9 @@
 package com.hye.mission.ui.components.recording.exercise.posture
 
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material3.Icon
-import androidx.compose.material3.Surface
+import android.content.pm.ActivityInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionStatus
 import com.google.accompanist.permissions.rememberPermissionState
@@ -20,9 +11,8 @@ import com.hye.domain.model.mission.types.AiExerciseType
 import com.hye.domain.model.mission.types.ExerciseAgentType
 import com.hye.mission.ui.components.ondevice.camera.PermissionDeniedContent
 import com.hye.mission.ui.components.recording.layout.BaseBottomBarContentLayout
-import com.hye.mission.ui.components.recording.layout.BaseSessionLayout
+import com.hye.shared.base.BaseSessionLayout
 import com.hye.mission.ui.state.RecordState
-import com.hye.shared.theme.AppTheme
 import com.hye.shared.ui.button.BackButton
 import com.hye.shared.util.LockScreenOrientation
 

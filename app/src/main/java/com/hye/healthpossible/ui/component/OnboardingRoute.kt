@@ -80,8 +80,10 @@ fun OnboardingRoute(
                 errorMessage = profileState.error
             ) {
                 HealthSurvey(
-                    selectedAnswers = profileState.surveyAnswers,
+                    uiState = profileState,
                     onAnswerToggled = profileViewModel::toggleSurveyAnswer,
+                    onBadHabitToggled = profileViewModel::toggleBadHabit,
+                    onActivityLevelSelected = profileViewModel::updateActivityLevel,
                     onComplete = { profileViewModel.saveProfileData(onSuccess = onOnboardingFinished) },
                     onBack = { scope.launch { pagerState.animateScrollToPage(1) } }
                 )

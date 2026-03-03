@@ -5,7 +5,6 @@ import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.Dp
-import com.hye.shared.theme.AppTheme
 
 enum class Orientation {
     Column, Row
@@ -21,4 +20,4 @@ data class IconStyle(
 val Color.light : Color
     @ReadOnlyComposable
     @Composable
-    get() = this.copy(alpha = AppTheme.dimens.alphaMuted)
+    get() = this.copy(alpha = 0.5f)

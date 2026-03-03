@@ -1,6 +1,7 @@
 package com.hye.auth.model
 
 import androidx.lifecycle.viewModelScope
+import com.hye.domain.session.SessionManager
 import com.hye.domain.usecase.AuthUseCase
 import com.hye.shared.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -13,7 +14,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AuthViewModel @Inject constructor(
-    private val authUseCase: AuthUseCase
+    private val authUseCase: AuthUseCase,
+    private val sessionManager: SessionManager
 ) : BaseViewModel() {
 
     private val _uiState = MutableStateFlow(AuthUiState())
@@ -70,6 +72,9 @@ class AuthViewModel @Inject constructor(
             authUseCase.signUpGuest(codename)
                 .onSuccess {
                     Timber.d("✅ 회원가입 성공")
+
+                    sessionManager.fetchUserProfile()
+
                     _uiState.update { it.copy(isLoading = false, isSignUpComplete = true) }
 
                     showToast("환영합니다! 성공적으로 가입되었습니다.")

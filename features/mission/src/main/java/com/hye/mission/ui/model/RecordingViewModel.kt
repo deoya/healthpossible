@@ -1,4 +1,4 @@
-package com.hye.mission.ui.viewmodel
+package com.hye.mission.ui.model
 
 import androidx.lifecycle.viewModelScope
 import com.hye.domain.model.mission.MissionRecord
@@ -7,7 +7,6 @@ import com.hye.domain.model.mission.types.AiSessionMode
 import com.hye.domain.model.mission.types.ExerciseAgentType
 import com.hye.domain.model.mission.types.ExerciseMission
 import com.hye.domain.model.mission.types.ExerciseRecordMode
-import com.hye.domain.repository.MissionRepository
 import com.hye.domain.result.MissionResult
 import com.hye.domain.usecase.MissionUseCase
 import com.hye.domain.usecase.mission.UpdateMissionRecordUseCase
@@ -27,7 +26,6 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.time.LocalDate
-import java.time.LocalTime
 import javax.inject.Inject
 
 @HiltViewModel

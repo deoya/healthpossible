@@ -6,6 +6,8 @@ import com.hye.data.datasource.mission.FirebaseMissionDataSource
 import com.hye.data.datasource.mission.MissionDataSource
 import com.hye.data.datasource.profile.FirebaseProfileDataSource
 import com.hye.data.datasource.profile.ProfileDataSource
+import com.hye.data.session.SessionManagerImpl
+import com.hye.domain.session.SessionManager
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -27,4 +29,8 @@ abstract class DataSourceModule {
     @Binds
     @Singleton
     abstract fun bindProfileDataSource(impl: FirebaseProfileDataSource): ProfileDataSource
+
+    @Binds
+    @Singleton
+    abstract fun bindSessionManagerDataSource(impl: SessionManagerImpl): SessionManager
 }
