@@ -113,6 +113,9 @@ fun BodyText(
     style: TextStyleSize = TextStyleSize.Medium,
     fontWeight: FontWeight = FontWeight.Normal,
     color: Color = AppTheme.colors.textPrimary,
+    lineHeight: TextUnit = TextUnit.Unspecified,
+    maxLines : Int? = null,
+    overflow : TextOverflow = TextOverflow.Ellipsis
 ){
     val resultStyle = when (style) {
         TextStyleSize.Small -> {
@@ -127,12 +130,25 @@ fun BodyText(
             MaterialTheme.typography.bodyLarge
         }
     }
-    Text(
-        text = text,
-        style = resultStyle,
-        fontWeight = fontWeight,
-        color = color,
-    )
+    if(maxLines != null) {
+        Text(
+            text = text,
+            style = resultStyle,
+            fontWeight = fontWeight,
+            color = color,
+            lineHeight = lineHeight,
+            maxLines = maxLines,
+            overflow = overflow
+        )
+    }else {
+        Text(
+            text = text,
+            style = resultStyle,
+            fontWeight = fontWeight,
+            color = color,
+            lineHeight = lineHeight
+        )
+    }
 }
 
 

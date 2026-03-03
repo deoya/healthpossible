@@ -30,3 +30,9 @@ fun getCurrentFormattedTime(type: DateFormatType = DateFormatType.DEFAULT): Stri
     val formatter = DateTimeFormatter.ofPattern(type.pattern)
     return getCurrentSeoulZonedDateTime().format(formatter)
 }
+
+@SuppressLint("NewApi")
+fun getFormattedTime(time : LocalTime,type: DateFormatType = DateFormatType.DEFAULT): String {
+    val formatter = DateTimeFormatter.ofPattern(type.pattern)
+    return time.format(formatter)
+}

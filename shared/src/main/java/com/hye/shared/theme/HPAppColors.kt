@@ -30,6 +30,8 @@ data class HPAppColors (
     val restrictionSecondColor: Color,
     val supportAgentColor : Color,
     val supportAgentSecondColor : Color,
+    val supportBoxColor : Color,
+    val supportBoxSecondColor : Color,
     // 기타 UI 요소 색상
     val inactive: Color,// 비활성화된 아이콘, 텍스트 등에 사용
     val divider: Color,// 구분선 색상
@@ -46,12 +48,11 @@ data class HPAppColors (
     val completeColor : Color,
     val incompleteColor:Color,
     val inputBoxBorder: Color,
-
     val unSelectedColor : Color,
-
     val mapSimulationColor : Color,
-
-    val InheritColor : Color,
+    val inheritColor : Color,
+    val badgeColor : Color,
+    val badgeContentColor : Color,
 )
 
 val LightColors = HPAppColors(
@@ -75,14 +76,14 @@ val LightColors = HPAppColors(
     restrictionSecondColor=Color(0xFFFFE5FB),//Color(0xFF66DCAD),
     supportAgentColor = Color(0xFF1168EC ),
     supportAgentSecondColor = Color(0xFF8FBEF2),
-
-
+    supportBoxColor = Color(0xFFe0c3fc),
+    supportBoxSecondColor= Color(0xFF8ec5fc),
     inactive = Color(0xFFE7E7E7),
     divider = Color(0xFFEEEEEE),
     dark = Color.Black,
     darkScreen = Color.DarkGray,
-    mainColor = Color(0xFF3B82F6), //0xFF5174FF),//
-    mainColorLight = Color(0xFFEFF6FF),//0xFFE8EFFF),
+    mainColor = Color(0xFF3B82F6),
+    mainColorLight = Color(0xFFEFF6FF),
     successColor = Color(0xFF10B981),
     selectedLabelColor = Color.White,
     uncheckedTrackColor = Color(0xFFE2E8F0),
@@ -94,7 +95,10 @@ val LightColors = HPAppColors(
     unSelectedColor = Color.Transparent,
     inputBoxBorder = Color.LightGray,
     mapSimulationColor = Color(0xFFE5E7EB),
-    InheritColor = Color.Transparent
+    inheritColor = Color.Transparent,
+
+    badgeColor = Color(0xFFF8FAFC),
+    badgeContentColor = Color(0xFF64748B)
 )
 
 val Color.alphaPrimary

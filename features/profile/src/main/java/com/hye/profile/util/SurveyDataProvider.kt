@@ -2,6 +2,7 @@ package com.hye.profile.util
 
 import androidx.compose.runtime.Composable
 import com.hye.domain.model.survey.SurveyQuestion
+import com.hye.domain.model.survey.SurveyQuestionId
 import com.hye.features.profile.R
 import com.hye.shared.util.text
 
@@ -10,7 +11,7 @@ object SurveyDataProvider {
         @Composable
         get() = listOf(
             SurveyQuestion(
-                id = "Q1",
+                id = SurveyQuestionId.HEALTH_GOAL,
                 tag = R.string.onboarding_step3_q1_tag.text,
                 title = R.string.onboarding_step3_q1_title.text,
                 isMultiSelect = true,
@@ -23,7 +24,7 @@ object SurveyDataProvider {
                 )
             ),
             SurveyQuestion(
-                id = "Q2",
+                id = SurveyQuestionId.PAIN_POINT,
                 tag = R.string.onboarding_step3_q2_tag.text,
                 title = R.string.onboarding_step3_q2_title.text,
                 isMultiSelect = true,
@@ -35,7 +36,7 @@ object SurveyDataProvider {
                 )
             ),
             SurveyQuestion(
-                id = "Q3",
+                id = SurveyQuestionId.BAD_HABIT,
                 tag = R.string.onboarding_step3_q3_tag.text,
                 title = R.string.onboarding_step3_q3_title.text,
                 isMultiSelect = true,
@@ -47,7 +48,7 @@ object SurveyDataProvider {
                 )
             ),
             SurveyQuestion(
-                id = "Q4",
+                id = SurveyQuestionId.ACTIVITY_LEVEL,
                 tag = R.string.onboarding_step3_q4_tag.text,
                 title = R.string.onboarding_step3_q4_title.text,
                 isMultiSelect = false,

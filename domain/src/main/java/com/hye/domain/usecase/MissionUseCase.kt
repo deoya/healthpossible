@@ -5,6 +5,7 @@ import com.hye.domain.usecase.mission.GetMissionRecordsUseCase
 import com.hye.domain.usecase.mission.GetMissionUseCase
 import com.hye.domain.usecase.mission.InsertMissionUseCase
 import com.hye.domain.usecase.mission.UpdateMissionRecordUseCase
+import com.hye.domain.usecase.recommend.RecommendMissionUseCase
 import javax.inject.Inject
 
 data class MissionUseCase @Inject constructor(
@@ -12,5 +13,6 @@ data class MissionUseCase @Inject constructor(
     val getMissionList : GetMissionListUseCase,
     val getMission : GetMissionUseCase,
     val getMissionRecords: GetMissionRecordsUseCase,
-    val updateMissionRecord: UpdateMissionRecordUseCase
+    val updateMissionRecord: UpdateMissionRecordUseCase,
+    val recommendMission: RecommendMissionUseCase
 )

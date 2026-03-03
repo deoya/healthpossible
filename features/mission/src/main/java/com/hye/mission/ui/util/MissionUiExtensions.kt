@@ -19,8 +19,11 @@ import com.hye.domain.model.mission.types.Mission
 import com.hye.domain.model.mission.types.MissionType
 import com.hye.domain.model.mission.types.RestrictionMission
 import com.hye.domain.model.mission.types.RoutineMission
+import com.hye.domain.model.mission.types.type
 import com.hye.features.mission.R
 import com.hye.shared.theme.AppTheme
+import com.hye.shared.util.DateFormatType
+import com.hye.shared.util.getFormattedTime
 import com.hye.shared.util.text
 
 data class MissionAppearance(val color: Color, val secondColor : Color, val icon: ImageVector)
@@ -99,3 +102,43 @@ val Float.cheerMessage: String
 
 val Mission.exerciseAgentMission : Boolean
     get() = this is ExerciseMission && useSupportAgent
+
+
+fun Mission.getRecommendDescription(): String {
+    return this.memo ?: "요원님의 맞춤형 ${this.type.label} 작전입니다."
+}
+
+fun Mission.getRecommendTarget(): String {
+    return when (this) {
+        is ExerciseMission -> {
+            val exerciseName = this.selectedExercise?.label ?: this.unit.label
+            "$exerciseName ${this.targetValue}${if (this.selectedExercise?.isTimeBased == true) "초" else "회"}"
+        }
+        is RoutineMission -> "${this.dailyTargetAmount}${this.unitLabel}"
+        is DietMission -> "인증 방식: ${this.recordMethod.name}"
+        is RestrictionMission -> this.maxAllowedMinutes?.let { "${it}분" } ?: "체크형"
+    }
+}
+// Todo : FlowRow로 추가할 예정
+fun Mission.getRecommendTags(): List<String> {
+    val tags = mutableListOf<String>()
+
+    // 기본 카테고리 태그
+    tags.add(this.type.label)
+
+    // 주간 목표 태그
+    tags.add("주 ${this.weeklyTargetCount}회")
+
+    // 알림 설정 태그
+    if (this.notificationTime != null) {
+        val timeString = getFormattedTime(this.notificationTime!!, DateFormatType.SIMPLE_TIME)
+        tags.add("⏰ $timeString")
+    }
+
+    // AI 지원 태그
+    if (this is ExerciseMission && this.useSupportAgent) {
+        tags.add("✨ Agent 지원")
+    }
+
+    return tags
+}

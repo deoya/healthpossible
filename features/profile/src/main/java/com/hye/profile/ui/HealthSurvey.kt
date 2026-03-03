@@ -5,6 +5,7 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -30,13 +31,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import com.hye.domain.model.profile.ActivityLevel
+import com.hye.domain.model.survey.SurveyQuestionId
 import com.hye.features.profile.R
+import com.hye.profile.state.ProfileUiState
 import com.hye.profile.ui.components.survey.SurveyPage
 import com.hye.profile.ui.components.survey.SurveyProgressIndicator
 import com.hye.profile.util.SurveyDataProvider
 import com.hye.shared.theme.AppTheme
 import com.hye.shared.theme.toSp
 import com.hye.shared.ui.button.BackButton
+import com.hye.shared.ui.card.ModernSelectionCard
+import com.hye.shared.ui.text.LabelText
+import com.hye.shared.ui.text.SectionText
+import com.hye.shared.ui.text.TextStyleSize
 import com.hye.shared.util.text
 import kotlinx.coroutines.launch
 
@@ -45,30 +53,38 @@ import kotlinx.coroutines.launch
 @Composable
 fun PreviewHealthSurvey() {
     HealthSurvey(
-        selectedAnswers = emptyMap(),
         onAnswerToggled = { _, _, _ -> },
         onComplete = { },
-        onBack = { },
+        uiState = ProfileUiState(),
+        onBadHabitToggled = { },
+        onActivityLevelSelected = { },
+        onBack = {  },
+        completeButtonText = "",
     )
 }
 
 
 @Composable
 fun HealthSurvey(
-    selectedAnswers: Map<String, Set<String>>,
-    onAnswerToggled: (questionId: String, option: String, isMultiSelect: Boolean) -> Unit,
+    uiState: ProfileUiState,
+    onAnswerToggled: (questionId: SurveyQuestionId, option: String, isMultiSelect: Boolean) -> Unit, // Q1, Q2용
+    onBadHabitToggled: (String) -> Unit,                 // 🔥 Q3용
+    onActivityLevelSelected: (ActivityLevel) -> Unit,    // 🔥 Q4용
     onComplete: () -> Unit,
     onBack: () -> Unit,
     completeButtonText: String = R.string.onboarding_step3_complete_button.text
 ) {
 
     val questions = SurveyDataProvider.questions
-
     val pagerState = rememberPagerState(pageCount = { questions.size })
     val scope = rememberCoroutineScope()
 
     val completionStatus = questions.map { question ->
-        selectedAnswers[question.id]?.isNotEmpty() == true
+        when (question.id) {
+            SurveyQuestionId.BAD_HABIT -> uiState.badHabits.isNotEmpty()
+            SurveyQuestionId.ACTIVITY_LEVEL -> uiState.activityLevel != null
+            else -> uiState.surveyAnswers[question.id]?.isNotEmpty() == true
+        }
     }
     val isAllCompleted = completionStatus.all { it } && questions.isNotEmpty()
     Scaffold(
@@ -108,18 +124,48 @@ fun HealthSurvey(
                 verticalAlignment = Alignment.Top
             ) { page ->
                 val question = questions[page]
-                val currentSelection = selectedAnswers[question.id] ?: emptySet()
-
                 Column(
                     modifier = Modifier
                         .fillMaxHeight()
                         .verticalScroll(rememberScrollState())
                 ) {
-                    SurveyPage(
-                        question = question,
-                        selectedOptions = currentSelection,
-                        onOptionClick = { option -> onAnswerToggled(question.id, option, question.isMultiSelect) }
-                    )
+                    when (question.id) {
+                        SurveyQuestionId.BAD_HABIT -> {
+                            // Q3 (나쁜 습관)
+                            SurveyPage(
+                                question = question,
+                                selectedOptions = uiState.badHabits.toSet(),
+                                onOptionClick = { onBadHabitToggled(it) }
+                            )
+                        }
+                        SurveyQuestionId.ACTIVITY_LEVEL -> {
+                            Column(modifier = Modifier.padding(top = AppTheme.dimens.xxl)) {
+                                LabelText(question.tag, style = TextStyleSize.Large, color = AppTheme.colors.mainColor)
+                                SectionText(question.title, style = TextStyleSize.Small)
+
+                                Column(
+                                    modifier = Modifier.padding(top = AppTheme.dimens.xxxxl),
+                                    verticalArrangement = Arrangement.spacedBy(AppTheme.dimens.s)
+                                ) {
+                                    ActivityLevel.entries.forEach { level ->
+                                        ModernSelectionCard(
+                                            text = level.label,
+                                            isSelected = (uiState.activityLevel == level),
+                                            onClick = { onActivityLevelSelected(level) }
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                        else -> {
+                            // Q1, Q2 (기존 범용 방식)
+                            SurveyPage(
+                                question = question,
+                                selectedOptions = uiState.surveyAnswers[question.id] ?: emptySet(),
+                                onOptionClick = { option -> onAnswerToggled(question.id, option, question.isMultiSelect) }
+                            )
+                        }
+                    }
                 }
             }
 
