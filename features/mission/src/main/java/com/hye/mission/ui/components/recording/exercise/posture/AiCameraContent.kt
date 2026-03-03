@@ -22,7 +22,7 @@ import com.google.mlkit.vision.pose.defaults.PoseDetectorOptions
 import com.hye.domain.model.mission.types.AiExerciseType
 import com.hye.domain.model.mission.types.AiSessionMode
 import com.hye.features.mission.R
-import com.hye.mission.ui.analyzer.AiPoseAnalyzer
+import com.hye.mission.ui.agent.analyzer.AiPoseAnalyzer
 import com.hye.mission.ui.state.RecordState
 import com.hye.shared.util.text
 import kotlinx.coroutines.Dispatchers

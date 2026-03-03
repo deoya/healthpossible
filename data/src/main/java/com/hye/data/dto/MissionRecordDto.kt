@@ -1,8 +1,12 @@
-package com.hye.data.model
+package com.hye.data.dto
 
 import com.google.firebase.firestore.PropertyName
 
 data class MissionRecordDto(
+
+    @get:PropertyName(UID) @set:PropertyName(UID)
+    var uid: String = "",
+
     @get:PropertyName(ID) @set:PropertyName(ID)
     var id: String = "",
 
@@ -22,6 +26,7 @@ data class MissionRecordDto(
     var completedAt: String? = null // "HH:mm:ss"
 ) {
     companion object Fields {
+        const val UID = "uid"
         const val ID = "id"
         const val MISSION_ID = "missionId"
         const val DATE = "date"

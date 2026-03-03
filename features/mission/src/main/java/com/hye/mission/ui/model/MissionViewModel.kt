@@ -1,4 +1,4 @@
-package com.hye.mission.ui.viewmodel
+package com.hye.mission.ui.model
 
 import androidx.lifecycle.viewModelScope
 import com.hye.domain.model.mission.MissionRecord

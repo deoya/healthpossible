@@ -18,7 +18,7 @@ import com.hye.features.mission.R
 import com.hye.mission.ui.state.RecordState
 import com.hye.shared.theme.AppTheme
 import com.hye.shared.ui.button.SlideButton
-import com.hye.shared.ui.text.FeedbackBubble
+import com.hye.shared.ui.bubble.FeedbackBubble
 import com.hye.shared.util.text
 
 @Preview

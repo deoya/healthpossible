@@ -25,6 +25,7 @@ fun LabelText(
     fontWeight: FontWeight = FontWeight.Bold,
     color: Color = AppTheme.colors.textSecondary,
     lineHeight: TextUnit = TextUnit.Unspecified,
+    modifier : Modifier = Modifier.padding(bottom = AppTheme.dimens.xxxxs)
 ) {
     val resultStyle = when (style) {
         TextStyleSize.Small -> {
@@ -45,7 +46,7 @@ fun LabelText(
         fontWeight = fontWeight,
         color = color,
         lineHeight = lineHeight,
-        modifier = Modifier.padding(bottom = AppTheme.dimens.xxxxs)
+        modifier = modifier
     )
 }
 @Composable

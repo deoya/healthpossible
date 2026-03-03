@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import com.hye.domain.model.mission.types.AiSessionMode
 import com.hye.mission.ui.components.recording.layout.BaseBottomBarContentLayout
-import com.hye.mission.ui.components.recording.layout.BaseSessionLayout
+import com.hye.shared.base.BaseSessionLayout
 import com.hye.mission.ui.components.recording.simulation.MapSimulationView
 import com.hye.mission.ui.state.RecordState
 
@@ -25,8 +25,8 @@ fun RunnigSession_Preview() {
 
 @Composable
 fun RunningSession(
-    state: RecordState,
-    onToggleTimer: () -> Unit,
+    state: RecordState = RecordState(),
+    onToggleTimer: () -> Unit = {},
 ) {
     BaseSessionLayout(
         backgroundContent = {

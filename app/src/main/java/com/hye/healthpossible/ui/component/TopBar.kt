@@ -13,7 +13,6 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
@@ -26,7 +25,8 @@ import com.hye.shared.util.text
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopBar(navController: NavController, topBarActions: (@Composable () -> Unit)?) {
+fun TopBar(navController: NavController, topBarActions: (@Composable () -> Unit)?, isFullScreen: Boolean = false) {
+
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
 
@@ -70,7 +70,7 @@ fun TopBar(navController: NavController, topBarActions: (@Composable () -> Unit)
             topBarActions?.invoke()
         },
         colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = AppTheme.colors.background
+            containerColor = if(isFullScreen) Color.Transparent else AppTheme.colors.background
         )
     )
 }
