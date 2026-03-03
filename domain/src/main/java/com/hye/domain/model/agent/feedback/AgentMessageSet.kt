@@ -1,4 +1,4 @@
-package com.hye.domain.model.mission.feedback
+package com.hye.domain.model.agent.feedback
 
 data class AgentMessageSet(
     val descentNormal: List<String>,

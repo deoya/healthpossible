@@ -1,8 +1,11 @@
 package com.hye.profile.model
 
 import androidx.lifecycle.viewModelScope
+import com.hye.domain.model.profile.ActivityLevel
 import com.hye.domain.model.profile.UserProfile
 import com.hye.domain.model.survey.SelectionType
+import com.hye.domain.model.survey.SurveyQuestionId
+import com.hye.domain.session.SessionManager
 import com.hye.domain.usecase.ProfileUseCase
 import com.hye.profile.state.ProfileUiState
 import com.hye.shared.base.BaseViewModel
@@ -16,7 +19,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
-    private val profileUseCase: ProfileUseCase
+    private val profileUseCase: ProfileUseCase,
+    private val sessionManager: SessionManager
 ) : BaseViewModel() {
 
     private val _uiState = MutableStateFlow(ProfileUiState())
@@ -27,24 +31,35 @@ class ProfileViewModel @Inject constructor(
         _uiState.update { it.copy(selectionType = type) }
     }
 
-    fun toggleSurveyAnswer(questionId: String, option: String, isMultiSelect: Boolean) {
-        val currentAnswers = _uiState.value.surveyAnswers.toMutableMap()
-        val selectionsForQuestion = currentAnswers[questionId]?.toMutableSet() ?: mutableSetOf()
+    fun toggleSurveyAnswer(questionId: SurveyQuestionId, option: String, isMultiSelect: Boolean) {
+        _uiState.update { state ->
+            val currentAnswers = state.surveyAnswers.toMutableMap()
+            val currentSet = currentAnswers[questionId]?.toMutableSet() ?: mutableSetOf()
 
-        if (isMultiSelect) {
-            if (selectionsForQuestion.contains(option)) {
-                selectionsForQuestion.remove(option)
+            if (isMultiSelect) {
+                if (currentSet.contains(option)) currentSet.remove(option)
+                else currentSet.add(option)
             } else {
-                selectionsForQuestion.add(option)
+                currentSet.clear()
+                currentSet.add(option)
             }
-        } else {
-            selectionsForQuestion.clear()
-            selectionsForQuestion.add(option)
-        }
 
-        currentAnswers[questionId] = selectionsForQuestion
-        Timber.d("설문 답변 업데이트 -> 문항: $questionId, 현재 선택됨: $selectionsForQuestion")
-        _uiState.update { it.copy(surveyAnswers = currentAnswers) }
+            currentAnswers[questionId] = currentSet
+            state.copy(surveyAnswers = currentAnswers)
+        }
+    }
+
+    fun updateActivityLevel(level: ActivityLevel) {
+        Timber.d("활동 수준 선택됨: ${level.name}")
+        _uiState.update { it.copy(activityLevel = level) }
+    }
+    fun toggleBadHabit(habit: String) {
+        _uiState.update { state ->
+            val currentHabits = state.badHabits.toMutableList()
+            if (currentHabits.contains(habit)) currentHabits.remove(habit)
+            else currentHabits.add(habit)
+            state.copy(badHabits = currentHabits)
+        }
     }
 
     fun saveProfileData(onSuccess: () -> Unit) {
@@ -54,14 +69,22 @@ class ProfileViewModel @Inject constructor(
 
             // 1. 설문 데이터 추출
             val answers = _uiState.value.surveyAnswers
-            val healthGoals = answers["Q1"]?.toList() ?: emptyList()
-            val painPoints = answers["Q2"]?.toList() ?: emptyList()
+            val healthGoals = answers[SurveyQuestionId.HEALTH_GOAL]?.toList() ?: emptyList()
+            val painPoints = answers[SurveyQuestionId.PAIN_POINT]?.toList() ?: emptyList()
+
+            val currentSession = sessionManager.currentUser.value
 
             // 2. Domain Model 생성
             val profile = UserProfile(
+                uid = currentSession?.uid ?: "",
+                codename = currentSession?.codename ?: "",
                 onboardingType = _uiState.value.selectionType,
                 healthGoals = healthGoals,
                 painPoints = painPoints,
+
+                badHabits = _uiState.value.badHabits,
+                activityLevel = _uiState.value.activityLevel ?: ActivityLevel.NORMAL,
+
                 profileCompletionRate = if (_uiState.value.selectionType == SelectionType.SELF) 10 else 30
             )
 
@@ -71,6 +94,7 @@ class ProfileViewModel @Inject constructor(
             profileUseCase.saveProfileData(profile)
                 .onSuccess {
                     Timber.d("✅ 프로필 데이터 저장 성공")
+                    sessionManager.fetchUserProfile()
                     _uiState.update { it.copy(isLoading = false) }
                     showToast("프로필이 성공적으로 저장되었습니다.")
 

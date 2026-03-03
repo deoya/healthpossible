@@ -43,7 +43,7 @@ data class HPAppDimens(
     val iconBox: Dp =52.dp,
     val runningSimplePillHeight : Dp = 120.dp,
     val dropDownMenuAddMisionPadding :Dp = 110.dp,
-
+    val decisionCardWidth : Dp = 280.dp,
     val alphaMuted: Float = 0.2f,
     val alphaPrimary: Float = 0.8f,
 

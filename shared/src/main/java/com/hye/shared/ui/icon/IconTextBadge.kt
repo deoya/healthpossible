@@ -1,0 +1,47 @@
+package com.hye.shared.ui.icon
+
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.font.FontWeight
+import com.hye.shared.theme.AppTheme
+
+@Composable
+fun IconTextBadge(
+    icon: ImageVector,
+    text: String,
+    modifier: Modifier = Modifier,
+    backgroundColor: Color = AppTheme.colors.badgeColor,
+    contentColor: Color = AppTheme.colors.badgeContentColor
+) {
+    Surface(
+        color = backgroundColor,
+        shape = RoundedCornerShape(AppTheme.dimens.xxs),
+        modifier = modifier
+    ) {
+        Row(
+            modifier = Modifier.padding(horizontal = AppTheme.dimens.xxs, vertical = AppTheme.dimens.xxxxs),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(AppTheme.dimens.xxxxs)
+        ) {
+            Icon(icon, contentDescription = null, tint = contentColor, modifier = Modifier.size(AppTheme.dimens.sm))
+            Text(
+                text = text,
+                style = MaterialTheme.typography.labelMedium,
+                color = contentColor,
+                fontWeight = FontWeight.Bold
+            )
+        }
+    }
+}
