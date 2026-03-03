@@ -19,19 +19,18 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
-import com.hye.domain.model.mission.MissionWithRecord
+import com.hye.domain.model.mission.WeeklyMissionState
 import com.hye.features.mission.R
 import com.hye.mission.ui.components.mission.DailyProgressCard
 import com.hye.mission.ui.components.mission.UserMissionCard
-import com.hye.mission.ui.viewmodel.MissionViewModel
 import com.hye.mission.ui.state.MissionState
+import com.hye.mission.ui.viewmodel.MissionViewModel
 import com.hye.shared.base.BaseScreenTemplate
 import com.hye.shared.mock.MissionMockData
 import com.hye.shared.theme.AppTheme
 import com.hye.shared.theme.ScaffoldContentPaddingWithBottomBar
 import com.hye.shared.ui.button.StyledIconButton
 import com.hye.shared.ui.icon.CalendarIcon
-import com.hye.shared.ui.text.TitleMedium
 import com.hye.shared.util.text
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -74,7 +73,7 @@ fun MissionListScreen(
 @Composable
 fun MissionListContent(
     uiState: MissionState,
-    onMissionClick: (MissionWithRecord) -> Unit,
+    onMissionClick: (WeeklyMissionState) -> Unit,
     onNavigateToRecording: (String) -> Unit
 ) {
     Box(
@@ -82,19 +81,11 @@ fun MissionListContent(
             .fillMaxSize()
             .background(AppTheme.colors.backgroundMuted)
     ) {
-
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
             contentPadding = AppTheme.dimens.ScaffoldContentPaddingWithBottomBar,
             verticalArrangement = Arrangement.spacedBy(AppTheme.dimens.xxl)
         ) {
-            item {
-                //Todo : width 조절 하기
-                DailyProgressCard(
-                    totalCount = uiState.totalMissionsCount,
-                    completedCount = uiState.completedMissionsCount
-                )
-            }
             if (uiState.missions.isEmpty()) {
                 item {
                     Box(
@@ -112,11 +103,15 @@ fun MissionListContent(
                 }
             } else {
                 item {
-                    TitleMedium(R.string.mission_today_missions.text(uiState.missions.size))
+                     DailyProgressCard(
+                         totalCount = uiState.totalMissionsCount,
+                         completedCount = uiState.completedMissionsCount
+                     )
                 }
+
                 items(uiState.missions) { item ->
                     UserMissionCard(
-                        missionWrapper = item,
+                        state = item,
                         onClick = { onMissionClick(item) },
                         onNavigateToRecording = { onNavigateToRecording(item.mission.id) }
                     )
@@ -135,7 +130,7 @@ fun MissionListScreen_Preview() {
     val dummyState = MissionState(
         missions = dummyMissions,
         totalMissionsCount = dummyMissions.size,
-        completedMissionsCount = dummyMissions.count { it.isCompleted },
+        completedMissionsCount = dummyMissions.count { it.isDoneToday },
         isLoading = false
     )
 

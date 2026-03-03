@@ -24,7 +24,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.hye.domain.model.mission.MissionActionsByType
 import com.hye.domain.model.mission.types.AiExerciseType
-import com.hye.domain.model.mission.types.DayOfWeek
 import com.hye.domain.model.mission.types.MissionType
 import com.hye.features.mission.R
 import com.hye.mission.ui.components.form.MissionForm
@@ -98,7 +97,7 @@ fun MissionCreationScreen(
             uiState = uiState,
             actions = actions,
             onTitleChange = viewModel::updateTitle,
-            onDayToggle = viewModel::toggleDay,
+            onWeeklyTargetChange = viewModel::onWeeklyTargetChange,
             onCategorySelected = viewModel::changeCategory,
             onMemoChange = viewModel::updateMemo,
             onDismissBottomSheet = { viewModel.toggleBottomSheet(false) },
@@ -112,7 +111,7 @@ fun MissionCreationScreenBody(
     uiState: MissionState,
     actions: MissionActionsByType,
     onTitleChange: (String) -> Unit,
-    onDayToggle: (DayOfWeek) -> Unit,
+    onWeeklyTargetChange: (Int) -> Unit,
     onCategorySelected: (MissionType) -> Unit,
     onMemoChange: (String) -> Unit,
     onDismissBottomSheet: (Boolean) -> Unit,
@@ -125,8 +124,8 @@ fun MissionCreationScreenBody(
                 CommonInputSection(
                     name = uiState.titleInput,
                     onNameChange = onTitleChange,
-                    selectedDays = uiState.daysInput,
-                    onDayToggle = onDayToggle
+                    weeklyTarget = uiState.weeklyTargetInput,
+                    onWeeklyTargetChange = onWeeklyTargetChange
                 )
             },
 
@@ -232,10 +231,10 @@ fun Preview_MissionCreationScreen() {
             uiState = dummyState,
             actions = dummyActions,
             onTitleChange = {},
-            onDayToggle = {},
             onCategorySelected = {},
             onMemoChange = {},
             onDismissBottomSheet = {},
-            onSelectExerciseType = {}
+            onWeeklyTargetChange = {},
+            onSelectExerciseType = {},
         )
 }

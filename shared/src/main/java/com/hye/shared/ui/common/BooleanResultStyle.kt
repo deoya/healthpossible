@@ -37,15 +37,26 @@ val Boolean.toPlayPauseIcon : ImageVector
 @Composable
 fun Boolean.selectionBorderStroke(width: Dp = AppTheme.dimens.one, color:Color = AppTheme.colors.unSelectedColor): BorderStroke? =
     if (this) null else BorderStroke(width, color)
+
 @ReadOnlyComposable
 @Composable
 fun Boolean.completedBorder(
+    completed: Dp =  AppTheme.dimens.zero,
+    incomplete: Dp = AppTheme.dimens.one
+): Dp = if (this) completed else incomplete
+
+
+@ReadOnlyComposable
+@Composable
+fun Boolean.completedCardBorder(
     completed: BorderStroke = BorderStroke(
         AppTheme.dimens.zero,
         Color.Unspecified
     ),
     incomplete: BorderStroke = BorderStroke(AppTheme.dimens.zero, AppTheme.colors.incompleteColor)
 ): BorderStroke = if (this) completed else incomplete
+
+
 
 //text관련
 val Boolean.selectionFontWeight: FontWeight
@@ -68,8 +79,8 @@ val Boolean.selectionBtnColorLight: Color
     get() = if (this) AppTheme.colors.mainColorLight else AppTheme.colors.backgroundMuted
 @ReadOnlyComposable
 @Composable
-fun Boolean.completedColor(completed : Color = AppTheme.colors.completeColor, incomplete:Color = AppTheme.colors.mainColor): Color =
-    if (this) incomplete else completed
+fun Boolean.completedColor(completed : Color = AppTheme.colors.completeColor, incomplete:Color = AppTheme.colors.incompleteColor): Color =
+    if (this) completed else incomplete
 @ReadOnlyComposable
 @Composable
 fun Boolean.enabledColor(enabled : Color = AppTheme.colors.mainColor, disabled:Color = AppTheme.colors.textSecondary.copy(

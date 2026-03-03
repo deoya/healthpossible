@@ -1,8 +1,7 @@
 package com.hye.mission.ui.state
 
-import com.hye.domain.model.mission.MissionWithRecord
+import com.hye.domain.model.mission.WeeklyMissionState
 import com.hye.domain.model.mission.types.AiExerciseType
-import com.hye.domain.model.mission.types.DayOfWeek
 import com.hye.domain.model.mission.types.DietRecordMethod
 import com.hye.domain.model.mission.types.ExerciseRecordMode
 import com.hye.domain.model.mission.types.Mission
@@ -15,7 +14,7 @@ data class MissionState (
     val isLoading: Boolean = false,
     val errorMessage: String? = null,
     // 미션 정보
-    val missions: List<MissionWithRecord> = emptyList(),
+    val missions: List<WeeklyMissionState> = emptyList(),
     val totalMissionsCount: Int = 0,
     val completedMissionsCount: Int = 0,
 
@@ -27,7 +26,8 @@ data class MissionState (
     // --- 공통 입력란 ---
     val selectedCategory: MissionType = MissionType.EXERCISE,
     val titleInput: String = "",
-    val daysInput: Set<DayOfWeek> = emptySet(),
+    val weeklyTargetInput: Int = 0,
+    val weekIdentifier: String? = null,
     val memoInput: String = "",
     val notificationTimeInput: LocalTime? = null,
 

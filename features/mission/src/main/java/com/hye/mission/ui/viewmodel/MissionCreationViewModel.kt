@@ -48,9 +48,10 @@ class MissionCreationViewModel @Inject constructor(
 
         val commonData = MissionFactory.MissionData(
             title = state.titleInput,
-            days = state.daysInput,
             memo = state.memoInput.ifBlank { null },
-            notificationTime = state.notificationTimeInput
+            notificationTime = state.notificationTimeInput,
+            weeklyTargetCount = state.weeklyTargetInput,
+            weekIdentifier = state.weekIdentifier,
         )
 
         val finalMission: Mission = try {
@@ -136,15 +137,8 @@ class MissionCreationViewModel @Inject constructor(
         _uiStatus.update { it.copy(titleInput = newTitle) }
     }
 
-    fun toggleDay(day: DayOfWeek) {
-        _uiStatus.update { state ->
-            val newDays = if (state.daysInput.contains(day)) {
-                state.daysInput - day
-            } else {
-                state.daysInput + day
-            }
-            state.copy(daysInput = newDays)
-        }
+    fun onWeeklyTargetChange(newTarget: Int) {
+        _uiStatus.update { it.copy(weeklyTargetInput = newTarget) }
     }
 
     fun updateMemo(newMemo: String) {

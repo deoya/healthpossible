@@ -1,7 +1,6 @@
 package com.hye.domain.factory
 
 import com.hye.domain.model.mission.types.AiExerciseType
-import com.hye.domain.model.mission.types.DayOfWeek
 import com.hye.domain.model.mission.types.DietMission
 import com.hye.domain.model.mission.types.DietRecordMethod
 import com.hye.domain.model.mission.types.ExerciseMission
@@ -15,9 +14,12 @@ import java.util.UUID
 object MissionFactory {
     data class MissionData(
         val title: String,
-        val days: Set<DayOfWeek>,
         val memo: String? = null,
-        val notificationTime: LocalTime? = null
+        val notificationTime: LocalTime? = null,
+
+        val weeklyTargetCount: Int,
+        val weekIdentifier: String? = null,
+        val isTemplate: Boolean = false
     )
 
     fun createExerciseMission(
@@ -29,13 +31,15 @@ object MissionFactory {
     ): ExerciseMission = ExerciseMission(
         id = UUID.randomUUID().toString(),
         title = data.title,
-        days = data.days,
         memo = data.memo,
         notificationTime = data.notificationTime,
         unit = unit,
         targetValue = targetValue,
         useSupportAgent = useSupportAgent,
-        selectedExercise = selectedExercise
+        selectedExercise = selectedExercise,
+        weeklyTargetCount = data.weeklyTargetCount,
+        weekIdentifier = data.weekIdentifier,
+        isTemplate = data.isTemplate
     )
 
     fun createDietMission(
@@ -44,10 +48,12 @@ object MissionFactory {
     ): DietMission = DietMission(
         id = UUID.randomUUID().toString(),
         title = data.title,
-        days = data.days,
         memo = data.memo,
         notificationTime = data.notificationTime,
-        recordMethod = recordMethod
+        recordMethod = recordMethod,
+        weeklyTargetCount = data.weeklyTargetCount,
+        weekIdentifier = data.weekIdentifier,
+        isTemplate = data.isTemplate
     )
 
     fun createRoutineMission(
@@ -58,12 +64,14 @@ object MissionFactory {
     ): RoutineMission = RoutineMission(
         id = UUID.randomUUID().toString(),
         title = data.title,
-        days = data.days,
         memo = data.memo,
         notificationTime = data.notificationTime,
         dailyTargetAmount = dailyTargetAmount,
         amountPerStep = amountPerStep,
-        unitLabel = unitLabel
+        unitLabel = unitLabel,
+        weeklyTargetCount = data.weeklyTargetCount,
+        weekIdentifier = data.weekIdentifier,
+        isTemplate = data.isTemplate
     )
 
     fun createRestrictionMission(
@@ -73,10 +81,12 @@ object MissionFactory {
     ): RestrictionMission = RestrictionMission(
         id = UUID.randomUUID().toString(),
         title = data.title,
-        days = data.days,
         memo = data.memo,
         notificationTime = data.notificationTime,
         type = type,
-        maxAllowedMinutes = maxAllowedMinutes
+        maxAllowedMinutes = maxAllowedMinutes,
+        weeklyTargetCount = data.weeklyTargetCount,
+        weekIdentifier = data.weekIdentifier,
+        isTemplate = data.isTemplate
     )
 }

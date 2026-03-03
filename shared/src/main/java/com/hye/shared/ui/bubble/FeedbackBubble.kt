@@ -1,4 +1,4 @@
-package com.hye.shared.ui.text
+package com.hye.shared.ui.bubble
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import com.hye.shared.ui.common.light
 import com.hye.shared.theme.AppTheme
+import com.hye.shared.ui.text.LabelSmall
 
 @Composable
 fun FeedbackBubble(message: String) {

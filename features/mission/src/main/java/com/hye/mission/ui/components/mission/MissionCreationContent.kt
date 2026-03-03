@@ -11,8 +11,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.hye.features.mission.R
 import com.hye.shared.theme.AppTheme
-import com.hye.shared.ui.CardStyle
-import com.hye.shared.ui.StyledCard
+import com.hye.shared.ui.card.CardStyle
+import com.hye.shared.ui.card.StyledCard
 import com.hye.shared.ui.text.TitleSmall
 import com.hye.shared.util.text
 

@@ -18,8 +18,8 @@ import com.hye.shared.theme.AppTheme
 @Composable
 fun BackButton(
     onBack: () -> Unit,
-    color : Color = AppTheme.colors.background,
     applyShadow : Boolean = true,
+    color : Color = AppTheme.colors.background,
     modifier: Modifier =  Modifier.padding(top = AppTheme.dimens.backButtonInTopBar, start = AppTheme.dimens.l)
 ){
     Column(modifier = modifier) {
