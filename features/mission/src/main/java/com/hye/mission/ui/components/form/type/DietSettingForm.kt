@@ -15,11 +15,11 @@ import com.hye.shared.ui.common.selectionBorderStroke
 import com.hye.shared.ui.common.selectionBtnColorLight
 import com.hye.shared.ui.common.selectionFontWeight
 import com.hye.shared.ui.common.selectionIconMenuColor
-import com.hye.shared.ui.CardStyle
+import com.hye.shared.ui.card.CardStyle
 import com.hye.shared.ui.text.LabelMedium
 import com.hye.shared.ui.menu.MenuStyle
 import com.hye.shared.ui.text.StyledAlert
-import com.hye.shared.ui.StyledCard
+import com.hye.shared.ui.card.StyledCard
 import com.hye.shared.ui.menu.StyledMenu
 import com.hye.shared.ui.text.TextDescription
 import com.hye.shared.ui.common.IconStyle

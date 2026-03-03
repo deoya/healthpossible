@@ -1,7 +1,9 @@
 <resources>
     <string name="mission_plan_title">미션 명</string>
     <string name="mission_plan_title_placeholder">예: 아침 조깅, 물 마시기</string>
-    <string name="mission_plan_weekly_target_count">주간 목표 횟수</string>
+    <string name="mission_plan_weekly_target">주간 목표 횟수</string>
+    <string name="mission_plan_weekly_target_every_day">매일 (주 7회)</string>
+    <string name="mission_plan_weekly_target_count">주 %d회</string>
     <string name="mission_plan_memo_placeholder">메모(선택)</string>
     <string name="mission_plan_category_setting">카테고리 설정</string>
     <string name="mission_plan_standards_of_implementation">실행 기준</string>

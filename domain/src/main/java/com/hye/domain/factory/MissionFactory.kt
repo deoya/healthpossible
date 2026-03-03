@@ -1,7 +1,6 @@
 package com.hye.domain.factory
 
 import com.hye.domain.model.mission.types.AiExerciseType
-import com.hye.domain.model.mission.types.DayOfWeek
 import com.hye.domain.model.mission.types.DietMission
 import com.hye.domain.model.mission.types.DietRecordMethod
 import com.hye.domain.model.mission.types.ExerciseMission
@@ -15,7 +14,6 @@ import java.util.UUID
 object MissionFactory {
     data class MissionData(
         val title: String,
-        val days: Set<DayOfWeek>,
         val memo: String? = null,
         val notificationTime: LocalTime? = null,
 

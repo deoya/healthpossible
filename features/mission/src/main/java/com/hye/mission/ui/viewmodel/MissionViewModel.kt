@@ -11,6 +11,7 @@ import com.hye.domain.result.MissionResult
 import com.hye.domain.usecase.MissionUseCase
 import com.hye.mission.ui.state.MissionState
 import com.hye.shared.base.BaseViewModel
+import com.hye.shared.util.getCurrentSeoulDate
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -19,7 +20,6 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import java.time.LocalDate
 import javax.inject.Inject
 
 @HiltViewModel
@@ -30,7 +30,7 @@ class MissionViewModel @Inject constructor(
     private val _uiStatus = MutableStateFlow(MissionState())
     val uiStatus = _uiStatus.asStateFlow()
 
-    private val todayDate = LocalDate.now()
+    private val todayDate = getCurrentSeoulDate()
 
     init {
         loadData()
