@@ -1,8 +1,10 @@
 package com.hye.data.di
 
+import com.hye.data.repository.impl.AgentBriefingRepositoryImpl
 import com.hye.data.repository.impl.AuthRepositoryImpl
 import com.hye.data.repository.impl.MissionRepositoryImpl
 import com.hye.data.repository.impl.ProfileRepositoryImpl
+import com.hye.domain.repository.AgentBriefingRepository
 import com.hye.domain.repository.AuthRepository
 import com.hye.domain.repository.MissionRepository
 import com.hye.domain.repository.ProfileRepository
@@ -27,4 +29,8 @@ abstract class RepositoryModule {
     @Binds
     @Singleton
     abstract fun bindProfileRepository(impl: ProfileRepositoryImpl): ProfileRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindAgentBriefingRepository(impl: AgentBriefingRepositoryImpl): AgentBriefingRepository
 }

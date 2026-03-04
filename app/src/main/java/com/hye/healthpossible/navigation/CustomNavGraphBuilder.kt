@@ -8,11 +8,11 @@ import androidx.navigation.toRoute
 import com.hye.community.screen.CommunityFeedScreen
 import com.hye.healthpossible.ui.MyPageScreen
 import com.hye.healthpossible.ui.component.OnboardingRoute
+import com.hye.mission.ui.agent.MissionRecommendationScreen
 import com.hye.mission.ui.components.recording.exercise.running.RunningSession
 import com.hye.mission.ui.screen.ExerciseRecordingScreen
 import com.hye.mission.ui.screen.MissionCreationScreen
 import com.hye.mission.ui.screen.MissionListScreen
-import com.hye.mission.ui.screen.MissionRecommendationScreen
 import com.hye.shared.navigation.ContentNavRouteDef
 
 fun NavGraphBuilder.customNavGraphBuilder(
@@ -55,7 +55,9 @@ fun NavGraphBuilder.customNavGraphBuilder(
         )
     }
     composable<ContentNavRouteDef.MissionRecommendationTab> {
-        MissionRecommendationScreen()
+        MissionRecommendationScreen(
+            onDismiss = { navController.popBackStack()}
+        )
     }
 
     composable<ContentNavRouteDef.ExerciseRecordingView> { backStackEntry ->

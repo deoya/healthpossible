@@ -1,7 +1,6 @@
 package com.hye.shared.ui.chip
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
@@ -13,8 +12,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
-import com.hye.shared.ui.text.LabelMedium
 import com.hye.shared.theme.AppTheme
+import com.hye.shared.ui.text.LabelMedium
 import com.hye.shared.util.clickableSingle
 
 

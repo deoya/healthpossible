@@ -45,11 +45,10 @@ dependencies {
     implementation(project(":shared"))
 
     implementation(libs.bundles.android.core)
-//    implementation(libs.androidx.appcompat)
-//    implementation(libs.material)
     //firebase
     implementation(platform(libs.firebase.bom))
     implementation(libs.bundles.firebase)
+    implementation(libs.google.firebase.vertexai)
 
     // Hilt Core
     implementation(libs.bundles.hilt)

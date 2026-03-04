@@ -8,34 +8,48 @@ import javax.inject.Inject
 
 //동적 난이도 조절
 class ScaleMissionDifficultyUseCase @Inject constructor() {
-    operator fun invoke(missions: List<Mission>, activityLevel: ActivityLevel?): List<Mission> {
-        return missions.map { mission ->
-            when (activityLevel) {
-                ActivityLevel.BEGINNER -> {
-                    // 초보자: 주 2회, 목표치 50%
-                    mission.scaleDown(weeklyCount = 2, targetRatio = 0.5f)
+    operator fun invoke(mission: Mission, activityLevel: ActivityLevel?): Mission {
+        if (activityLevel == null || activityLevel == ActivityLevel.NORMAL) {
+            return mission
+        }
+
+        return when (mission) {
+            // 🔥 1. 운동 미션: 타겟 횟수(targetValue) 조절
+            is ExerciseMission -> {
+                val baseTarget = mission.selectedExercise?.defaultTarget ?: mission.targetValue
+
+                // 체력 수준에 따른 배율(Multiplier) 설정
+                val multiplier = when (activityLevel) {
+                    ActivityLevel.BEGINNER -> 0.6
+                    ActivityLevel.EXPERT -> 1.4
+                    null, ActivityLevel.NORMAL -> 1.0 // 🔥 점진적 온보딩 (null이거나 보통이면 1.0배)
                 }
-                ActivityLevel.EXPERT -> {
-                    // 고수: 주 5회, 목표치 150%
-                    mission.scaleDown(weeklyCount = 5, targetRatio = 1.5f)
-                }
-                ActivityLevel.NORMAL, null -> {
-                    // 보통 혹은 정보가 없을 때(null): 기본값인 주 3회, 목표치 100%
-                    mission.scaleDown(weeklyCount = 3, targetRatio = 1.0f)
+
+                val scaledTarget = (baseTarget * multiplier).toInt().coerceAtLeast(1)
+
+                mission.copy(targetValue = scaledTarget)
+            }
+
+            // 🔥 2. 상시 미션(루틴): 걷기 걸음 수 조절
+            is RoutineMission -> {
+                if (mission.title.contains("걷기") || mission.id == "T_RT_03") {
+                    val baseTarget = mission.dailyTargetAmount
+
+                    val multiplier = when (activityLevel) {
+                        ActivityLevel.BEGINNER -> 0.7
+                        ActivityLevel.EXPERT -> 1.3
+                        null, ActivityLevel.NORMAL -> 1.0 // 🔥 점진적 온보딩
+                    }
+
+                    val scaledSteps = (baseTarget * multiplier).toInt()
+                    mission.copy(dailyTargetAmount = scaledSteps)
+                } else {
+                    mission // 물 마시기 등은 배율 없이 그대로 패스
                 }
             }
-        }
-    }
 
-    private fun Mission.scaleDown(weeklyCount: Int, targetRatio: Float): Mission {
-        return when (this) {
-            is ExerciseMission -> this.copy(
-                weeklyTargetCount = weeklyCount,
-                // 비율을 곱한 뒤 소수점을 버리고, 최소 1회(또는 1분)는 보장하도록 coerceAtLeast(1) 사용
-                targetValue = (this.targetValue * targetRatio).toInt().coerceAtLeast(1)
-            )
-            is RoutineMission -> this.copy(weeklyTargetCount = weeklyCount)
-            else -> this.updateCommon(weeklyTargetCount = weeklyCount)
+            // 식단이나 제한 미션은 원본 그대로 반환
+            else -> mission
         }
     }
 }

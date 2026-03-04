@@ -10,13 +10,14 @@ import androidx.compose.ui.graphics.Color
 
 @Composable
 fun ScreenOverlay(
+    color : Color = Color.Black,
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit = {}
 ) {
     Box(
         modifier = modifier
             .fillMaxSize()
-            .background(Color.Black.copy(alpha = 5f))
+            .background(color.copy(alpha = 2f))
             .clickable(interactionSource = null, indication = null) {}
     ) {
         content()

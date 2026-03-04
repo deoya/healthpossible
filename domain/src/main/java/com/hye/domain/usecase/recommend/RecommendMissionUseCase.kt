@@ -1,6 +1,16 @@
 package com.hye.domain.usecase.recommend
 
+import com.hye.domain.model.mission.RecommendedMission
+import com.hye.domain.model.mission.Suitability
+import com.hye.domain.model.mission.types.AiExerciseType
+import com.hye.domain.model.mission.types.DietMission
+import com.hye.domain.model.mission.types.DietRecordMethod
+import com.hye.domain.model.mission.types.ExerciseMission
+import com.hye.domain.model.mission.types.ExerciseRecordMode
 import com.hye.domain.model.mission.types.Mission
+import com.hye.domain.model.mission.types.RestrictionMission
+import com.hye.domain.model.mission.types.RestrictionType
+import com.hye.domain.model.mission.types.RoutineMission
 import com.hye.domain.model.profile.UserProfile
 import javax.inject.Inject
 
@@ -10,30 +20,119 @@ class RecommendMissionUseCase @Inject constructor(
     private val matchHabitMission: MatchHabitMissionUseCase,
     private val scaleMissionDifficulty: ScaleMissionDifficultyUseCase
 ) {
-    // 💡 임시 더미 템플릿 풀 (이후 Repository에서 가져오도록 변경)
-    private val templatePool = emptyList<Mission>()
-
-    operator fun invoke(profile: UserProfile): List<Mission> {
-        // 1단계: 안전 최우선 필터링
-        val safeMissions = filterSafeMission(
+    operator fun invoke(profile: UserProfile): List<RecommendedMission> {
+        // 🔥 1단계: 안전 최우선 필터링 (절대 하면 안 되는 작전 배제)
+        // 점진적 온보딩: profile.painPoints가 비어있다면 전부 통과
+        val safeTemplates = filterSafeMission(
             templates = templatePool,
             painPoints = profile.painPoints
         )
 
-        // 2단계: 유저 목표 및 습관 매칭
-        val matchedMissions = matchHabitMission(
-            safeMissions = safeMissions,
-            goals = profile.healthGoals,
-            badHabits = profile.badHabits
+        // Todo : Rom 저장 연계 방식으로  전환
+        // 🔥 2단계: 안전한 템플릿을 대상으로 적합도(상/중/하) 채점
+        val scoredMissions = matchHabitMission(
+            safeMissions = safeTemplates,
+            profile = profile
         )
 
-        // 3단계: 유저 체력 기반 난이도 조절
-        val finalRecommendedMissions = scaleMissionDifficulty(
-            missions = matchedMissions,
-            activityLevel = profile.activityLevel
-        )
+        // 3단계: 티어별 섞기 및 그룹핑
+        val highMissions = scoredMissions.filter { it.suitability == Suitability.HIGH }.shuffled()
+        val mediumMissions = scoredMissions.filter { it.suitability == Suitability.MEDIUM }.shuffled()
+        val lowMissions = scoredMissions.filter { it.suitability == Suitability.LOW }.shuffled()
 
-        // 상위 3개만 잘라서 반환
-        return finalRecommendedMissions.take(3)
+        // 4단계: '상 -> 중 -> 하' 순서로 5개 추출
+        val finalRecommendations = mutableListOf<RecommendedMission>()
+        finalRecommendations.addAll(highMissions)
+
+        if (finalRecommendations.size < 5) {
+            finalRecommendations.addAll(mediumMissions.take(5 - finalRecommendations.size))
+        }
+        if (finalRecommendations.size < 5) {
+            finalRecommendations.addAll(lowMissions.take(5 - finalRecommendations.size))
+        }
+
+        val selectedTop5 = finalRecommendations.take(5)
+
+        // 🔥 5단계: 최종 선발된 5개 미션의 '난이도 조절'
+        // 점진적 온보딩: profile.activityLevel이 아직 입력되지 않았다면(null)
+        return selectedTop5.map { recommendedItem ->
+            val adjustedMission = scaleMissionDifficulty(
+                mission = recommendedItem.mission,
+                activityLevel = profile.activityLevel,
+            )
+            recommendedItem.copy(mission = adjustedMission)
+        }
     }
+    // 🔥 테스트를 위한 더미 템플릿
+    private val templatePool: List<Mission> = listOf(
+        // --- [1] AI 코칭 & 러닝 운동 (ExerciseMission) ---
+        ExerciseMission(
+            id = "T_EX_01", title = "AI 코칭: 하체 타격 (스쿼트)", memo = "무너진 하체 밸런스를 복구하는 핵심 작전입니다.",
+            notificationTime = null, weeklyTargetCount = 3, weekIdentifier = null, isTemplate = true,
+            targetValue = 15, unit = ExerciseRecordMode.SELECTED, useSupportAgent = true, selectedExercise = AiExerciseType.SQUAT
+        ),
+        ExerciseMission(
+            id = "T_EX_02", title = "AI 코칭: 코어 방어 (플랭크)", memo = "요통 예방 및 코어 장갑을 강화하는 작전입니다.",
+            notificationTime = null, weeklyTargetCount = 4, weekIdentifier = null, isTemplate = true,
+            targetValue = 60, unit = ExerciseRecordMode.SELECTED, useSupportAgent = true, selectedExercise = AiExerciseType.PLANK
+        ),
+        ExerciseMission(
+            id = "T_EX_03", title = "AI 코칭: 하체 밸런스 (런지)", memo = "비대칭 밸런스 교정을 위한 전술적 훈련입니다.",
+            notificationTime = null, weeklyTargetCount = 3, weekIdentifier = null, isTemplate = true,
+            targetValue = 10, unit = ExerciseRecordMode.SELECTED, useSupportAgent = true, selectedExercise = AiExerciseType.LUNGE
+        ),
+        ExerciseMission(
+            id = "T_EX_04", title = "전술적 야외 기동 (러닝)", memo = "심폐 지구력 확보를 위한 야외 기동 훈련입니다.",
+            notificationTime = null, weeklyTargetCount = 2, weekIdentifier = null, isTemplate = true,
+            targetValue = 30, unit = ExerciseRecordMode.RUNNING, useSupportAgent = true, selectedExercise = null
+        ),
+
+        // --- [2] 상시 습관 (RoutineMission) ---
+        RoutineMission(
+            id = "T_RT_01", title = "수분 보충 작전", memo = "신진대사 활성화 및 피로 회복을 위한 필수 수분 보급입니다.",
+            notificationTime = null, weeklyTargetCount = 7, weekIdentifier = null, isTemplate = true,
+            dailyTargetAmount = 2000, amountPerStep = 250, unitLabel = "ml"
+        ),
+        RoutineMission(
+            id = "T_RT_02", title = "거북목 중화 스트레칭", memo = "장시간 모니터 주시로 인한 경추 타격을 회복합니다.",
+            notificationTime = null, weeklyTargetCount = 5, weekIdentifier = null, isTemplate = true,
+            dailyTargetAmount = 3, amountPerStep = 1, unitLabel = "회"
+        ),
+        RoutineMission(
+            id = "T_RT_03", title = "일상 걷기 훈련", memo = "기초 체력 유지를 위한 최소한의 기동입니다.",
+            notificationTime = null, weeklyTargetCount = 5, weekIdentifier = null, isTemplate = true,
+            dailyTargetAmount = 8000, amountPerStep = 1000, unitLabel = "보"
+        ),
+
+        // --- [3] 제한 습관 (RestrictionMission) ---
+        RestrictionMission(
+            id = "T_RS_01", title = "야간 취식 통제", memo = "수면의 질 저하 및 위장 기능 교란을 막는 방어 작전입니다.",
+            notificationTime = null, weeklyTargetCount = 5, weekIdentifier = null, isTemplate = true,
+            type = RestrictionType.CHECK, maxAllowedMinutes = null
+        ),
+        RestrictionMission(
+            id = "T_RS_02", title = "취침 전 스마트폰 차단", memo = "시신경 피로 누적 및 멜라토닌 분비 억제를 방지합니다.",
+            notificationTime = null, weeklyTargetCount = 5, weekIdentifier = null, isTemplate = true,
+            type = RestrictionType.TIMER, maxAllowedMinutes = 30
+        ),
+        RestrictionMission(
+            id = "T_RS_03", title = "카페인 과다 섭취 제한", memo = "중추신경계 과각성을 막고 안정적인 수면을 확보합니다.",
+            notificationTime = null, weeklyTargetCount = 6, weekIdentifier = null, isTemplate = true,
+            type = RestrictionType.CHECK, maxAllowedMinutes = null
+        ),
+
+        // --- [4] 식단 습관 (DietMission) ---
+        DietMission(
+            id = "T_DT_01", title = "조식 보급 인증", memo = "오전 작전 수행을 위한 초기 에너지 밸런스를 확보합니다.",
+            notificationTime = null, weeklyTargetCount = 5, weekIdentifier = null, isTemplate = true,
+            recordMethod = DietRecordMethod.PHOTO
+        ),
+        DietMission(
+            id = "T_DT_02", title = "클린 식단 (채소) 보고", memo = "식이섬유 보급을 통해 체내 불순물을 제거하는 작전입니다.",
+            notificationTime = null, weeklyTargetCount = 4, weekIdentifier = null, isTemplate = true,
+            recordMethod = DietRecordMethod.PHOTO
+        )
+    )
 }
+
+
