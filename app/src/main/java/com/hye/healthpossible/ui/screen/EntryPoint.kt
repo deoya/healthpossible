@@ -1,13 +1,8 @@
 package com.hye.healthpossible.ui.screen
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
@@ -17,17 +12,15 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.hye.healthpossible.navigation.customNavGraphBuilder
-import com.hye.healthpossible.ui.component.AddMissionSpreadMenu
+import com.hye.healthpossible.navigation.isFullScreen
+import com.hye.healthpossible.navigation.isHideTopBar
+import com.hye.healthpossible.ui.component.AddMissionOverlay
 import com.hye.healthpossible.ui.component.BottomAppBarItem
 import com.hye.healthpossible.ui.component.BottomBar
 import com.hye.healthpossible.ui.component.TopBar
@@ -49,25 +42,13 @@ fun EntryPoint(
     var showAddMissionMenu by remember { mutableStateOf(false) }
     var pendingDestination by remember { mutableStateOf<Any?>(null) }
 
-    //Todo : 분리 시킬 것
-    val fullScreenRoutes = remember {
-        listOf(
-            ContentNavRouteDef.ExerciseRecordingView::class,
-            ContentNavRouteDef.OnboardingTab::class,
-        )
-    }
+    val startDestination = if (isLoggedIn) ContentNavRouteDef.MissionTab else ContentNavRouteDef.OnboardingTab
 
-    val startDestination = if(isLoggedIn) ContentNavRouteDef.MissionTab else ContentNavRouteDef.OnboardingTab
+    val isFullScreen = currentDestination.isFullScreen()
+    val isHideTopBar = currentDestination.isHideTopBar()
 
-    val isFullScreen = fullScreenRoutes.any { routeClass ->
-        currentDestination?.hasRoute(routeClass) == true
-    }
-    val isHideTopBar = currentDestination?.hasRoute<ContentNavRouteDef.MypageTab>() == true
-    LaunchedEffect(showAddMissionMenu) {
-        if (!showAddMissionMenu && pendingDestination != null) {
-            val destination = pendingDestination!!
-            pendingDestination = null
-
+    val navigateToPending = {
+        pendingDestination?.let { destination ->
             navController.navigate(destination) {
                 popUpTo(navController.graph.findStartDestination().id) {
                     saveState = true
@@ -75,6 +56,13 @@ fun EntryPoint(
                 restoreState = true
                 launchSingleTop = true
             }
+            pendingDestination = null
+        }
+    }
+
+    LaunchedEffect(showAddMissionMenu) {
+        if (!showAddMissionMenu && pendingDestination != null) {
+            navigateToPending()
         }
     }
 
@@ -101,11 +89,7 @@ fun EntryPoint(
                     )
                 }
             },
-        ) {
-            paddingValues ->
-
-
-
+        ) { paddingValues ->
             NavHost(
                 navController = navController,
                 startDestination = startDestination,
@@ -123,49 +107,12 @@ fun EntryPoint(
             }
         }
 
-        if (showAddMissionMenu) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(bottom = AppTheme.dimens.bottomBarPadding)
-                    .clickable(
-                        indication = null,
-                        interactionSource = remember { MutableInteractionSource() }
-                    ) {
-                        showAddMissionMenu = false
-                        pendingDestination?.let { destination ->
-                            navController.navigate(destination) {
-                                popUpTo(navController.graph.findStartDestination().id) {
-                                    saveState = true
-                                }
-                                restoreState = true
-                                launchSingleTop = true
-                            }
-                            pendingDestination = null
-                        }
-                    }
-            )
-        }
-            val navBarHeight = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
-            val menuBottomPadding = 60.dp + navBarHeight
-        AddMissionSpreadMenu(
+        AddMissionOverlay(
             isVisible = showAddMissionMenu,
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .padding(bottom = menuBottomPadding),
-            onMenu1Click = {
+            navController = navController,
+            onDismiss = {
                 showAddMissionMenu = false
-                navController.navigate(ContentNavRouteDef.MissionRecommendationTab) {
-                    launchSingleTop = true
-                    restoreState = true
-                }
-            },
-            onMenu2Click = {
-                showAddMissionMenu = false
-                navController.navigate(ContentNavRouteDef.MissionCreationTab) {
-                    launchSingleTop = true
-                    restoreState = true
-                }
+                navigateToPending()
             }
         )
     }

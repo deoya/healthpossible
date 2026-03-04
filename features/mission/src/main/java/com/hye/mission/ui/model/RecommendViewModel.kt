@@ -4,6 +4,7 @@ import androidx.lifecycle.viewModelScope
 import com.hye.domain.model.mission.types.Mission
 import com.hye.domain.result.MissionResult
 import com.hye.domain.session.SessionManager
+import com.hye.domain.usecase.AgentUseCase
 import com.hye.domain.usecase.MissionUseCase
 import com.hye.mission.ui.state.RecommendUiState
 import com.hye.shared.base.BaseViewModel
@@ -18,6 +19,7 @@ import javax.inject.Inject
 @HiltViewModel
 class RecommendViewModel @Inject constructor(
     private val missionUseCases: MissionUseCase,
+    private val agentUseCase: AgentUseCase,
     private val sessionManager: SessionManager
 ) : BaseViewModel() {
 
@@ -43,19 +45,22 @@ class RecommendViewModel @Inject constructor(
 
             // 2. 🔥 온디바이스 AI 추천 엔진 가동! (통증 필터링 -> 습관 매칭 -> 난이도 조절)
             val recommendedMissions = missionUseCases.recommendMission(profile)
-
+            val briefingMessage = agentUseCase.generateAgentBriefing(
+                profile = profile,
+                missions = recommendedMissions.map { it.mission }
+            )
             // 3. UI 상태 업데이트
             _uiState.update {
                 it.copy(
                     isLoading = false,
-                    recommendations = recommendedMissions
+                    recommendations = recommendedMissions,
+                    agentMessage = briefingMessage
                 )
             }
             Timber.d("에이전트 미션 추천 완료: ${recommendedMissions.size}개")
         }
     }
 
-    // 🔥 미션 수락 시 로직
     fun acceptMission(mission: Mission) {
         viewModelScope.launch(commonCeh) {
             // 1. 화면의 추천 리스트에서 해당 미션 제거
@@ -90,7 +95,7 @@ class RecommendViewModel @Inject constructor(
     private fun removeMissionFromList(missionId: String) {
         _uiState.update { state ->
             state.copy(
-                recommendations = state.recommendations.filterNot { it.id == missionId }
+                recommendations = state.recommendations.filterNot { it.mission.id == missionId }
             )
         }
     }

@@ -56,7 +56,7 @@
     <string name="mission_tags_placeholder">태그 추가...</string>
 
     <!-- Recommend Card -->
-    <string name="mission_recommend_ai_coaching">AI 코칭</string>
+    <string name="mission_recommend_ai_coaching">Agent 코칭</string>
     <string name="mission_recommend_target_format">🎯 목표: %s</string>
     <string name="mission_recommend_postpone">보류</string>
     <string name="mission_recommend_accept">작전 수락</string>
