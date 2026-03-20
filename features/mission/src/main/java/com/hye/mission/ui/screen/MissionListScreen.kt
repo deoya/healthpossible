@@ -23,8 +23,8 @@ import com.hye.domain.model.mission.WeeklyMissionState
 import com.hye.features.mission.R
 import com.hye.mission.ui.components.mission.DailyProgressCard
 import com.hye.mission.ui.components.mission.UserMissionCard
-import com.hye.mission.ui.state.MissionState
 import com.hye.mission.ui.model.MissionViewModel
+import com.hye.mission.ui.state.MissionState
 import com.hye.shared.base.BaseScreenTemplate
 import com.hye.shared.mock.MissionMockData
 import com.hye.shared.theme.AppTheme

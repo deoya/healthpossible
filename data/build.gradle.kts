@@ -1,3 +1,12 @@
+import java.util.Properties
+
+val properties = Properties()
+val localPropertiesFile = project.rootProject.file("local.properties")
+if (localPropertiesFile.exists()) {
+    properties.load(localPropertiesFile.inputStream())
+}
+val kdcaToken = properties.getProperty("KDCA_API_TOKEN") ?: ""
+
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
@@ -5,6 +14,7 @@ plugins {
     alias(libs.plugins.google.ksp)
     alias(libs.plugins.google.gms.google.services)
     alias(libs.plugins.hilt.gradle)
+    kotlin("kapt")
 }
 
 android {
@@ -12,12 +22,16 @@ android {
     compileSdk {
         version = release(36)
     }
-
+    buildFeatures {
+        buildConfig = true
+    }
     defaultConfig {
         minSdk = 24
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
+
+        buildConfigField("String", "KDCA_API_TOKEN", "\"$kdcaToken\"")
     }
 
     buildTypes {
@@ -54,5 +68,18 @@ dependencies {
     implementation(libs.bundles.hilt)
     ksp(libs.hilt.compiler)
 
+    //xml
+    implementation(libs.bundles.tik.xml)
+    kapt(libs.tikxml.processor)
+    implementation(libs.logging.interceptor)
+
+    implementation(libs.org.json)
+
+    implementation(libs.bundles.network)
+
     implementation(libs.timber)
+
+    //test
+    testImplementation(libs.bundles.test.jvm)
+    androidTestImplementation(libs.bundles.test.android)
 }

@@ -31,10 +31,10 @@ import com.hye.mission.ui.components.form.common.CategorySelectionTab
 import com.hye.mission.ui.components.form.common.CommonInputSection
 import com.hye.mission.ui.components.form.type.exercise.ExerciseSettingFormBottomSeet
 import com.hye.mission.ui.components.mission.MissionCreationContent
+import com.hye.mission.ui.model.MissionCreationViewModel
 import com.hye.mission.ui.state.MissionState
 import com.hye.mission.ui.util.SettingRules.ANIMATION_SPEC
 import com.hye.mission.ui.util.getDesign
-import com.hye.mission.ui.model.MissionCreationViewModel
 import com.hye.shared.base.BaseScreenTemplate
 import com.hye.shared.mock.MissionMockData
 import com.hye.shared.theme.AppTheme

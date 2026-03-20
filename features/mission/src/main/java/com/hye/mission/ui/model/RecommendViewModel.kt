@@ -4,11 +4,12 @@ import androidx.lifecycle.viewModelScope
 import com.hye.domain.model.mission.types.Mission
 import com.hye.domain.result.MissionResult
 import com.hye.domain.session.SessionManager
-import com.hye.domain.usecase.AgentUseCase
 import com.hye.domain.usecase.MissionUseCase
 import com.hye.mission.ui.state.RecommendUiState
 import com.hye.shared.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -19,7 +20,6 @@ import javax.inject.Inject
 @HiltViewModel
 class RecommendViewModel @Inject constructor(
     private val missionUseCases: MissionUseCase,
-    private val agentUseCase: AgentUseCase,
     private val sessionManager: SessionManager
 ) : BaseViewModel() {
 
@@ -32,32 +32,50 @@ class RecommendViewModel @Inject constructor(
 
     private fun generateAgentRecommendations() {
         viewModelScope.launch(commonCeh) {
-            _uiState.update { it.copy(isLoading = true, error = null) }
+            // 1. UI 상태: 로딩 시작
+            _uiState.update {
+                it.copy(
+                    isLoading = true,
+                    error = null,
+                    agentMessage = "요원님의 최근 신체 데이터 및 스캔 결과를 동기화 중입니다"
+                )
+            }
 
-            // 1. 세션 매니저에서 가장 최신의 유저 프로필을 가져옴
+            // 2. 세션 매니저에서 가장 최신의 유저 프로필을 가져옴
             val profile = sessionManager.currentUser.value
 
             if (profile == null) {
                 Timber.e("프로필 정보를 찾을 수 없습니다.")
+                // UI 상태: 에러 발생
                 _uiState.update { it.copy(isLoading = false, error = "프로필을 불러오지 못했습니다.") }
                 return@launch
             }
+            val loadingJob: Job = launch {
+                delay(1500)
+                _uiState.update {
+                    it.copy(agentMessage = "지난주 작전 수행 이력을 바탕으로 취약점을 분석하고 있습니다")
+                }
 
-            // 2. 🔥 온디바이스 AI 추천 엔진 가동! (통증 필터링 -> 습관 매칭 -> 난이도 조절)
-            val recommendedMissions = missionUseCases.recommendMission(profile)
-            val briefingMessage = agentUseCase.generateAgentBriefing(
-                profile = profile,
-                missions = recommendedMissions.map { it.mission }
-            )
-            // 3. UI 상태 업데이트
+                delay(1500)
+                _uiState.update {
+                    it.copy(agentMessage = "분석 완료. 요원님을 위한 최적의 맞춤형 전술을 수립 중입니다")
+                }
+            }
+
+            // 🔥 3. 하이브리드 AI 추천 엔진 가동
+            val pipelineResult = missionUseCases.recommendMission(profile)
+
+            loadingJob.cancel()
+
+            // 4. UI 상태 업데이트: UseCase가 넘겨준 미션 리스트와 AI 브리핑 대사를 화면에 방출
             _uiState.update {
                 it.copy(
                     isLoading = false,
-                    recommendations = recommendedMissions,
-                    agentMessage = briefingMessage
+                    recommendations = pipelineResult.recommendations,
+                    agentMessage = pipelineResult.briefingMessage
                 )
             }
-            Timber.d("에이전트 미션 추천 완료: ${recommendedMissions.size}개")
+            Timber.d("에이전트 작전 수립 완료: ${pipelineResult.recommendations.size}개")
         }
     }
 
@@ -66,7 +84,7 @@ class RecommendViewModel @Inject constructor(
             // 1. 화면의 추천 리스트에서 해당 미션 제거
             removeMissionFromList(mission.id)
 
-            // 🔥 수정됨: 반환 타입인 Flow<MissionResult>에 맞춰 collect 방식으로 변경!
+            // 2. 데이터베이스에 미션 저장
             missionUseCases.insertMission(mission).collect { result ->
                 when (result) {
                     is MissionResult.Success -> {
@@ -85,9 +103,8 @@ class RecommendViewModel @Inject constructor(
         }
     }
 
-    // 🔥 미션 보류(거절) 시 로직
+    // 작전 보류(거절) 시 로직
     fun rejectMission(mission: Mission) {
-        // 단순히 리스트에서 제거하여 다음 미션을 보여줌
         removeMissionFromList(mission.id)
         showToast("해당 작전을 보류합니다.")
     }

@@ -15,22 +15,30 @@ import com.hye.shared.theme.toSp
 import com.hye.shared.ui.text.TypewriterText
 
 @Composable
-fun MessageBubble(text: String) {
+fun MessageBubble(
+    text: String,
+    color: Color = Color.White,
+    content: (@Composable (String) -> Unit)? = null
+) {
     Surface(
         color = Color.Black.copy(alpha = 0.3f),
         shape = RoundedCornerShape(AppTheme.dimens.md),
         border = BorderStroke(AppTheme.dimens.one, Color.White.copy(alpha = 0.2f)),
         modifier = Modifier.padding(horizontal = AppTheme.dimens.xxxxl)
     ) {
-        TypewriterText(
-            text = text,
-            style = MaterialTheme.typography.bodyLarge.copy(
-                fontWeight = FontWeight.Medium,
-                lineHeight = AppTheme.dimens.xxl.toSp,
-                textAlign = TextAlign.Center
-            ),
-            color = Color.White,
-            modifier = Modifier.padding(AppTheme.dimens.l)
-        )
+        if (content != null) {
+            content(text)
+        } else {
+            TypewriterText(
+                text = text,
+                style = MaterialTheme.typography.bodyMedium.copy(
+                    fontWeight = FontWeight.Medium,
+                    lineHeight = AppTheme.dimens.xxl.toSp,
+                    textAlign = TextAlign.Center
+                ),
+                color = color,
+                modifier = Modifier.padding(AppTheme.dimens.l)
+            )
+        }
     }
 }

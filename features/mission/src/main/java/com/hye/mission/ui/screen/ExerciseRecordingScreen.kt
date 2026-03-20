@@ -14,8 +14,8 @@ import com.hye.domain.model.mission.types.ExerciseAgentType
 import com.hye.features.mission.R
 import com.hye.mission.ui.components.recording.exercise.posture.AiPostureSession
 import com.hye.mission.ui.components.recording.exercise.running.RunningSession
-import com.hye.mission.ui.state.RecordState
 import com.hye.mission.ui.model.MissionRecordingViewModel
+import com.hye.mission.ui.state.RecordState
 import com.hye.shared.base.BaseScreenTemplate
 import com.hye.shared.util.text
 

@@ -8,9 +8,9 @@ import androidx.activity.viewModels
 import androidx.compose.animation.Crossfade
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.hye.healthpossible.ui.model.MainViewModel
 import com.hye.healthpossible.ui.screen.EntryPoint
 import com.hye.healthpossible.ui.screen.SplashScreen
-import com.hye.healthpossible.ui.model.MainViewModel
 import com.hye.shared.theme.HPAppTheme
 import dagger.hilt.android.AndroidEntryPoint
 

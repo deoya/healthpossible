@@ -4,7 +4,6 @@ import com.hye.data.dto.MissionDto
 import com.hye.data.dto.MissionRecordDto
 import com.hye.domain.model.mission.MissionRecord
 import com.hye.domain.model.mission.types.AiExerciseType
-import com.hye.domain.model.mission.types.DayOfWeek
 import com.hye.domain.model.mission.types.DietMission
 import com.hye.domain.model.mission.types.DietRecordMethod
 import com.hye.domain.model.mission.types.ExerciseMission
@@ -140,9 +139,6 @@ fun Mission.toDto(): MissionDto {
     }
 }
 
-// ===================================
-// Mission Record Mappers (기존과 동일하게 유지)
-// ===================================
 fun MissionRecordDto.toRecordDomain(): MissionRecord {
     return MissionRecord(
         id = this.id,

@@ -12,9 +12,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import com.hye.domain.model.mission.types.MissionType
+import com.hye.shared.theme.AppTheme
 import com.hye.shared.ui.common.selectionBorderStroke
 import com.hye.shared.ui.common.selectionBtnColor
-import com.hye.shared.theme.AppTheme
 
 @Composable
 fun CategorySelectionTab(

@@ -27,6 +27,12 @@
     <string name="onboarding_step3_q4_tag">[Q4]</string>
     <string name="onboarding_step3_q4_title">요원님의 현재 필드 가동 능력을 측정합니다.
 초기 미션의 강도를 결정하는 핵심 지표입니다.</string>
+
+
+    <string name="onboarding_step3_q5_tag">[Q5]</string>
+    <string name="onboarding_step3_q5_title">요원님, 본 작전에서 집중적으로 \'선제 방어\'가 필요한 신체적 위협 요소(만성질환)가 있습니까?</string>
+
+
     <string name="onboarding_step3_complete_button">분석 완료 및 작전 개시</string>
     <string name="onboarding_step3_multi_select_caption">다중 목표 설정 가능</string>
 
@@ -50,4 +56,14 @@
     <string name="onboarding_step3_q4_option1">기초 가동 단계(매우 적음)</string>
     <string name="onboarding_step3_q4_option2">일반 작전 수행 가능(보통)</string>
     <string name="onboarding_step3_q4_option3">고도화된 작전 수행 가능(활동적임)</string>
+
+    <string name="onboarding_step3_q5_option1">당뇨병</string>
+    <string name="onboarding_step3_q5_option2">고혈압</string>
+    <string name="onboarding_step3_q5_option3">고지혈증</string>
+    <string name="onboarding_step3_q5_option4">천식</string>
+    <string name="onboarding_step3_q5_option5">관절염</string>
+    <string name="onboarding_step3_q5_option6">갑상선 질환</string>
+    <string name="onboarding_step3_q5_option7">빈혈</string>
+    <string name="onboarding_step3_q5_option8">비만</string>
+    <string name="onboarding_step3_q5_option_none">특별히 없음 (해당 사항 없음)</string>
 </resources>

@@ -72,6 +72,9 @@ class ProfileViewModel @Inject constructor(
             val healthGoals = answers[SurveyQuestionId.HEALTH_GOAL]?.toList() ?: emptyList()
             val painPoints = answers[SurveyQuestionId.PAIN_POINT]?.toList() ?: emptyList()
 
+            val rawDiseases = answers[SurveyQuestionId.CHRONIC_DISEASE]?.toList() ?: emptyList()
+            val chronicDiseases = if (rawDiseases.contains("특별히 없음 (해당 사항 없음)")) emptyList() else rawDiseases
+
             val currentSession = sessionManager.currentUser.value
 
             // 2. Domain Model 생성
@@ -84,7 +87,7 @@ class ProfileViewModel @Inject constructor(
 
                 badHabits = _uiState.value.badHabits,
                 activityLevel = _uiState.value.activityLevel ?: ActivityLevel.NORMAL,
-
+                chronicDiseases = chronicDiseases,
                 profileCompletionRate = if (_uiState.value.selectionType == SelectionType.SELF) 10 else 30
             )
 

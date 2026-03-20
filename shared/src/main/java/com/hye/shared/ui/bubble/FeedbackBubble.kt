@@ -12,8 +12,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
-import com.hye.shared.ui.common.light
 import com.hye.shared.theme.AppTheme
+import com.hye.shared.ui.common.light
 import com.hye.shared.ui.text.LabelSmall
 
 @Composable
