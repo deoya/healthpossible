@@ -7,5 +7,5 @@ data class RecommendUiState(
     val error: String? = null,
     val recommendations: List<RecommendedMission> = emptyList(),
 
-    val agentMessage: String = "요원님의 데이터를 분석하여 작전을 수립 중입니다..."
+    val agentMessage: String = "요원님의 데이터를 분석하여\n 작전을 수립 중입니다"
 )

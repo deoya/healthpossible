@@ -16,9 +16,9 @@ import com.hye.features.mission.R
 import com.hye.mission.ui.util.SettingRules.MISSION_PLAN_GOAL_SUFFIX
 import com.hye.shared.theme.AppTheme
 import com.hye.shared.ui.text.LabelMedium
+import com.hye.shared.ui.text.StyledInputField
 import com.hye.shared.ui.text.StyledInputSection
 import com.hye.shared.ui.text.TextDescription
-import com.hye.shared.ui.text.StyledInputField
 import com.hye.shared.util.text
 
 @Composable

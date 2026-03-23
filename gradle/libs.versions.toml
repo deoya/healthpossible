@@ -75,6 +75,10 @@ accompanist-permissions = "0.37.3"
 poseDetection = "18.0.0-beta5"
 runtime = "1.10.3"
 
+#xml
+tikxml = "0.8.13"
+orgJson = "20240303"
+
 [libraries]
 # Android Core
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -157,7 +161,12 @@ javax-inject = { group = "javax.inject", name = "javax.inject", version.ref = "j
 
 accompanist-permissions = { group = "com.google.accompanist", name = "accompanist-permissions", version.ref = "accompanist-permissions" }
 
-
+#xml
+tikxml-core = { module = "com.tickaroo.tikxml:core", version.ref = "tikxml" }
+tikxml-annotation = { module = "com.tickaroo.tikxml:annotation", version.ref = "tikxml" }
+tikxml-processor = { module = "com.tickaroo.tikxml:processor", version.ref = "tikxml" }
+tikxml-retrofit = { module = "com.tickaroo.tikxml:retrofit-converter", version.ref = "tikxml" }
+org-json = { module = "org.json:json", version.ref = "orgJson" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
@@ -233,6 +242,12 @@ camerax = [
 mlkit-pose = [
     "pose-detection",
     "pose-detection-common"
+]
+
+tik-xml = [
+    "tikxml-core",
+    "tikxml-annotation",
+    "tikxml-retrofit"
 ]
 
 test-jvm = [

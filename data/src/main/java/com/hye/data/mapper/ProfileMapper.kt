@@ -16,7 +16,8 @@ fun UserProfileDto.toDomain(): UserProfile {
         badHabits = this.badHabits ?: emptyList(),
         activityLevel = this.activityLevel?.let {
             runCatching { ActivityLevel.valueOf(it) }.getOrNull()
-        }
+        },
+        chronicDiseases = this.chronicDiseases ?: emptyList()
     )
 }
 
@@ -28,7 +29,8 @@ fun UserProfile.toUpdateMap(): Map<String, Any> {
         UserProfileDto.PAIN_POINTS to this.painPoints,
         UserProfileDto.PROFILE_COMPLETION_RATE to this.profileCompletionRate,
 
-        UserProfileDto.BAD_HABITS to (this.badHabits ?: emptyList())
+        UserProfileDto.BAD_HABITS to (this.badHabits ?: emptyList()),
+        UserProfileDto.CHRONIC_DISEASES to (this.chronicDiseases ?: emptyList())
     )
 
     // activityLevel이 선택된 경우에만 Map에 추가 (Enum -> String)

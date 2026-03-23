@@ -13,12 +13,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import com.hye.domain.model.survey.SelectionType
+import com.hye.features.profile.R
 import com.hye.shared.theme.AppTheme
 import com.hye.shared.theme.toSp
 import com.hye.shared.ui.card.SelectionBigCard
 import com.hye.shared.ui.text.LabelText
 import com.hye.shared.util.text
-import com.hye.features.profile.R
 
 @Composable
 fun StrategySelection(

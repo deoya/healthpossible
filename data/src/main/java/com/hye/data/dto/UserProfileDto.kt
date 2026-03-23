@@ -12,6 +12,7 @@ data class UserProfileDto(
     val preferredTime: String? = null,
     val badHabits: List<String>? = null,
     val sleepPattern: String? = null,
+    val chronicDiseases: List<String>? = emptyList(),
     val profileCompletionRate: Int = 10,
     val createdAt: Long = System.currentTimeMillis(),
     val isAnonymous: Boolean = true
@@ -26,6 +27,7 @@ data class UserProfileDto(
         const val PREFERRED_TIME = "preferredTime"
         const val BAD_HABITS = "badHabits"
         const val SLEEP_PATTERN = "sleepPattern"
+        const val CHRONIC_DISEASES = "chronicDiseases"
         const val PROFILE_COMPLETION_RATE = "profileCompletionRate"
         const val CREATED_AT = "createdAt"
         const val IS_ANONYMOUS = "isAnonymous"

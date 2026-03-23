@@ -12,35 +12,91 @@ import com.hye.domain.model.mission.types.RestrictionMission
 import com.hye.domain.model.mission.types.RestrictionType
 import com.hye.domain.model.mission.types.RoutineMission
 import com.hye.domain.model.profile.UserProfile
+import com.hye.domain.repository.AgentBriefingRepository
+import com.hye.domain.repository.DiseaseGuidelineRepository
+import com.hye.domain.result.AgentRecommendationResult
+import com.hye.domain.result.MissionResult
+import com.hye.domain.result.RecommendationPipelineResult
 import javax.inject.Inject
 
 //추천 시스템
 class RecommendMissionUseCase @Inject constructor(
     private val filterSafeMission: FilterSafeMissionUseCase,
     private val matchHabitMission: MatchHabitMissionUseCase,
-    private val scaleMissionDifficulty: ScaleMissionDifficultyUseCase
+    private val scaleMissionDifficulty: ScaleMissionDifficultyUseCase,
+    private val agentRepository: AgentBriefingRepository,
+    private val diseaseGuidelineRepository: DiseaseGuidelineRepository // 🔥 1. 질병청 레포지토리 주입
 ) {
-    operator fun invoke(profile: UserProfile): List<RecommendedMission> {
-        // 🔥 1단계: 안전 최우선 필터링 (절대 하면 안 되는 작전 배제)
-        // 점진적 온보딩: profile.painPoints가 비어있다면 전부 통과
-        val safeTemplates = filterSafeMission(
-            templates = templatePool,
-            painPoints = profile.painPoints
-        )
 
-        // Todo : Rom 저장 연계 방식으로  전환
-        // 🔥 2단계: 안전한 템플릿을 대상으로 적합도(상/중/하) 채점
-        val scoredMissions = matchHabitMission(
-            safeMissions = safeTemplates,
-            profile = profile
-        )
+    suspend operator fun invoke(profile: UserProfile): RecommendationPipelineResult {
+        // 1단계: 안전 최우선 필터링
+        val safeTemplates = filterSafeMission(templates = templatePool, painPoints = profile.painPoints)
+        //1.5단계: 만성질환이 있다면 질병청 공식 지침 확보
+        var guidelineText: String? = null
+        val chronicDiseases = profile.chronicDiseases
 
-        // 3단계: 티어별 섞기 및 그룹핑
+        if (!chronicDiseases.isNullOrEmpty() && chronicDiseases.first() != "특별히 없음 (해당 사항 없음)") {
+            val targetDisease = chronicDiseases.first()
+            val guidelineResult = diseaseGuidelineRepository.fetchDiseaseGuideline(targetDisease)
+
+            if (guidelineResult is MissionResult.Success) {
+                guidelineText = guidelineResult.resultData
+            }
+        }
+
+        // 2단계: AI 통신 시도
+        val aiResult = agentRepository.generateRecommendation(profile, safeTemplates, guidelineText)
+
+        // 3단계: ROP 결과에 따른 분기 (when)
+        val (finalMissions, finalBriefing) = when (aiResult) {
+            is AgentRecommendationResult.Success -> {
+                val aiData = aiResult.data
+                // AI가 넘겨준 ID와 일치하는 미션 추출
+                val selectedMissions = safeTemplates.filter { it.id in aiData.selectedMissionIds }.take(5)
+
+                if (selectedMissions.isNotEmpty()) {
+                    // AI가 선발한 미션은 적합도를 무조건 HIGH로 부여
+                    val recommended = selectedMissions.map { RecommendedMission(it, Suitability.HIGH) }
+                    Pair(recommended, aiData.briefing)
+                } else {
+                    // ID가 매칭되지 않는 오류 발생 시, 로컬 코드 가동
+                    runLocalFallback(safeTemplates, profile, "AI 작전 코드 매칭 실패. 예비 통신망으로 전환합니다.")
+                }
+            }
+            is AgentRecommendationResult.Error -> {
+                // 한도 초과 등의 통신 에러 발생 시, 로컬 코드 가동
+                runLocalFallback(safeTemplates, profile, aiResult.fallbackBriefing)
+            }
+        }
+
+
+
+        // 4단계: 동적 난이도 조절
+        val scaledRecommendations = finalMissions.map { recommendedItem ->
+            val adjustedMission = scaleMissionDifficulty(
+                mission = recommendedItem.mission,
+                activityLevel = profile.activityLevel,
+            )
+            recommendedItem.copy(mission = adjustedMission)
+        }
+
+        return RecommendationPipelineResult(scaledRecommendations, finalBriefing)
+    }
+
+    private fun runLocalFallback(
+        safeTemplates: List<Mission>,
+        profile: UserProfile,
+        fallbackMessage: String
+    ): Pair<List<RecommendedMission>, String> {
+        // 기존 2단계: 안전한 템플릿을 대상으로 적합도 채점
+        val scoredMissions = matchHabitMission(safeMissions = safeTemplates, profile = profile)
+
+        // 기존 3단계: 티어별 섞기 및 그룹핑
         val highMissions = scoredMissions.filter { it.suitability == Suitability.HIGH }.shuffled()
         val mediumMissions = scoredMissions.filter { it.suitability == Suitability.MEDIUM }.shuffled()
         val lowMissions = scoredMissions.filter { it.suitability == Suitability.LOW }.shuffled()
 
-        // 4단계: '상 -> 중 -> 하' 순서로 5개 추출
+        // 기존 4단계: '상 -> 중 -> 하' 순서로 5개 추출
         val finalRecommendations = mutableListOf<RecommendedMission>()
         finalRecommendations.addAll(highMissions)
 
@@ -51,17 +107,8 @@ class RecommendMissionUseCase @Inject constructor(
             finalRecommendations.addAll(lowMissions.take(5 - finalRecommendations.size))
         }
 
-        val selectedTop5 = finalRecommendations.take(5)
-
-        // 🔥 5단계: 최종 선발된 5개 미션의 '난이도 조절'
-        // 점진적 온보딩: profile.activityLevel이 아직 입력되지 않았다면(null)
-        return selectedTop5.map { recommendedItem ->
-            val adjustedMission = scaleMissionDifficulty(
-                mission = recommendedItem.mission,
-                activityLevel = profile.activityLevel,
-            )
-            recommendedItem.copy(mission = adjustedMission)
-        }
+        // 5개 추출 완료된 리스트와 대체 브리핑 메시지를 Pair로 묶어 반환
+        return Pair(finalRecommendations.take(5), fallbackMessage)
     }
     // 🔥 테스트를 위한 더미 템플릿
     private val templatePool: List<Mission> = listOf(

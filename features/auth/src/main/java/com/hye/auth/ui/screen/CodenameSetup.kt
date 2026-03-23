@@ -28,6 +28,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import com.hye.features.auth.R
 import com.hye.shared.theme.AppTheme
 import com.hye.shared.theme.toSp
 import com.hye.shared.ui.text.ErrorMessage
@@ -36,7 +37,6 @@ import com.hye.shared.ui.text.StyledInputField
 import com.hye.shared.ui.text.TextSubheading
 import com.hye.shared.ui.text.TrailingIcon
 import com.hye.shared.util.text
-import com.hye.features.auth.R
 
 
 @Composable

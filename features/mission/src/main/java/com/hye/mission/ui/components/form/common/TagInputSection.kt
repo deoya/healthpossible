@@ -25,8 +25,8 @@ import com.hye.shared.theme.AppTheme
 import com.hye.shared.ui.chip.StyledTag
 import com.hye.shared.ui.chip.Tag
 import com.hye.shared.ui.icon.CloseIcon
-import com.hye.shared.ui.text.TitleSmall
 import com.hye.shared.ui.text.StyledInputField
+import com.hye.shared.ui.text.TitleSmall
 import com.hye.shared.util.text
 import com.hye.shared.R as CommonR
 

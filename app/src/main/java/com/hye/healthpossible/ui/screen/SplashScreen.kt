@@ -16,14 +16,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import coil3.compose.AsyncImage
 import com.hye.healthpossible.R
 import com.hye.healthpossible.ui.component.SplashContent
+import com.hye.shared.theme.AppTheme
+import com.hye.shared.theme.ScaffoldContentPaddingWithBottomBar
 import com.hye.shared.ui.animation.DelayInfo
 import com.hye.shared.ui.animation.Direction
 import com.hye.shared.ui.animation.LowSpringAnimation
 import com.hye.shared.ui.animation.SlideFadeInAnimation
-import com.hye.shared.ui.text.LabelSmall
 import com.hye.shared.ui.common.light
-import com.hye.shared.theme.AppTheme
-import com.hye.shared.theme.ScaffoldContentPaddingWithBottomBar
+import com.hye.shared.ui.text.LabelSmall
 import com.hye.shared.util.text
 
 

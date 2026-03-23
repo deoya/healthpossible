@@ -9,9 +9,9 @@ data class UserProfile(
     val healthGoals: List<String>,
     val painPoints: List<String>,
     val profileCompletionRate: Int,
-
     val badHabits: List<String>? = emptyList(), // 없을 수도 있으므로 nullable 또는 빈 리스트
-    val activityLevel: ActivityLevel? = null
+    val activityLevel: ActivityLevel? = null,
+    val chronicDiseases: List<String>? = emptyList()
 )
 
 enum class ActivityLevel(val label: String) {

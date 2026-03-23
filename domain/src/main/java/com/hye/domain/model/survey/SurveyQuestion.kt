@@ -13,5 +13,6 @@ enum class SurveyQuestionId(val id: String) {
     HEALTH_GOAL("Q1"),   // 건강 목표
     PAIN_POINT("Q2"),    // 통증 부위
     BAD_HABIT("Q3"),     // 나쁜 습관
-    ACTIVITY_LEVEL("Q4") // 활동 수준
+    ACTIVITY_LEVEL("Q4"), // 활동 수준
+    CHRONIC_DISEASE("Q5") // 주의할 만성질환
 }
