@@ -21,7 +21,7 @@ fun AgentAvatar() {
             )
         )
     ){
-        AppIcon.Resource(R.drawable.agen).Render(
+        AppIcon.Resource(R.drawable.agent).Render(
             tint = AppTheme.colors.background,
             modifier = Modifier.padding(AppTheme.dimens.xs)
         )

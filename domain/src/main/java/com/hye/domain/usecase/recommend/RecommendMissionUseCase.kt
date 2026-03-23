@@ -25,13 +25,15 @@ class RecommendMissionUseCase @Inject constructor(
     private val matchHabitMission: MatchHabitMissionUseCase,
     private val scaleMissionDifficulty: ScaleMissionDifficultyUseCase,
     private val agentRepository: AgentBriefingRepository,
-    private val diseaseGuidelineRepository: DiseaseGuidelineRepository // 🔥 1. 질병청 레포지토리 주입
+    private val diseaseGuidelineRepository: DiseaseGuidelineRepository
 ) {
 
-    suspend operator fun invoke(profile: UserProfile): RecommendationPipelineResult {
+    suspend operator fun invoke(profile: UserProfile, userFeedback: String? = null): RecommendationPipelineResult {
+
         // 1단계: 안전 최우선 필터링
         val safeTemplates = filterSafeMission(templates = templatePool, painPoints = profile.painPoints)
-        //1.5단계: 만성질환이 있다면 질병청 공식 지침 확보
+
+        // 1.5단계: 만성질환 질병청 지침 확보
         var guidelineText: String? = null
         val chronicDiseases = profile.chronicDiseases
 
@@ -44,9 +46,13 @@ class RecommendMissionUseCase @Inject constructor(
             }
         }
 
-        // 2단계: AI 통신 시도
-        val aiResult = agentRepository.generateRecommendation(profile, safeTemplates, guidelineText)
-
+        // 🔥 2단계: AI 통신 시도
+        val aiResult = agentRepository.generateRecommendation(
+            profile = profile,
+            missions = safeTemplates,
+            guidelineText = guidelineText, // 질병청 데이터!
+            userFeedback = userFeedback    // 요원 피드백 데이터!
+        )
         // 3단계: ROP 결과에 따른 분기 (when)
         val (finalMissions, finalBriefing) = when (aiResult) {
             is AgentRecommendationResult.Success -> {

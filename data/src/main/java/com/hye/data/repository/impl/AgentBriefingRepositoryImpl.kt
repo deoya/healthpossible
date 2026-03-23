@@ -18,7 +18,8 @@ class AgentBriefingRepositoryImpl @Inject constructor(
     override suspend fun generateRecommendation(
         profile: UserProfile,
         safeMissions: List<Mission>,
-        guidelineText: String? // 1. RecommendMissionUseCase에서 넘겨줄 질병청 지침 추가
+        guidelineText: String?, // 1. RecommendMissionUseCase에서 넘겨줄 질병청 지침 추가
+        userFeedback: String?
     ): AgentRecommendationResult<AgentRecommendationData> {
 
         if (safeMissions.isEmpty()) {
@@ -37,7 +38,7 @@ class AgentBriefingRepositoryImpl @Inject constructor(
 
         return try {
             // 2. 가이드라인 텍스트를 프롬프트 조립기에 전달
-            val prompt = buildPrompt(profile, safeMissions, guidelineText)
+            val prompt = buildPrompt(profile, safeMissions, guidelineText, userFeedback)
 
             val response = generativeModel.generateContent(prompt)
             quotaManager.incrementCallCount()
@@ -66,45 +67,62 @@ class AgentBriefingRepositoryImpl @Inject constructor(
     }
 
     // 3. 프롬프트 엔지니어링 고도화
-    private fun buildPrompt(profile: UserProfile, missions: List<Mission>, guidelineText: String?): String {
-        val missionListStr = missions.joinToString("\n") { "- ID: ${it.id}, 제목: ${it.title}, 목적: ${it.memo}" }
+    private fun buildPrompt(
+        profile: UserProfile,
+        missions: List<Mission>,
+        guidelineText: String?,
+        userFeedback: String?
+    ): String {
+        val missionTitles = missions.joinToString(", ") { "- ID: ${it.id}, 제목: ${it.title}" }
         val painPointsStr = profile.painPoints.joinToString(", ").ifEmpty { "특이사항 없음" }
         val badHabitsStr = profile.badHabits?.joinToString(", ")?.ifEmpty { "특이사항 없음" } ?: "특이사항 없음"
-
         val chronicDiseasesStr = profile.chronicDiseases?.filter { it != "특별히 없음 (해당 사항 없음)" }?.joinToString(", ")?.ifEmpty { "없음" } ?: "없음"
 
-        // 🔥 질병청 지침이 있을 때와 없을 때 프롬프트 섹션을 다르게 구성
+        // 1. 질병청 가이드라인 섹션 복구
         val guidelineSection = if (!guidelineText.isNullOrBlank()) {
             """
             [국가 공식 건강 지침 (최우선 준수 사항!)]
-            요원의 만성질환에 대한 국가 공식 가이드라인입니다. 반드시 이 지침을 최우선 근거로 삼아 작전을 선정하고 브리핑에 반영하십시오.
+            요원의 만성질환에 대한 국가 공식 가이드라인입니다. 반드시 이 지침을 최우선 근거로 삼아 작전을 선정하십시오.
             $guidelineText
             """.trimIndent()
         } else {
             "[국가 공식 건강 지침]\n특이 만성질환 없음. 일반적인 건강 증진 및 체력 훈련 목적으로 작전을 하달하십시오."
         }
 
+        // 2. 사용자의 피드백 섹션
+        val feedbackSection = if (!userFeedback.isNullOrBlank()) {
+            """
+            [요원 요청 사항 (실시간 피드백 반영)]
+            요원이 이전 작전에 대해 다음과 같은 요청을 하였습니다: "$userFeedback"
+            
+            [조정 명령]
+            1. 요원의 요청을 적극 반영하여 작전을 다시 선발하십시오. (예: 특정 작전을 빼달라고 하면 다른 작전으로 교체)
+            2. 단, 요원의 '취약 지점', '나쁜 습관', 또는 '국가 공식 건강 지침'을 고려했을 때 절대적으로 필요한 작전을 빼달라고 요청했다면, 요청대로 빼주되 브리핑(briefing) 대사에 반드시 엄중히 경고하십시오.
+            """.trimIndent()
+        } else {
+            ""
+        }
+
         return """
             당신은 'Healthposable' 본부의 최고 엘리트 건강 관리 AI 에이전트입니다.
-            요원의 신체 상태와 국가 공식 건강 지침을 엄격하게 분석하여, 제공된 후보 작전 중 가장 안전하고 효과적인 작전 5개를 선정하고 브리핑을 작성하십시오.
+            요원님의 신체 스캔 결과와 국가 지침을 바탕으로, 아래 후보 작전 중 가장 적합한 5개를 골라 JSON 형식으로 보고하십시오.
 
-            === [요원 데이터베이스] ===
-            - 취약 지점(통증): $painPointsStr
+            [요원 신체 스캔 결과]
+            - 취약 지점: $painPointsStr
             - 중화 필요 타겟(나쁜 습관): $badHabitsStr
             - 보유 만성질환: $chronicDiseasesStr
-            - 활동 수준: ${profile.activityLevel?.label ?: "보통"}
-
-            === $guidelineSection ===
             
-            === [후보 작전 목록] ===
-            $missionListStr
+            $guidelineSection
             
-            === [명령 하달 지침] ===
-            1. (선정) 위 후보 작전 중 요원에게 가장 적합한 5개의 작전 ID(missionIds)를 골라 배열로 담으십시오.
-            2. (브리핑) 요원에게 하달하는 3문장 이내의 브리핑(briefing) 대사를 작성하십시오. 단호하고 전문적인 군사/에이전트 톤을 유지하십시오.
-            3. (근거) 만성질환이 있다면, 브리핑 내용에 "국가 가이드라인에 의거하여~" 등의 방식으로 지침을 참고했음을 자연스럽게 녹여내십시오.
-            4. (형식) 절대 다른 말은 하지 말고, 오직 아래 JSON 구조로만 응답하십시오.
-
+            $feedbackSection
+            
+            [후보 작전 목록]
+            $missionTitles
+            
+            [응답 명령]
+            1. 요원에게 하달할 5개의 작전 ID(missionIds)를 배열로 담으십시오.
+            2. 요원에게 전하는 3문장 이내의 브리핑(briefing) 대사를 작성하십시오. 새로운 작전을 지어내지 마십시오.
+            3. 절대 다른 말은 하지 말고 아래 JSON 구조로만 응답하십시오.
             {
               "missionIds": ["ID1", "ID2", "ID3", "ID4", "ID5"],
               "briefing": "브리핑 텍스트..."
