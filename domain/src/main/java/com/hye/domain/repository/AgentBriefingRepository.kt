@@ -9,6 +9,7 @@ interface AgentBriefingRepository {
     suspend fun generateRecommendation(
         profile: UserProfile,
         missions: List<Mission>,
-        guidelineText: String? = null
+        guidelineText: String? = null,
+        userFeedback: String? = null
     ): AgentRecommendationResult<AgentRecommendationData>
 }

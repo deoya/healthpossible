@@ -72,7 +72,11 @@ class RecommendViewModel @Inject constructor(
                 it.copy(
                     isLoading = false,
                     recommendations = pipelineResult.recommendations,
-                    agentMessage = pipelineResult.briefingMessage
+                    agentMessage = pipelineResult.briefingMessage,
+
+                    originalRecommendations = pipelineResult.recommendations,
+                    originalAgentMessage = pipelineResult.briefingMessage,
+                    isAdjusted = false
                 )
             }
             Timber.d("에이전트 작전 수립 완료: ${pipelineResult.recommendations.size}개")
@@ -94,14 +98,63 @@ class RecommendViewModel @Inject constructor(
                     is MissionResult.Error -> {
                         showToast("작전 수락 중 오류가 발생했습니다.")
                         Timber.e(result.exception, "미션 저장 실패: ${result.exception.message}")
-
-                        // Todo : 실패했을 경우 지웠던 미션을 다시 리스트에 복구하는 로직 구현
                     }
                     else -> {}
                 }
             }
         }
     }
+
+    fun toggleAdjustmentMode() {
+        _uiState.update { it.copy(isAdjustmentMode = !it.isAdjustmentMode) }
+    }
+
+    fun updateAdjustmentInput(text: String) {
+        _uiState.update { it.copy(adjustmentInput = text) }
+    }
+
+    fun requestAdjustment() {
+        val feedback = _uiState.value.adjustmentInput
+        if (feedback.isBlank()) return // 빈칸이면 무시
+
+        viewModelScope.launch(commonCeh) {
+            _uiState.update {
+                it.copy(
+                    isLoading = true,
+                    isAdjustmentMode = false, // 전송했으니 입력창은 닫음
+                    agentMessage = "요원님의 요청 사항을 반영하여 작전을 재검토 중입니다..."
+                )
+            }
+
+            val profile = sessionManager.currentUser.value ?: return@launch
+
+            val pipelineResult = missionUseCases.recommendMission(profile, feedback)
+
+            _uiState.update {
+                it.copy(
+                    isLoading = false,
+                    recommendations = pipelineResult.recommendations,
+                    agentMessage = pipelineResult.briefingMessage,
+                    isAdjusted = true,   // 조정 완료 상태로 변경 ('되돌리기' 버튼 활성화)
+                    adjustmentInput = "" // 입력창 비우기
+                )
+            }
+        }
+    }
+
+    fun revertToOriginal() {
+        _uiState.update {
+            it.copy(
+                recommendations = it.originalRecommendations,
+                agentMessage = it.originalAgentMessage,
+                isAdjusted = false,
+                isAdjustmentMode = false,
+                adjustmentInput = ""
+            )
+        }
+        showToast("원래의 작전으로 복구되었습니다.")
+    }
+
 
     // 작전 보류(거절) 시 로직
     fun rejectMission(mission: Mission) {
