@@ -77,6 +77,8 @@ dependencies {
 
     implementation(libs.bundles.network)
 
+    implementation(libs.bundles.room)
+
     implementation(libs.timber)
 
     //test
