@@ -1,11 +1,14 @@
 package com.hye.data.session
 
+import android.content.Context
+import android.content.SharedPreferences
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.hye.data.dto.UserProfileDto
 import com.hye.data.mapper.toDomain
 import com.hye.domain.model.profile.UserProfile
 import com.hye.domain.session.SessionManager
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.tasks.await
@@ -16,11 +19,18 @@ import javax.inject.Singleton
 @Singleton
 class SessionManagerImpl @Inject constructor(
     private val firestore: FirebaseFirestore,
-    private val auth: FirebaseAuth
+    private val auth: FirebaseAuth,
+    @ApplicationContext private val context: Context
 ) : SessionManager {
-    // 🔥 앱 전역에서 공유될 유저 프로필 상태 파이프관
+
+    private val prefs: SharedPreferences = context.getSharedPreferences("healthposable_prefs", Context.MODE_PRIVATE)
+
+    // 유저 프로필 상태 파이프관
     private val _currentUser = MutableStateFlow<UserProfile?>(null)
     override val currentUser = _currentUser.asStateFlow()
+
+    private val _lastBriefingTime = MutableStateFlow(prefs.getLong("LAST_BRIEFING_TIME", 0L))
+    override val lastBriefingTime = _lastBriefingTime.asStateFlow()
 
     override suspend fun fetchUserProfile() {
         try {
@@ -34,7 +44,6 @@ class SessionManagerImpl @Inject constructor(
             val userProfileDto = snapshot.toObject(UserProfileDto::class.java)
 
             if (userProfileDto != null) {
-                // 앞서 만든 ProfileMapper를 이용해 DTO -> Domain 모델로 변환
                 _currentUser.value = userProfileDto.toDomain()
                 Timber.d("UserSessionManager: 프로필 로드 성공! 코드네임 -> ${_currentUser.value?.codename}")
             } else {
@@ -47,14 +56,21 @@ class SessionManagerImpl @Inject constructor(
         }
     }
 
-    // 부분 업데이트 (설문조사 직후 등 서버 통신 없이 로컬 상태만 갱신할 때 유용)
     override fun updateLocalSession(profile: UserProfile) {
         _currentUser.value = profile
     }
 
-    // 로그아웃, 탈퇴, 초기화 시 세션 날리기
     override fun clearSession() {
         _currentUser.value = null
         Timber.d("UserSessionManager: 세션 초기화됨")
+    }
+
+    // 마지막 브리핑 시간을 로컬에 영구 저장하는 로직
+    override suspend fun updateLastBriefingTime(timeMillis: Long) {
+        // 1. SharedPreferences 금고에 시간 저장
+        prefs.edit().putLong("LAST_BRIEFING_TIME", timeMillis).apply()
+        // 2. 앱 내 상태(StateFlow) 즉각 갱신
+        _lastBriefingTime.value = timeMillis
+        Timber.d("UserSessionManager: 마지막 브리핑 시간 갱신됨 -> $timeMillis")
     }
 }

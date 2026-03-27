@@ -30,9 +30,9 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
+import com.hye.shared.theme.AppTheme
 import com.hye.shared.ui.icon.ArrowLeftIcon
 import com.hye.shared.ui.icon.SlideIcon
-import com.hye.shared.theme.AppTheme
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt

@@ -3,6 +3,7 @@ package com.hye.data.repository.impl
 import com.google.firebase.vertexai.GenerativeModel
 import com.hye.data.local.AiQuotaManager
 import com.hye.domain.model.agent.AgentRecommendationData
+import com.hye.domain.model.agent.AgentResponseType
 import com.hye.domain.model.mission.types.Mission
 import com.hye.domain.model.profile.UserProfile
 import com.hye.domain.repository.AgentBriefingRepository
@@ -18,7 +19,8 @@ class AgentBriefingRepositoryImpl @Inject constructor(
     override suspend fun generateRecommendation(
         profile: UserProfile,
         safeMissions: List<Mission>,
-        guidelineText: String?, // 1. RecommendMissionUseCase에서 넘겨줄 질병청 지침 추가
+        activeMissions: List<Mission>,
+        guidelineText: String?,
         userFeedback: String?
     ): AgentRecommendationResult<AgentRecommendationData> {
 
@@ -37,25 +39,39 @@ class AgentBriefingRepositoryImpl @Inject constructor(
         }
 
         return try {
-            // 2. 가이드라인 텍스트를 프롬프트 조립기에 전달
-            val prompt = buildPrompt(profile, safeMissions, guidelineText, userFeedback)
-
+            // 1. 완벽하게 조립된 프롬프트 생성
+            val prompt = buildPrompt(profile, safeMissions, activeMissions, guidelineText, userFeedback)
+            // 2. AI 모델 호출
             val response = generativeModel.generateContent(prompt)
             quotaManager.incrementCallCount()
 
             val responseText = response.text?.trim()
                 ?: return AgentRecommendationResult.Error(IllegalStateException("Empty Response"), getDefaultMessage())
 
-            // JSON 파싱 방어 로직
+            // 3. JSON 파싱 방어 로직 (마크다운 백틱 제거)
             val cleanJsonStr = responseText.replace("```json", "").replace("```", "").trim()
             val jsonObject = JSONObject(cleanJsonStr)
 
-            val missionIdsArray = jsonObject.getJSONArray("missionIds")
-            val selectedIds = List(missionIdsArray.length()) { i -> missionIdsArray.getString(i) }
+            val typeStr = jsonObject.optString("type", "CHAT")
+            val responseType = try {
+                AgentResponseType.valueOf(typeStr.uppercase())
+            } catch (e: Exception) {
+                AgentResponseType.CHAT
+            }
+
+            val missionIdsArray = jsonObject.optJSONArray("missionIds")
+            val selectedIds = mutableListOf<String>()
+            if (missionIdsArray != null) {
+                for (i in 0 until missionIdsArray.length()) {
+                    selectedIds.add(missionIdsArray.getString(i))
+                }
+            }
+
             val briefing = jsonObject.getString("briefing")
 
             AgentRecommendationResult.Success(
                 data = AgentRecommendationData(
+                    type = responseType,
                     selectedMissionIds = selectedIds,
                     briefing = briefing
                 )
@@ -66,46 +82,53 @@ class AgentBriefingRepositoryImpl @Inject constructor(
         }
     }
 
-    // 3. 프롬프트 엔지니어링 고도화
+    // 🔥 프롬프트 엔지니어링: 현재 수행 중인 작전(activeMissions) 반영
     private fun buildPrompt(
         profile: UserProfile,
         missions: List<Mission>,
+        activeMissions: List<Mission>,
         guidelineText: String?,
         userFeedback: String?
     ): String {
+        // 후보 미션 리스트
         val missionTitles = missions.joinToString(", ") { "- ID: ${it.id}, 제목: ${it.title}" }
+
+        // 🔥 현재 요원이 수행 중인 미션 리스트 문자열화
+        val activeMissionTitles = if (activeMissions.isNotEmpty()) {
+            activeMissions.joinToString(", ") { "- ID: ${it.id}, 제목: ${it.title}" }
+        } else {
+            "현재 수행 중인 작전 없음"
+        }
+
+        // 신체 데이터 변환
         val painPointsStr = profile.painPoints.joinToString(", ").ifEmpty { "특이사항 없음" }
         val badHabitsStr = profile.badHabits?.joinToString(", ")?.ifEmpty { "특이사항 없음" } ?: "특이사항 없음"
         val chronicDiseasesStr = profile.chronicDiseases?.filter { it != "특별히 없음 (해당 사항 없음)" }?.joinToString(", ")?.ifEmpty { "없음" } ?: "없음"
 
-        // 1. 질병청 가이드라인 섹션 복구
+        // 질병청 가이드라인 병합
         val guidelineSection = if (!guidelineText.isNullOrBlank()) {
             """
             [국가 공식 건강 지침 (최우선 준수 사항!)]
-            요원의 만성질환에 대한 국가 공식 가이드라인입니다. 반드시 이 지침을 최우선 근거로 삼아 작전을 선정하십시오.
+            요원의 만성질환에 대한 국가 공식 가이드라인입니다. 반드시 이 지침을 최우선 근거로 삼아 작전을 선정하거나 조언하십시오.
             $guidelineText
             """.trimIndent()
         } else {
             "[국가 공식 건강 지침]\n특이 만성질환 없음. 일반적인 건강 증진 및 체력 훈련 목적으로 작전을 하달하십시오."
         }
 
-        // 2. 사용자의 피드백 섹션
+        // 요원 실시간 피드백 병합
         val feedbackSection = if (!userFeedback.isNullOrBlank()) {
             """
-            [요원 요청 사항 (실시간 피드백 반영)]
-            요원이 이전 작전에 대해 다음과 같은 요청을 하였습니다: "$userFeedback"
-            
-            [조정 명령]
-            1. 요원의 요청을 적극 반영하여 작전을 다시 선발하십시오. (예: 특정 작전을 빼달라고 하면 다른 작전으로 교체)
-            2. 단, 요원의 '취약 지점', '나쁜 습관', 또는 '국가 공식 건강 지침'을 고려했을 때 절대적으로 필요한 작전을 빼달라고 요청했다면, 요청대로 빼주되 브리핑(briefing) 대사에 반드시 엄중히 경고하십시오.
+            [요원 실시간 요청 사항]
+            "$userFeedback"
             """.trimIndent()
         } else {
-            ""
+            "[요원 실시간 요청 사항]\n없음 (정기 브리핑 요청)"
         }
 
         return """
-            당신은 'Healthposable' 본부의 최고 엘리트 건강 관리 AI 에이전트입니다.
-            요원님의 신체 스캔 결과와 국가 지침을 바탕으로, 아래 후보 작전 중 가장 적합한 5개를 골라 JSON 형식으로 보고하십시오.
+            당신은 \'Healthposable\' 본부의 최고 엘리트 건강 관리 AI 에이전트(J.A.R.V.I.S 와 같은 존재)입니다.
+            요원의 요청을 분석하여 높은 자유도의 대화를 수행하되, 반드시 아래의 지침과 JSON 형식에 맞춰 응답하십시오.
 
             [요원 신체 스캔 결과]
             - 취약 지점: $painPointsStr
@@ -113,22 +136,31 @@ class AgentBriefingRepositoryImpl @Inject constructor(
             - 보유 만성질환: $chronicDiseasesStr
             
             $guidelineSection
-            
+
+            [현재 수행 중인 작전 목록]
+            $activeMissionTitles
+
+            [후보 작전 목록 (새로 추천하거나 교체할 때 참고할 목록)]
+            $missionTitles
+
             $feedbackSection
             
-            [후보 작전 목록]
-            $missionTitles
+            [작전 수행 지침 (의도 파악)]
+            아래 4가지 상황 중 하나를 판단하여 \'type\'을 결정하십시오.
+            1. CHAT: 단순 대화 (missionIds: 빈 배열)
+            2. CONFIRM_DELETE: 요원이 [현재 수행 중인 작전 목록]에 있는 특정 작전을 빼달라고 할 때. 건강상 비추천 이유를 설명하고 재확인하십시오. (missionIds: 빈 배열)
+            3. CONFIRM_CHANGE: 요원이 [현재 수행 중인 작전 목록]의 작전을 다른 것으로 바꿔달라고 할 때. [후보 작전 목록]에서 대안을 찾아 제안하십시오. (missionIds: 대안 작전 ID 1~2개)
+            4. RECOMMEND: 정기 브리핑이거나 새로운 추천을 원할 때. (missionIds: 추천 작전 ID 5개)
             
             [응답 명령]
-            1. 요원에게 하달할 5개의 작전 ID(missionIds)를 배열로 담으십시오.
-            2. 요원에게 전하는 3문장 이내의 브리핑(briefing) 대사를 작성하십시오. 새로운 작전을 지어내지 마십시오.
-            3. 절대 다른 말은 하지 말고 아래 JSON 구조로만 응답하십시오.
+            절대 다른 말은 덧붙이지 말고 오직 아래 JSON 구조로만 응답하십시오.
             {
-              "missionIds": ["ID1", "ID2", "ID3", "ID4", "ID5"],
-              "briefing": "브리핑 텍스트..."
+              "type": "CHAT 또는 CONFIRM_DELETE 또는 CONFIRM_CHANGE 또는 RECOMMEND",
+              "briefing": "요원과 직접 대화하는 형태의 브리핑/답변/잔소리 (자연스러운 구어체)",
+              "missionIds": ["ID1", "ID2"] 
             }
         """.trimIndent()
     }
 
-    private fun getDefaultMessage() = "코드네임 식별 완료. 요원님의 맞춤형 작전입니다."
+    private fun getDefaultMessage() = "통신 상태가 불안정합니다. 요원님, 다시 한번 말씀해 주시겠습니까?"
 }
