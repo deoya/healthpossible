@@ -24,6 +24,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             HPAppTheme {
                 val uiState by viewModel.uiStatus.collectAsStateWithLifecycle()
+                val isBadgeVisible by viewModel.isAgentBadgeVisible.collectAsStateWithLifecycle()
 
                 Crossfade(targetState = uiState.isSplashLoading, label = "Splash") { isLoading ->
                     if (isLoading) {
@@ -33,7 +34,10 @@ class MainActivity : ComponentActivity() {
                             }
                         )
                     } else {
-                        EntryPoint(uiState.isLoggedIn)
+                        EntryPoint(
+                            uiState.isLoggedIn,
+                            isBadgeVisible
+                        )
                     }
                 }
 

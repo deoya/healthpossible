@@ -54,6 +54,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.hye.shared.navigation.ContentNavRouteDef
 import com.hye.shared.theme.AppTheme
+import com.hye.shared.ui.badge.AlertBadge
 import com.hye.shared.ui.common.selectionIconMenuColor
 import com.hye.shared.ui.icon.Render
 
@@ -62,7 +63,11 @@ class MenuBarShape(
     private val curveWidth: Dp,
     private val curveHeight: Dp
 ) : Shape {
-    override fun createOutline(size: Size, layoutDirection: LayoutDirection, density: Density): Outline {
+    override fun createOutline(
+        size: Size,
+        layoutDirection: LayoutDirection,
+        density: Density
+    ): Outline {
 
         return Outline.Generic(Path().apply {
             val widthPx = with(density) { curveWidth.toPx() }
@@ -90,14 +95,17 @@ class MenuBarShape(
         })
     }
 }
+
 @Composable
 fun BottomBar(
     navController: NavController,
+    isBadgeVisible: Boolean,
     bottomNavItems: List<BottomAppBarItem>,
     currentDestination: NavDestination?,
     showAddMissionMenu: Boolean,
     onShowAddMissionMenuChange: (Boolean) -> Unit,
 ) {
+
     val isMissionScreen =
         currentDestination?.hasRoute(ContentNavRouteDef.MissionTab::class) == true
 
@@ -162,30 +170,35 @@ fun BottomBar(
                 )
             }
         }
-       FloatingActionButton(
-            onClick = {
-                if (isMissionScreen) {
-                    onShowAddMissionMenuChange(!showAddMissionMenu)
-                } else {
-                    navController.navigate(fabSpec.destination) {
-                        popUpTo(navController.graph.findStartDestination().id) {
-                            saveState = true
+        // 🔥 뱃지 노출 조건: 미션 화면이고, 뱃지가 활성화되어 있으며, 메뉴가 닫혀 있을 때만 FAB에 표시
+        val showFabBadge = isMissionScreen && isBadgeVisible && !showAddMissionMenu
+
+        AlertBadge(showFabBadge) {
+            FloatingActionButton(
+                onClick = {
+                    if (isMissionScreen) {
+                        onShowAddMissionMenuChange(!showAddMissionMenu)
+                    } else {
+                        navController.navigate(fabSpec.destination) {
+                            popUpTo(navController.graph.findStartDestination().id) {
+                                saveState = true
+                            }
+                            restoreState = true
+                            launchSingleTop = true
                         }
-                        restoreState = true
-                        launchSingleTop = true
                     }
-                }
-            },
-            modifier = Modifier
-                .align(Alignment.TopCenter)
-                .offset(y = fabOffset)
-                .size(fabSize),
-            containerColor = AppTheme.colors.primary,
-            shape = CircleShape
-        ) {
-            fabSpec.icon.Render(
-                tint = AppTheme.colors.onPrimary
-            )
+                },
+                modifier = Modifier
+                    .align(Alignment.TopCenter)
+                    .offset(y = fabOffset)
+                    .size(fabSize),
+                containerColor = AppTheme.colors.primary,
+                shape = CircleShape
+            ) {
+                fabSpec.icon.Render(
+                    tint = AppTheme.colors.onPrimary
+                )
+            }
         }
     }
 }
@@ -230,36 +243,11 @@ private fun BottomBarItemView(
     }
 }
 
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
-@Preview(backgroundColor = 0xFFBDBDBD, showBackground = true, showSystemUi = true, device = "id:pixel_5")
-@Composable
-fun BottomAppBar_Preview(){
-    val navController = rememberNavController()
-    val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val currentDestination = navBackStackEntry?.destination
-    Scaffold(
-        bottomBar = {
-            BottomBar(
-                navController = navController,
-                bottomNavItems = BottomAppBarItem.fetchBottomAppBarItems(),
-                currentDestination = currentDestination,
-                showAddMissionMenu = false,
-                onShowAddMissionMenuChange = {},
-            )
-
-        },
-        modifier = Modifier,
-        topBar = { },
-        snackbarHost = { },
-        containerColor = Color.Gray,
-        contentColor = Color.Gray,
-    ){
-    }
-}
 
 @Composable
 fun AddMissionSpreadMenu(
     isVisible: Boolean,
+    isBadgeVisible: Boolean,
     onMenu1Click: () -> Unit, // 왼쪽 (템플릿)
     onMenu2Click: () -> Unit,  // 오른쪽 (직접 추가),
     modifier: Modifier = Modifier
@@ -300,6 +288,7 @@ fun AddMissionSpreadMenu(
             // [왼쪽 버튼] : X는 왼쪽(-), Y는 위쪽(-)
             SpreadMenuItem(
                 text = "추천 받기", // 아이콘 확인 필요
+                isBadgeVisible = isBadgeVisible,
                 offsetX = -moveX,
                 offsetY = moveY,
                 alpha = alpha,
@@ -324,6 +313,7 @@ fun AddMissionSpreadMenu(
 @Composable
 private fun SpreadMenuItem(
     text: String,
+    isBadgeVisible: Boolean = false,
     offsetX: Dp,
     offsetY: Dp,
     alpha: Float,
@@ -337,9 +327,12 @@ private fun SpreadMenuItem(
             .alpha(alpha)
             .clickable(onClick = onClick)
     ) {
-        RoundedMenuButton(text, onClick = onClick)
+        AlertBadge(isBadgeVisible) {
+            RoundedMenuButton(text, onClick = onClick)
+        }
     }
 }
+
 @Composable
 private fun RoundedMenuButton(
     text: String,
@@ -358,5 +351,38 @@ private fun RoundedMenuButton(
             text = text,
             color = AppTheme.colors.onPrimary,
         )
+    }
+}
+
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+@Preview(
+    backgroundColor = 0xFFBDBDBD,
+    showBackground = true,
+    showSystemUi = true,
+    device = "id:pixel_5"
+)
+@Composable
+fun BottomAppBar_Preview() {
+    val navController = rememberNavController()
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentDestination = navBackStackEntry?.destination
+    Scaffold(
+        bottomBar = {
+            BottomBar(
+                navController = navController,
+                isBadgeVisible = true,
+                bottomNavItems = BottomAppBarItem.fetchBottomAppBarItems(),
+                currentDestination = currentDestination,
+                showAddMissionMenu = true,
+                onShowAddMissionMenuChange = {},
+            )
+
+        },
+        modifier = Modifier,
+        topBar = { },
+        snackbarHost = { },
+        containerColor = Color.Gray,
+        contentColor = Color.Gray,
+    ) {
     }
 }
