@@ -12,9 +12,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
+import com.hye.shared.theme.AppTheme
 import com.hye.shared.ui.common.IconStyle
 import com.hye.shared.ui.common.Orientation
-import com.hye.shared.theme.AppTheme
 
 data class MenuStyle (
     val modifier : Modifier? = null,

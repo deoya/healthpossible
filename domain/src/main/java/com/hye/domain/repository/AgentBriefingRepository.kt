@@ -8,7 +8,8 @@ import com.hye.domain.result.AgentRecommendationResult
 interface AgentBriefingRepository {
     suspend fun generateRecommendation(
         profile: UserProfile,
-        missions: List<Mission>,
+        safeMissions: List<Mission>,
+        activeMissions: List<Mission>, // 현재 수행 중인 작전 목록
         guidelineText: String? = null,
         userFeedback: String? = null
     ): AgentRecommendationResult<AgentRecommendationData>

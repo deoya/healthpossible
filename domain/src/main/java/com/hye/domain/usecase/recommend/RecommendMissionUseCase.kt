@@ -1,5 +1,6 @@
 package com.hye.domain.usecase.recommend
 
+import com.hye.domain.model.agent.AgentResponseType
 import com.hye.domain.model.mission.RecommendedMission
 import com.hye.domain.model.mission.Suitability
 import com.hye.domain.model.mission.types.AiExerciseType
@@ -28,7 +29,7 @@ class RecommendMissionUseCase @Inject constructor(
     private val diseaseGuidelineRepository: DiseaseGuidelineRepository
 ) {
 
-    suspend operator fun invoke(profile: UserProfile, userFeedback: String? = null): RecommendationPipelineResult {
+    suspend operator fun invoke(profile: UserProfile, activeMissions: List<Mission> = emptyList(), userFeedback: String? = null): RecommendationPipelineResult {
 
         // 1단계: 안전 최우선 필터링
         val safeTemplates = filterSafeMission(templates = templatePool, painPoints = profile.painPoints)
@@ -45,37 +46,36 @@ class RecommendMissionUseCase @Inject constructor(
                 guidelineText = guidelineResult.resultData
             }
         }
-
         // 🔥 2단계: AI 통신 시도
         val aiResult = agentRepository.generateRecommendation(
             profile = profile,
-            missions = safeTemplates,
-            guidelineText = guidelineText, // 질병청 데이터!
-            userFeedback = userFeedback    // 요원 피드백 데이터!
+            safeMissions = safeTemplates,
+            activeMissions = activeMissions,
+            guidelineText = guidelineText,
+            userFeedback = userFeedback
         )
-        // 3단계: ROP 결과에 따른 분기 (when)
-        val (finalMissions, finalBriefing) = when (aiResult) {
+
+        // 🔥 3단계: ROP 결과에 따른 분기
+        val (finalType, finalMissions, finalBriefing) = when (aiResult) {
             is AgentRecommendationResult.Success -> {
                 val aiData = aiResult.data
-                // AI가 넘겨준 ID와 일치하는 미션 추출
                 val selectedMissions = safeTemplates.filter { it.id in aiData.selectedMissionIds }.take(5)
 
-                if (selectedMissions.isNotEmpty()) {
-                    // AI가 선발한 미션은 적합도를 무조건 HIGH로 부여
+                // AI의 의도가 단순 대화(CHAT)이거나 삭제 확인(CONFIRM_DELETE)일 때는 미션 카드가 필요 없음!
+                if (aiData.type == AgentResponseType.CHAT || aiData.type == AgentResponseType.CONFIRM_DELETE) {
+                    Triple(aiData.type, emptyList<RecommendedMission>(), aiData.briefing)
+                } else if (selectedMissions.isNotEmpty()) {
+                    // 미션이 정상적으로 선발된 경우
                     val recommended = selectedMissions.map { RecommendedMission(it, Suitability.HIGH) }
-                    Pair(recommended, aiData.briefing)
+                    Triple(aiData.type, recommended, aiData.briefing)
                 } else {
-                    // ID가 매칭되지 않는 오류 발생 시, 로컬 코드 가동
                     runLocalFallback(safeTemplates, profile, "AI 작전 코드 매칭 실패. 예비 통신망으로 전환합니다.")
                 }
             }
             is AgentRecommendationResult.Error -> {
-                // 한도 초과 등의 통신 에러 발생 시, 로컬 코드 가동
                 runLocalFallback(safeTemplates, profile, aiResult.fallbackBriefing)
             }
         }
-
-
 
         // 4단계: 동적 난이도 조절
         val scaledRecommendations = finalMissions.map { recommendedItem ->
@@ -86,23 +86,25 @@ class RecommendMissionUseCase @Inject constructor(
             recommendedItem.copy(mission = adjustedMission)
         }
 
-        return RecommendationPipelineResult(scaledRecommendations, finalBriefing)
+        // 🔥 5단계: 최종 결과에 Type(의도)을 실어서 뷰모델로 전송
+        return RecommendationPipelineResult(
+            type = finalType,
+            recommendations = scaledRecommendations,
+            briefingMessage = finalBriefing
+        )
     }
 
     private fun runLocalFallback(
         safeTemplates: List<Mission>,
         profile: UserProfile,
         fallbackMessage: String
-    ): Pair<List<RecommendedMission>, String> {
-        // 기존 2단계: 안전한 템플릿을 대상으로 적합도 채점
+    ): Triple<AgentResponseType, List<RecommendedMission>, String> {
         val scoredMissions = matchHabitMission(safeMissions = safeTemplates, profile = profile)
 
-        // 기존 3단계: 티어별 섞기 및 그룹핑
         val highMissions = scoredMissions.filter { it.suitability == Suitability.HIGH }.shuffled()
         val mediumMissions = scoredMissions.filter { it.suitability == Suitability.MEDIUM }.shuffled()
         val lowMissions = scoredMissions.filter { it.suitability == Suitability.LOW }.shuffled()
 
-        // 기존 4단계: '상 -> 중 -> 하' 순서로 5개 추출
         val finalRecommendations = mutableListOf<RecommendedMission>()
         finalRecommendations.addAll(highMissions)
 
@@ -113,8 +115,8 @@ class RecommendMissionUseCase @Inject constructor(
             finalRecommendations.addAll(lowMissions.take(5 - finalRecommendations.size))
         }
 
-        // 5개 추출 완료된 리스트와 대체 브리핑 메시지를 Pair로 묶어 반환
-        return Pair(finalRecommendations.take(5), fallbackMessage)
+        // 폴백(비상사태) 시에는 무조건 '추천(RECOMMEND)' 타입으로 5개를 던져줍니다.
+        return Triple(AgentResponseType.RECOMMEND, finalRecommendations.take(5), fallbackMessage)
     }
     // 🔥 테스트를 위한 더미 템플릿
     private val templatePool: List<Mission> = listOf(

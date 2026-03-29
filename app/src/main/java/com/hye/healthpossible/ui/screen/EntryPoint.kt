@@ -30,7 +30,8 @@ import com.hye.shared.theme.AppTheme
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EntryPoint(
-    isLoggedIn: Boolean
+    isLoggedIn: Boolean,
+    isAgentBadgeVisible: Boolean
 ) {
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -82,6 +83,7 @@ fun EntryPoint(
                 if (!isFullScreen) {
                     BottomBar(
                         navController = navController,
+                        isBadgeVisible = isAgentBadgeVisible,
                         bottomNavItems = bottomAppBarItems,
                         currentDestination = currentDestination,
                         showAddMissionMenu = showAddMissionMenu,
