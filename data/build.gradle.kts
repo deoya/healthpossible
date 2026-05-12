@@ -81,6 +81,8 @@ dependencies {
     ksp(libs.androidx.room.compiler)
     implementation(libs.timber)
 
+    implementation(libs.androidx.datastore.preferences)
+
     //test
     testImplementation(libs.bundles.test.jvm)
     androidTestImplementation(libs.bundles.test.android)

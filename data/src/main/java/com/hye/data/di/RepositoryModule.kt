@@ -2,12 +2,16 @@ package com.hye.data.di
 
 import com.hye.data.api.impl.DiseaseGuidelineRepositoryImpl
 import com.hye.data.repository.impl.AgentBriefingRepositoryImpl
+import com.hye.data.repository.impl.AgentChatRepositoryImpl
 import com.hye.data.repository.impl.AuthRepositoryImpl
+import com.hye.data.repository.impl.MissionPreferencesRepositoryImpl
 import com.hye.data.repository.impl.MissionRepositoryImpl
 import com.hye.data.repository.impl.ProfileRepositoryImpl
 import com.hye.domain.repository.AgentBriefingRepository
+import com.hye.domain.repository.AgentChatRepository
 import com.hye.domain.repository.AuthRepository
 import com.hye.domain.repository.DiseaseGuidelineRepository
+import com.hye.domain.repository.MissionPreferencesRepository
 import com.hye.domain.repository.MissionRepository
 import com.hye.domain.repository.ProfileRepository
 import dagger.Binds
@@ -38,8 +42,16 @@ abstract class RepositoryModule {
 
     @Binds
     @Singleton
-    abstract fun bindDiseaseGuidelineRepository(
-        impl: DiseaseGuidelineRepositoryImpl
-    ): DiseaseGuidelineRepository
+    abstract fun bindDiseaseGuidelineRepository(impl: DiseaseGuidelineRepositoryImpl): DiseaseGuidelineRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindAgentChatRepository(impl: AgentChatRepositoryImpl): AgentChatRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindMissionPreferencesRepository(
+        missionPreferencesRepositoryImpl: MissionPreferencesRepositoryImpl
+    ): MissionPreferencesRepository
 
 }
